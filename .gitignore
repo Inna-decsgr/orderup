@@ -26,3 +26,21 @@ pnpm-debug.log*
 # Ignore Python bytecode files
 *.pyc
 __pycache__/
+
+# Python 패키지 빌드 파일
+*.whl
+*.egg-info
+__pycache__/
+*.pyc
+*.pyo
+
+# 패키지 메타데이터 파일
+*.txt
+REQUESTED
+RECORD
+METADATA
+
+# 라이센스 파일과 설치 파일은 커밋
+LICENSE
+INSTALLER
+py.typed
