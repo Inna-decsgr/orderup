@@ -1,30 +1,35 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div id="app">
+    <MainNavbar v-if="!isLoginPage" />
+    <div v-if="user">
+      <p>{{ user.username }}님</p>
+    </div>
+    <router-view/>
+  </div>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import MainNavbar from './components/MainNavbar.vue'
+import { mapGetters } from 'vuex';
 
-nav {
-  padding: 30px;
+export default {
+  components: {
+    MainNavbar,
+  },
+  watch: {
+    user(newValue) {
+      console.log('사용자 정보가 변경되었습니다.', newValue)
+    }
+  },
+  computed: {
+    ...mapGetters(['getUser']),
+    user() {
+      return this.getUser;
+    },
+    isLoginPage() {
+      return this.$route.name === 'login' || this.$route.name === 'signup';
+    }
+  }
 }
+</script>
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
