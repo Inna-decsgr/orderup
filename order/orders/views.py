@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from .models import UserProfile
 from rest_framework import status
 from orders.models import UserProfile  
+from .serializers import UserProfileSerializer
+
 
 
 # 회원가입
@@ -67,3 +69,45 @@ def login_view(request):
         return JsonResponse({'message': '아이디 또는 비밀번호가 잘못되었습니다.'}, status=400)
 
 
+
+
+# 사용자 정보 수정
+@api_view(['PUT'])
+def update_user(request, user_id):
+    try:
+        # UserProfile 객체 가져오기
+        user_profile = UserProfile.objects.get(user__id=user_id)
+        # User 객체 가져오기
+        user = user_profile.user
+
+        # 요청 데이터에서 사용자 정보 가져오기
+        username = request.data.get('username', user.username)  # 이름 업데이트
+        email = request.data.get('email', user.email)  # 이메일 업데이트
+        phone_number = request.data.get('phone_number', user_profile.phone_number)  # 전화번호 업데이트
+        address = request.data.get('address', user_profile.address)  # 주소 업데이트
+
+        # User 객체 업데이트
+        user.username = username
+        user.email = email
+        user.save()  # User 객체 저장
+
+        # UserProfile 객체 업데이트
+        user_profile.phone_number = phone_number
+        user_profile.address = address
+        user_profile.save()  # UserProfile 객체 저장
+
+        return Response({
+            'message': '사용자 정보가 업데이트되었습니다.',
+            'user': {
+                'username': user.username,
+                'email': user.email,
+                'phone_number': user_profile.phone_number,
+                'address': user_profile.address
+            }
+        }, status=status.HTTP_200_OK)
+
+    except UserProfile.DoesNotExist:
+        return Response({'error': '사용자를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
