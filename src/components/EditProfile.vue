@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     user: {
@@ -73,22 +75,22 @@ export default {
       };
 
       try {
-        const response = await fetch(`http://localhost:8000/order/edituser/${this.user.id}/`, {
-          method: 'PUT',
+        await axios.put(`http://localhost:8000/order/edituser/${this.user.id}/`, updatedUser, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(updatedUser),
         });
 
-        if (!response.ok) {
-          throw new Error('사용자 정보 업데이트 실패');
-        }
+        // 사용자 정보가 수정된 후, 새로운 정보를 다시 받아옴
+        const response = await axios.get(`http://localhost:8000/order/getuser/${this.user.id}/`);
 
-        const data = await response.json();
-        console.log('사용자 정보가 업데이트되었습니다:', data);
-        this.$emit('save', this.form); // 저장 시 부모에게 이벤트 전달
+        // Vuex 스토어에 새로운 사용자 정보 업데이트
+        this.$store.commit('setUser', response.data);
+
+        console.log('사용자 정보가 업데이트되었습니다:', response.data);
         alert('사용자 정보 수정이 완료되었습니다.');
+
+        // 수정 모드 해제해서 수정 컴포넌트 감추기
         this.cancel();
       } catch (error) {
         console.error('사용자 정보 업데이트 중 오류 발생:', error);
