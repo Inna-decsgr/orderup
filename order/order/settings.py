@@ -38,10 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'orders'
+    'orders',
+    'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -50,6 +53,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Vue.js가 실행 중인 URL
+    "http://127.0.0.1:8080"
+]
+
+CORS_ALLOW_ALL_ORIGINS = False # true에서 false로 변경
+CORS_ALLOW_CREDENTIALS = True # 추가
+
+# CSRF 설정 => 추가
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+CSRF_COOKIE_HTTPONLY = False  # JavaScript에서 쿠키 접근 가능
+CSRF_COOKIE_SECURE = False
+
 
 ROOT_URLCONF = 'order.urls'
 
@@ -127,3 +148,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTHENTICATION_BACKENDS = [
+    'orders.authentication.EmailBackend',  # orders 앱의 EmailBackend 경로
+    'django.contrib.auth.backends.ModelBackend', # 기존 백엔드도 유지 가능
+]
