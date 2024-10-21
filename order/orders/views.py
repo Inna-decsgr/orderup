@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from .models import UserProfile
 from rest_framework import status
 from orders.models import UserProfile  
-from .serializers import UserProfileSerializer
+from django.shortcuts import get_object_or_404
 
 
 
@@ -111,3 +111,32 @@ def update_user(request, user_id):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+# 사용자 정보 조회하는 뷰
+def get_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        userprofile = UserProfile.objects.get(user=user)
+        data = {
+            'id': user_id,
+            'username': user.username,
+            'email': user.email,
+            'phone_number': userprofile.phone_number,
+            'address': userprofile.address,
+        }
+        return JsonResponse(data) 
+    except User.DoesNotExist:
+        return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+    
+
+
+# 사용자 정보 삭제하는 뷰
+def delete_user(request, user_id):
+    try:
+        user = get_object_or_404(User, id=user_id)
+        user.delete()  # 사용자 삭제
+        return JsonResponse({'message': '사용자가 성공적으로 삭제되었습니다.'}, status=204)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
