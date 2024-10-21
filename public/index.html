@@ -5,7 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>orderup</title>
+    <!-- CSRF Token을 위한 meta 태그 추가 -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <script>
+      // CSRF 토큰을 쿠키에 저장
+      const csrftoken = document.querySelector('meta[name="csrf-token"]').content;
+      document.cookie = "csrftoken=" + csrftoken;
+    </script>
   </head>
   <body>
     <noscript>
