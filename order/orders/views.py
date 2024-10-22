@@ -18,6 +18,8 @@ def signup_view(request):
     password = request.data.get('signuppassword')
     phone_number = request.data.get('phoneNumber')
     address = request.data.get('address')
+    is_owner = request.data.get('isOwner')
+    reg_number = request.data.get('regnumber')
 
     # 필수 데이터 누락 확인
     if not username or not email or not password:
@@ -31,7 +33,7 @@ def signup_view(request):
     user = User.objects.create_user(username=username, email=email, password=password)
 
     # UserProfile 정보 저장
-    UserProfile.objects.create(user=user, phone_number=phone_number, address=address)
+    UserProfile.objects.create(user=user, phone_number=phone_number, address=address, is_owner=is_owner, business_registration_number=reg_number)
 
     return Response({"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED)
 
@@ -51,8 +53,10 @@ def login_view(request):
             profile = UserProfile.objects.get(user=user)
             phone_number = profile.phone_number
             address = profile.address
+            regnumber = profile.business_registration_number
+            isowner = profile.is_owner
         except UserProfile.DoesNotExist:
-            phone_number = None  # UserProfile이 없을 경우 None 처리
+            phone_number = None  
             address = None
             
         return JsonResponse({
@@ -63,6 +67,8 @@ def login_view(request):
                 'username': user.username,
                 'phone_number' : phone_number,
                 'address': address,
+                'business_registration_number': regnumber,
+                'is_owner': isowner
             }
         })
     else:
@@ -85,6 +91,8 @@ def update_user(request, user_id):
         email = request.data.get('email', user.email)  # 이메일 업데이트
         phone_number = request.data.get('phone_number', user_profile.phone_number)  # 전화번호 업데이트
         address = request.data.get('address', user_profile.address)  # 주소 업데이트
+        is_owner = request.data.get('is_owner', user_profile.is_owner)  # 사업자 여부 업데이트
+        business_registration_number = request.data.get('business_registration_number', user_profile.business_registration_number)  # 사업자 등록 번호 업데이트
 
         # User 객체 업데이트
         user.username = username
@@ -94,6 +102,8 @@ def update_user(request, user_id):
         # UserProfile 객체 업데이트
         user_profile.phone_number = phone_number
         user_profile.address = address
+        user_profile.is_owner = is_owner  # 사업자 여부 업데이트
+        user_profile.business_registration_number = business_registration_number  # 사업자 등록 번호 업데이트
         user_profile.save()  # UserProfile 객체 저장
 
         return Response({
@@ -102,7 +112,9 @@ def update_user(request, user_id):
                 'username': user.username,
                 'email': user.email,
                 'phone_number': user_profile.phone_number,
-                'address': user_profile.address
+                'address': user_profile.address,
+                'is_owner': user_profile.is_owner,
+                'business_registration_number': user_profile.business_registration_number
             }
         }, status=status.HTTP_200_OK)
 
