@@ -5,6 +5,7 @@
     <div v-else>
       <button @click="logout">로그아웃</button>
       <button v-if="!isUserProfilePage" @click="gotoUserProfile">사용자 페이지</button>
+      <button v-if="isOwner" @click="gotoStoreRegistration">가게 등록</button>
     </div>
 
   </nav>
@@ -15,9 +16,13 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    ...mapGetters(['isLoggedIn']),
+    ...mapGetters(['isLoggedIn', 'getUser']),
     isUserProfilePage() {
       return this.$route.name === 'userprofile';
+    },
+    isOwner() {
+      // getUser를 사용해서 사용자 정보에서 is_owner 확인
+      return this.getUser && this.getUser.is_owner;
     }
   },
   methods: {
@@ -26,11 +31,16 @@ export default {
     },
     logout() {
       this.$store.dispatch('logout');
-      this.$router.push('/');
+      this.$router.push('/'); 
+
     },
     gotoUserProfile() {
       this.$router.push('/userprofile')
     },
+    gotoStoreRegistration() {
+      // 가게 등록 페이지로 이동
+      this.$router.push('/storeregistration');
+    }
   }
 }
 </script>
