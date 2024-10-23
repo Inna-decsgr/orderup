@@ -20,6 +20,11 @@
         <p>주소</p>
         <p>{{ this.user.address }}</p>
       </div>
+      <div v-if="user.is_owner">
+        <p>사업자로 등록된 사용자</p>
+        <span>사업자등록번호</span>
+        <p>{{ this.user.business_registration_number }}</p>
+      </div>
     </div>
   </div>
   <div v-else>
@@ -64,25 +69,11 @@ export default {
         this.deleteUser(); 
       }
     },
-    getCsrfToken() {
-      const csrfCookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='));
-      
-      if (csrfCookie) {
-        return csrfCookie.split('=')[1];  // 'csrftoken=' 이후의 값을 반환
-      } else {
-        return null;  // CSRF 토큰을 찾지 못하면 null 반환
-      }
-    },
-    mounted() {
-      // CSRF 토큰을 초기 설정에 추가
-      axios.defaults.headers.common['X-CSRFToken'] = this.getCsrfToken();
-    },
     async deleteUser() {
       try {
-        const csrfToken = this.getCsrfToken();
-
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+        
         await axios.delete(`http://localhost:8000/order/deleteuser/${this.user.id}/`, {
           headers: {
             'X-CSRFToken': csrfToken,
