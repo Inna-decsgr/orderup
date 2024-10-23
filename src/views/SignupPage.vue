@@ -74,6 +74,22 @@
           required
         >
       </div>
+      <div>
+        <input type="checkbox" id="is_owner" v-model="isOwner">
+        <label for="is_owner" class="col-form-label"><span style="font-weight: bold;">사업자</span>일 경우 체크</label>
+
+        <div v-if="isOwner">
+          <label for="reg_number" class="col-form-label">사업자등록번호</label>
+          <input 
+            type="text" 
+            id="reg_number" 
+            class="form-control" 
+            v-model="reg_number" 
+            placeholder="사업자등록번호를 입력하세요" 
+            required
+          >
+        </div>
+      </div>
 
       <button type="submit">회원가입</button>
       <p>이미 계정이 있으신가요?</p>
@@ -95,7 +111,9 @@ export default {
       phoneNumber: '',    
       address: '',        
       errorMessage: '',
-      registeredUser: '' // 회원가입한 사용자 이름 저장
+      registeredUser: '',
+      isOwner: false,
+      reg_number: ''
     }
   },
   computed: {
@@ -107,12 +125,21 @@ export default {
     async registerUser() {
       if (!this.passwordMismatch) {
         try {
+          const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+          const csrfToken = csrfResponse.data.csrfToken;
+        
           const response = await axios.post('http://localhost:8000/order/signup/', {
             name: this.name,            
             signupid: this.signupid,
             signuppassword: this.signupPassword,
             phoneNumber: this.phoneNumber,  
-            address: this.address          
+            address: this.address,
+            isOwner: this.isOwner,
+            regnumber: this.reg_number         
+          }, {
+              headers: {
+              'X-CSRFToken': csrfToken,
+            }
           });
           console.log('회원가입 성공', response.data);
           this.registeredUser = this.name; // 회원가입한 사용자 이름 설정
