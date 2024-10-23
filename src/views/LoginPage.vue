@@ -52,12 +52,27 @@ export default {
     ...mapActions(['login']),
     async handleLogin() {
       try {
-        // 로그인 처리 로직 추가
-        console.log('로그인 시도');
+        // CSRF 토큰 요청
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        // CSRF 토큰을 Vuex에 저장
+        this.$store.commit('setCsrfToken', csrfToken);
+
+        const storedCsrfToken = localStorage.getItem('csrfToken');
+        if (storedCsrfToken) {
+          axios.defaults.headers.common['X-CSRFToken'] = storedCsrfToken;
+        }
+
         const response = await axios.post('http://localhost:8000/order/login/', {
           loginid: this.loginid,
           loginpassword: this.loginpassword
+        }, {
+          headers: {
+            'X-CSRFToken': csrfToken,  // 수정된 부분
+          }
         });
+
         console.log('로그인 성공', response.data);
 
         // 로그인 성공 시 Vuex에 사용자 정보 저장
@@ -66,7 +81,6 @@ export default {
 
         alert(`안녕하세요. ${userData.username}님!`)
         this.$router.push('/');
-        
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.errorMessage = error.response.data.message || '로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.';
