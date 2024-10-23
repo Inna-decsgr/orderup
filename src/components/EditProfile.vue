@@ -35,6 +35,17 @@
           class="form-control"
           required 
         />
+        <label for="is_owner" class="form-label" v-if="form.is_owner">사업자로 등록됨</label>
+
+        <div v-if="form.is_owner">
+          <label for="business_registration_number" class="form-label">사업자 등록 번호</label>
+          <input 
+            type="text" 
+            id="business_registration_number" 
+            v-model="form.business_registration_number" 
+            class="form-control"
+          />
+        </div>
         <button type="submit">저장</button>
         <button @click="handleCancel">취소</button>
       </form>
@@ -72,13 +83,17 @@ export default {
         email: this.form.email,
         phone_number: this.form.phone_number,
         address: this.form.address,
+        is_owner: this.form.is_owner, 
+        business_registration_number: this.form.business_registration_number  
       };
 
       try {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
         await axios.put(`http://localhost:8000/order/edituser/${this.user.id}/`, updatedUser, {
           headers: {
-            'Content-Type': 'application/json',
-          },
+            'X-CSRFToken': csrfToken,
+          }
         });
 
         // 사용자 정보가 수정된 후, 새로운 정보를 다시 받아옴
