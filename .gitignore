@@ -28,7 +28,7 @@ pnpm-debug.log*
 __pycache__/
 
 # Python 패키지 빌드 파일
-*.whl
+WHEEL
 *.egg-info
 __pycache__/
 *.pyc
@@ -44,3 +44,7 @@ METADATA
 LICENSE
 INSTALLER
 py.typed
+
+*.mo
+
+myenv_orderup/Lib/site-packages/
