@@ -7,6 +7,9 @@ from .models import UserProfile
 from rest_framework import status
 from orders.models import UserProfile  
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_protect
+from django.middleware.csrf import get_token
+from django.contrib.auth import logout
 
 
 
@@ -137,11 +140,15 @@ def get_user(request, user_id):
             'email': user.email,
             'phone_number': userprofile.phone_number,
             'address': userprofile.address,
+            'is_owner': userprofile.is_owner,
+            'business_registration_number': userprofile.business_registration_number,
         }
         return JsonResponse(data) 
     except User.DoesNotExist:
         return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
     
+
+
 
 
 # 사용자 정보 삭제하는 뷰
@@ -152,3 +159,9 @@ def delete_user(request, user_id):
         return JsonResponse({'message': '사용자가 성공적으로 삭제되었습니다.'}, status=204)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+    
+
+# csrftoken 가져오는 뷰
+def csrf_token_view(request):
+    token = get_token(request)
+    return JsonResponse({'csrfToken': token})
