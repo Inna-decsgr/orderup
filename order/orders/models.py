@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # 사용자 모델(UserProfile)
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -11,17 +12,32 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-  
+    
+
+# 카테고리 모델(Category)
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+    
 
 # 음식점 모델 (Restaurant)
 class Restaurant(models.Model):
   name = models.CharField(max_length=100)
-  address = models.TextField()
-  phone_number = models.CharField(max_length=15)
-  rating = models.FloatField(default=0.0)
+  address = models.CharField(max_length=255)
+  phone_number = models.CharField(max_length=20, null=False)
+  rating = models.DecimalField(max_digits=3, decimal_places=1)
+  owner = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True)
+  categories = models.ManyToManyField(Category, related_name='restaurants')
+  operating_hours = models.CharField(max_length=100, null=False)
+  description = models.TextField()
+  image_url = models.URLField(null=False)
+  delivery_fee = models.DecimalField(max_digits=5, decimal_places=2)
 
   def __str__(self):
     return self.name
+  
 
 # 메뉴 모델(Menu)
 class Menu(models.Model):
@@ -33,7 +49,6 @@ class Menu(models.Model):
 
   def __str__(self):
     return self.name
-  
 # 주문 모델 (Order)
 class Order(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
