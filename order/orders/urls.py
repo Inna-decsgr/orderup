@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view
+from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis
 
 urlpatterns = [
     path('signup/', signup_view, name='signup'),  # 회원가입 URL
@@ -8,4 +8,5 @@ urlpatterns = [
     path('getuser/<int:user_id>/', get_user, name='getuser'), # 사용자 정보 조회 URL
     path('deleteuser/<int:user_id>/', delete_user, name='deleteuser'), # 사용자 정보 삭제 URL
     path('csrftoken/', csrf_token_view, name='csrf_token_view'), # csrftoken 가져오는 URL
+    path('storeregis/', store_regis, name='store_regis'), # 가게 등록 URL
 ]
