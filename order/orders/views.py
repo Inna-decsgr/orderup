@@ -7,9 +7,11 @@ from .models import UserProfile
 from rest_framework import status
 from orders.models import UserProfile  
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_protect
 from django.middleware.csrf import get_token
-from django.contrib.auth import logout
+from .serializers import RestaurantSerializer
+from rest_framework import generics
+from .models import Restaurant, Category
+from decimal import Decimal, InvalidOperation
 
 
 
@@ -130,6 +132,7 @@ def update_user(request, user_id):
 
 
 # 사용자 정보 조회하는 뷰
+@api_view(['GET'])
 def get_user(request, user_id):
     try:
         user = User.objects.get(id=user_id)
@@ -150,7 +153,6 @@ def get_user(request, user_id):
 
 
 
-
 # 사용자 정보 삭제하는 뷰
 def delete_user(request, user_id):
     try:
@@ -161,7 +163,78 @@ def delete_user(request, user_id):
         return JsonResponse({'error': str(e)}, status=400)
     
 
+
 # csrftoken 가져오는 뷰
+@api_view(['GET'])
 def csrf_token_view(request):
     token = get_token(request)
     return JsonResponse({'csrfToken': token})
+
+
+
+# 인증된 사용자만 새로운 Restaurant 인스턴스 생성할 수 있는 APIView 정의 
+class RestaurantCreateView(generics.CreateAPIView):
+    queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
+
+    def perform_create(self, serializer):
+        # 요청 데이터에서 카테고리 ID를 가져옴
+        category_ids = self.request.data.get('categories', [])
+        print(category_ids)
+        
+        # 평점과 배달 요금을 Decimal로 변환
+        try:
+            rating = Decimal(self.request.data.get('rating'))  # 평점을 Decimal로 변환
+            delivery_fee = Decimal(self.request.data.get('delivery_fee'))  # 배달 요금을 Decimal로 변환
+        except (ValueError, InvalidOperation):
+            # 잘못된 데이터 형식일 경우 오류 반환
+            return Response({"error": "Invalid data format for rating or delivery fee."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 레스토랑 객체를 저장하고, 저장된 객체의 ID를 통해 관계 추가
+        restaurant = serializer.save(rating=rating, delivery_fee=delivery_fee)
+
+        # 카테고리 ID 리스트로부터 Category 객체를 찾아서 ManyToMany 필드에 추가
+        categories = Category.objects.filter(id__in=category_ids)
+        restaurant.categories.set(categories)
+
+
+# 가게 등록하는 뷰
+@api_view(['POST'])
+def store_regis(request):
+    print(request.data)
+    if request.method == 'POST':
+        # 클라이언트에서 보낸 데이터 추출
+        name = request.data.get('name')
+        address = request.data.get('address')
+        phone_number = request.data.get('phone_number', None)
+        rating = request.data.get('rating')
+        owner = request.data.get('owner')  # owner는 User의 ID 또는 객체일 것으로 예상됨
+        categories = request.data.get('categories', [])
+        operating_hours = request.data.get('operating_hours', None)
+        description = request.data.get('description')
+        image_url = request.data.get('image_url', None)
+        delivery_fee = request.data.get('deliveryfee', 500.0)
+
+        print("Received image_url:", phone_number)
+        # 새로운 Restaurant 객체 생성
+        restaurant_data = {
+            'name': name,
+            'address': address,
+            'phone_number': phone_number,
+            'rating': rating,
+            'owner': owner,
+            'operating_hours': operating_hours,
+            'description': description,
+            'image_url': image_url,
+            'delivery_fee': delivery_fee,
+            'categories': categories 
+        }
+
+        serializer = RestaurantSerializer(data=restaurant_data)
+
+        if serializer.is_valid():
+            restaurant = serializer.save()  # Restaurant 객체 저장
+            restaurant.categories.set(categories)  # ManyToMany 관계 설정
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
