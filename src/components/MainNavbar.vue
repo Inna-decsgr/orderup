@@ -5,7 +5,7 @@
     <div v-else>
       <button @click="logout">로그아웃</button>
       <button v-if="!isUserProfilePage" @click="gotoUserProfile">사용자 페이지</button>
-      <button v-if="isOwner" @click="gotoStoreRegistration">가게 등록</button>
+      <button v-if="isOwner" @click="gotoMyStore">내 가게</button>
     </div>
 
   </nav>
@@ -37,9 +37,8 @@ export default {
     gotoUserProfile() {
       this.$router.push('/userprofile')
     },
-    gotoStoreRegistration() {
-      // 가게 등록 페이지로 이동
-      this.$router.push('/storeregistration');
+    gotoMyStore() {
+      this.$router.push('/mystore');
     }
   }
 }
