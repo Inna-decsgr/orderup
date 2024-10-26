@@ -3,7 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
 import UserProfilePage from '../views/UserProfilePage.vue'
+import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
+
 
 const routes = [
   {
@@ -27,8 +29,13 @@ const routes = [
     component: UserProfilePage
   },
   {
-    path: '/storeregistration',
-    name: 'storeregistration',
+    path: '/mystore',
+    name: 'mystore',
+    component: MyStore
+  },
+  {
+    path: '/registrationstore',
+    name: 'registrationstore',
     component: StoreRegistration
   }
 ]
