@@ -238,3 +238,41 @@ def store_regis(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+# 가게 정보 조회하는 뷰
+@api_view(['GET'])
+def my_store_view(request, user_id):
+    try:
+        # owner_id가 user_id와 일치하는 레코드 조회
+        restaurants = Restaurant.objects.filter(owner_id=user_id)
+
+        # 각 restaurant에 대해 카테고리와 소유주 이름 가져오기
+        restaurant_data = []
+        for restaurant in restaurants:
+            categories = restaurant.categories.all()  # 해당 가게에 연결된 모든 카테고리 쿼리셋을 가져옴
+            category_names = [category.name for category in categories]  # 카테고리 이름 목록
+            
+            # owner의 username 가져오기
+            owner_username = restaurant.owner.username  # 소유자의 username
+            print(restaurant.owner)
+
+            restaurant_data.append({
+                'id': restaurant.id,
+                'name': restaurant.name,
+                'description': restaurant.description,
+                'image_url': restaurant.image_url,
+                'categories': category_names,
+                'owner': owner_username,
+                'address': restaurant.address,
+                'phone_number': restaurant.phone_number,
+                'operating_hours': restaurant.operating_hours,
+                'rating': restaurant.rating
+            })
+        
+        # 직렬화된 데이터를 JSON으로 응답
+        return Response(restaurant_data, status=status.HTTP_200_OK)
+    except Restaurant.DoesNotExist:
+        return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
