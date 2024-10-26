@@ -56,14 +56,6 @@ export default {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
 
-        // CSRF 토큰을 Vuex에 저장
-        this.$store.commit('setCsrfToken', csrfToken);
-
-        const storedCsrfToken = localStorage.getItem('csrfToken');
-        if (storedCsrfToken) {
-          axios.defaults.headers.common['X-CSRFToken'] = storedCsrfToken;
-        }
-
         const response = await axios.post('http://localhost:8000/order/login/', {
           loginid: this.loginid,
           loginpassword: this.loginpassword
