@@ -30,6 +30,9 @@ const store = createStore({
     getUser(state) {
       return state.user; // 사용자 정보 가져오기
     },
+    getUserId(state) {
+      return state.user.id  // 사용자 정보 중 아이디만 가져오기
+    }
   },
   plugins: [createPersistedState()],
 });
