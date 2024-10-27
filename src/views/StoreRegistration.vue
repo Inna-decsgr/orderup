@@ -112,6 +112,8 @@ export default {
           }
         });
         console.log(response.data);
+        alert('가게 등록이 성공적으로 완료되었습니다.');
+        this.$router.push('/');
       } catch (error) {
         if (error.response) {
           console.log("API error:", error.response.data); // 오류 메시지 출력
