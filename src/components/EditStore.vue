@@ -3,14 +3,6 @@
     <h2>가게 수정</h2>
     <div>
       <form @submit.prevent="updateStore">
-        <label for="ownername">소유주</label>
-        <input 
-          type="text"
-          id="ownername"
-          v-model="form.owner"
-          class="form-control"
-          required
-        >
         <label for="storename">가게 이름</label>
         <input 
           type="text"
@@ -35,13 +27,18 @@
           class="form-control"
           required
         >
-        <div v-if="imagePreview">
-          <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+        <div>
+          <label for="storeimage">가게 이미지</label>
+          <input
+            :ref="image"
+            type="file"
+            id="storeimage"
+            @change="handleImageUpload"
+          />
+          <div v-if="imagePreview">
+            <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+          </div>
         </div>
-        <input 
-          type="file"
-          @change="handleImageUpload"
-        />
         <label for="storeaddress">가게 주소</label>
         <input 
           type="text"
@@ -63,6 +60,14 @@
           type="text"
           id="storerating"
           v-model="form.rating"
+          class="form-control"
+          required
+        >
+        <label for="storedeliveryfee">배달료</label>
+        <input 
+          type="text"
+          id="storedeliveryfee"
+          v-model="form.delivery_fee"
           class="form-control"
           required
         >
@@ -109,6 +114,7 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.imagePreview = e.target.result;
+          console.log(this.imagePreview);
         };
         reader.readAsDataURL(file);
       }
@@ -118,27 +124,31 @@ export default {
         const formData = new FormData();
 
         // 가게 수정 데이터에 이미지 파일 포함
-        formData.append('owner', this.form.owner);
         formData.append('name', this.form.name);
         formData.append('phone_number', this.form.phone_number);
         formData.append('description', this.form.description);
         formData.append('address', this.form.address);
         formData.append('operating_hours', this.form.operating_hours);
         formData.append('rating', this.form.rating);
+        formData.append('delivery_fee', this.form.delivery_fee);
         if (this.imageFile) {
           formData.append('image', this.imageFile); // 이미지가 있을 경우에만 추가
         }
+        console.log('요청 데이터', formData)
+
 
         // 이미지 파일과 함께 수정 데이터 전송
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
 
-        const response = await axios.post(`http://localhost:8000/order/editstore/${this.store.id}/`, formData, {
+        const response = await axios.put(`http://localhost:8000/order/editstore/${this.store.id}/`, formData, {
           headers: {
             'X-CSRFToken': csrfToken,
           }
         })
         console.log('가게 정보 수정 성공', response.data);
+        alert('정보 수정이 성공적으로 완료되었습니다.')
+        this.$router.push('/mystore');
         this.cancel();
       } catch (error) {
         console.error('가게 정보 수정 실패', error);
