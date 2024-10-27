@@ -2,7 +2,7 @@
   <div id="app">
     <MainNavbar v-if="!isLoginPage" />
     <div v-if="user">
-      <p>{{ user.username }}님</p>
+      <p>{{ user.username }}님 <span v-if="user.is_owner" style="font-weight: bold;">- 사업자</span></p>
     </div>
     <router-view/>
   </div>
