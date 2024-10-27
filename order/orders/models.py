@@ -32,8 +32,9 @@ class Restaurant(models.Model):
   categories = models.ManyToManyField(Category, related_name='restaurants')
   operating_hours = models.CharField(max_length=100, null=False)
   description = models.TextField()
-  image_url = models.URLField(null=False)
-  delivery_fee = models.DecimalField(max_digits=5, decimal_places=2)
+  image = models.ImageField(upload_to='images/', default='default_image.png')  # 실제 이미지 파일 저장
+  image_url = models.URLField(null=False)  # 이미지 URL 저장
+  delivery_fee = models.DecimalField(max_digits=7, decimal_places=2)
 
   def __str__(self):
     return self.name
