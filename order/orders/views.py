@@ -12,6 +12,7 @@ from .serializers import RestaurantSerializer
 from rest_framework import generics
 from .models import Restaurant, Category
 from decimal import Decimal, InvalidOperation
+from django.core.files.storage import FileSystemStorage
 
 
 
@@ -180,7 +181,6 @@ class RestaurantCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         # 요청 데이터에서 카테고리 ID를 가져옴
         category_ids = self.request.data.get('categories', [])
-        print(category_ids)
         
         # 평점과 배달 요금을 Decimal로 변환
         try:
@@ -201,7 +201,6 @@ class RestaurantCreateView(generics.CreateAPIView):
 # 가게 등록하는 뷰
 @api_view(['POST'])
 def store_regis(request):
-    print(request.data)
     if request.method == 'POST':
         # 클라이언트에서 보낸 데이터 추출
         name = request.data.get('name')
@@ -257,7 +256,6 @@ def my_store_view(request, user_id):
             
             # owner의 username 가져오기
             owner_username = restaurant.owner.username  # 소유자의 username
-            print(restaurant.owner)
 
             restaurant_data.append({
                 'id': restaurant.id,
@@ -269,10 +267,73 @@ def my_store_view(request, user_id):
                 'address': restaurant.address,
                 'phone_number': restaurant.phone_number,
                 'operating_hours': restaurant.operating_hours,
-                'rating': restaurant.rating
+                'rating': restaurant.rating,
+                'delivery_fee': restaurant.delivery_fee
             })
         
         # 직렬화된 데이터를 JSON으로 응답
         return Response(restaurant_data, status=status.HTTP_200_OK)
     except Restaurant.DoesNotExist:
         return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+
+# 가게 정보 수정
+@api_view(['PUT'])
+def update_store(request, store_id):
+    try:
+        store = Restaurant.objects.get(id=store_id)
+
+        # 요청 데이터에서 가게 정보 가져오기
+        name = request.data.get('name', store.name)
+        phone_number = request.data.get('phone_number', store.phone_number)  
+        address = request.data.get('address', store.address) 
+        description = request.data.get('description', store.description) 
+        operating_hours = request.data.get('operating_hours', store.operating_hours) 
+        rating = request.data.get('rating', store.rating) 
+        delivery_fee = request.data.get('delivery_fee', store.delivery_fee)
+
+        # 이미지 업데이트
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            fs = FileSystemStorage() 
+            # 이미지 파일 저잗하고 파일 경로 가져오기
+            filename = fs.save(f'images/{image_file.name}', image_file)
+            store.image = filename  # 이미지 필드에 파일 이름 저장
+            store.image_url = f"{request.build_absolute_uri('/media/')}{filename}"  # 이미지 URL 저장
+
+
+        # 모든 필드들 업데이트
+        store.name = name
+        store.phone_number = phone_number
+        store.address = address
+        store.description = description
+        store.operating_hours = operating_hours
+        store.rating = rating
+        store.delivery_fee = delivery_fee
+
+        store.save()
+
+        return Response({
+            'message': '가게 정보가 업데이트되었습니다.',
+            'store': {
+                'name': name,
+                'phone_number': phone_number,
+                'description': description,
+                'address': address,
+                'operating_hours': operating_hours,
+                'rating': rating,
+                'delivery_fee': delivery_fee,
+                'image_url': store.image_url if store.image else None
+            }
+        }, status=status.HTTP_200_OK)
+
+        
+
+    except Restaurant.DoesNotExist:
+        return Response({'error': '가게를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        print(f"Error: {str(e)}")  # 에러 로그 출력
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
