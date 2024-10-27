@@ -48,3 +48,6 @@ py.typed
 *.mo
 
 myenv_orderup/Lib/site-packages/
+
+
+\media
