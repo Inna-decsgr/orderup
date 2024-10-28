@@ -12,6 +12,8 @@
         <div v-else>
           <p>{{ index }}.</p>
           <button @click="editMode(index)">수정</button>
+          <button @click="confirmDelete(store.id)">삭제</button>
+          
           <p>소유주: {{ store.owner }}</p>
           <p>가게 이름: {{ store.name }}</p>
           <p>가게 전화번호: {{ store.phone_number }}</p>
@@ -21,6 +23,7 @@
           <p>카테고리: {{ store.categories[0] }}</p>
           <p>가게 운영시간: {{ store.operating_hours }}</p>
           <p>가게 평점: {{ store.rating }}</p>
+          <p>배달료: {{ store.delivery_fee }}</p>
           </div>
       </li>
     </ul>
@@ -56,7 +59,6 @@ export default {
     async getMyStore() {
       try {
         // CSRF 토큰 요청
-        console.log(this.userid);
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
 
@@ -67,6 +69,7 @@ export default {
         });
 
         this.storedata = response.data;
+        console.log(this.storedata);
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.errorMessage = error.response.data.message || '내 가게 정보를 불러오는 데 실패했습니다.';
@@ -84,6 +87,26 @@ export default {
     },
     handleCancel() {
       this.EditNumber = null;
+    },
+    confirmDelete(storeid) {
+      const isConfirmed = confirm('정말로 가게를 삭제하시겠습니까?');
+      if (isConfirmed) {
+        this.deleteStore(storeid); 
+      }
+    },
+    async deleteStore(storeid) {
+      // 가게 삭제 로직 구현
+      console.log(storeid);
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+      const csrfToken = csrfResponse.data.csrfToken;
+
+      const response = await axios.delete(`http://localhost:8000/order/deletestore/${storeid}/`, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        }
+      });
+      console.log(response.data);
+      alert('가게가 성공적으로 삭제되었습니다.')
     }
   }
 }
