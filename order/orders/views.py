@@ -337,3 +337,16 @@ def update_store(request, store_id):
     except Exception as e:
         print(f"Error: {str(e)}")  # 에러 로그 출력
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+# 가게 삭제 뷰
+def delete_store(request, store_id):
+    try:
+        store = get_object_or_404(Restaurant, id=store_id)
+        store.delete()  # 가게 삭제
+        return JsonResponse({'message': '가게가 성공적으로 삭제되었습니다.'}, status=200)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return JsonResponse({'error': str(e)}, status=400)
