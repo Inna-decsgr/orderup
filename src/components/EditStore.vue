@@ -90,6 +90,10 @@ export default {
     cancel: {
       type: Function,
       required: true
+    },
+    getStore: {
+      type: Function,
+      required: true
     }
   },
   data() {
@@ -150,6 +154,7 @@ export default {
         alert('정보 수정이 성공적으로 완료되었습니다.')
         this.$router.push('/mystore');
         this.cancel();
+        this.getStore();
       } catch (error) {
         console.error('가게 정보 수정 실패', error);
       }
