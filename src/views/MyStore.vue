@@ -7,12 +7,13 @@
     <ul v-if="storedata">
       <li v-for="(store, index) in storedata" :key="index">
         <div v-if="EditNumber === index">
-          <EditStore :store="store" :cancel="handleCancel" />
+          <EditStore :store="store" :cancel="handleCancel" :getStore="getMyStore"/>
         </div>
         <div v-else>
           <p>{{ index }}.</p>
           <button @click="editMode(index)">수정</button>
           <button @click="confirmDelete(store.id)">삭제</button>
+          <button @click="gotoMenu">메뉴 관리</button>
           
           <p>소유주: {{ store.owner }}</p>
           <p>가게 이름: {{ store.name }}</p>
@@ -107,6 +108,9 @@ export default {
       });
       console.log(response.data);
       alert('가게가 성공적으로 삭제되었습니다.')
+    },
+    gotoMenu() {
+      this.$router.push('/mymenu')
     }
   }
 }
