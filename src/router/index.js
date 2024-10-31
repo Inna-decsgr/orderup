@@ -5,6 +5,7 @@ import SignupPage from '../views/SignupPage.vue'
 import UserProfilePage from '../views/UserProfilePage.vue'
 import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
+import MyMenu from '../views/MyMenu.vue'
 
 
 const routes = [
@@ -37,6 +38,11 @@ const routes = [
     path: '/registrationstore',
     name: 'registrationstore',
     component: StoreRegistration
+  },
+  {
+    path: '/mymenu',
+    name: 'mymenu',
+    component: MyMenu
   }
 ]
 
