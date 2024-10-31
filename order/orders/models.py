@@ -47,9 +47,14 @@ class Menu(models.Model):
   description = models.TextField()
   price = models.DecimalField(max_digits=10, decimal_places=2)
   available = models.BooleanField(default=True)
+  image = models.ImageField(upload_to='images/', default='default_image.png')  # 실제 이미지 파일 저장
+  image_url = models.URLField(null=False)  # 이미지 URL 저장
 
   def __str__(self):
     return self.name
+  
+
+
 # 주문 모델 (Order)
 class Order(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
