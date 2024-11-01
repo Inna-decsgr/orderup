@@ -35,20 +35,24 @@ class Restaurant(models.Model):
   image = models.ImageField(upload_to='images/', default='default_image.png')  # 실제 이미지 파일 저장
   image_url = models.URLField(null=False)  # 이미지 URL 저장
   delivery_fee = models.DecimalField(max_digits=7, decimal_places=2)
+  menus = models.ManyToManyField('Menu', related_name='restaurants', blank=True)
 
   def __str__(self):
     return self.name
+
   
 
 # 메뉴 모델(Menu)
 class Menu(models.Model):
-  restaurant = models.ForeignKey(Restaurant, related_name="menus", on_delete=models.CASCADE)
+  restaurant = models.ForeignKey('Restaurant', related_name="menu_items", on_delete=models.CASCADE)
   name = models.CharField(max_length=100)
   description = models.TextField()
   price = models.DecimalField(max_digits=10, decimal_places=2)
   available = models.BooleanField(default=True)
-  image = models.ImageField(upload_to='images/', default='default_image.png')  # 실제 이미지 파일 저장
-  image_url = models.URLField(null=False)  # 이미지 URL 저장
+  image = models.ImageField(upload_to='menus/', default='default_image.png') 
+  image_url = models.URLField(null=False)
+  quantity = models.PositiveIntegerField(default=1)
+
 
   def __str__(self):
     return self.name
