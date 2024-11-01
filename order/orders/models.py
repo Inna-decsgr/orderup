@@ -40,6 +40,26 @@ class Restaurant(models.Model):
   def __str__(self):
     return self.name
 
+
+
+# 옵션 그룹 모델(OptionGroup)
+class OptionGroup(models.Model):
+  name = models.CharField(max_length=100)
+
+
+  def __str__(self):
+    return self.name
+
+
+# 옵션 항목 모델(OptionItem)
+class OptionItem(models.Model):
+  group = models.ForeignKey(OptionGroup, related_name='options', on_delete=models.CASCADE)
+  name = models.CharField(max_length=100)
+  price = models.DecimalField(max_digits=10, decimal_places=4, default=0)
+
+  def __str__(self):
+    return self.name
+  
   
 
 # 메뉴 모델(Menu)
@@ -49,9 +69,10 @@ class Menu(models.Model):
   description = models.TextField()
   price = models.DecimalField(max_digits=10, decimal_places=2)
   available = models.BooleanField(default=True)
-  image = models.ImageField(upload_to='menus/', default='default_image.png') 
-  image_url = models.URLField(null=False)
+  image = models.ImageField(upload_to='menus/', null=True) 
+  image_url = models.URLField(null=False, default="")
   quantity = models.PositiveIntegerField(default=1)
+  options = models.ManyToManyField(OptionItem, related_name='menus', blank=True)
 
 
   def __str__(self):
