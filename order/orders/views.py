@@ -3,16 +3,17 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from .models import UserProfile
+from .models import UserProfile, Restaurant, Category, Menu, OptionGroup, OptionItem
 from rest_framework import status
 from orders.models import UserProfile  
 from django.shortcuts import get_object_or_404
 from django.middleware.csrf import get_token
 from .serializers import RestaurantSerializer
 from rest_framework import generics
-from .models import Restaurant, Category
 from decimal import Decimal, InvalidOperation
 from django.core.files.storage import FileSystemStorage
+from .serializers import MenuSerializer 
+
 
 
 
@@ -350,3 +351,28 @@ def delete_store(request, store_id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
+    
+
+
+# 메뉴 등록 뷰
+@api_view(['POST'])
+def create_menu(request, store_id):
+    if request.method == 'POST':
+        # 요청 데이터에서 메뉴 정보 추출
+        menu_data = request.data
+        
+        # MenuSerializer를 사용하여 데이터 유효성 검사
+        menu_serializer = MenuSerializer(data=menu_data)
+        if menu_serializer.is_valid():
+            # 메뉴 저장
+            menu = menu_serializer.save(store_id=store_id)  # 가게 ID와 함께 저장
+            
+            # 옵션 그룹 및 옵션 저장
+            options_data = menu_data.get('options', [])
+            for option_group_data in options_data:
+                option_group = OptionGroup.objects.create(menu=menu, name=option_group_data['name'])
+                for option_data in option_group_data['options']:
+                    OptionItem.objects.create(option_group=option_group, name=option_data['name'], price=option_data['price'])
+            
+            return Response(menu_serializer.data, status=status.HTTP_201_CREATED)  # 성공적으로 저장된 메뉴 반환
+        return Response(menu_serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 유효성 검사 실패 시 오류 반환
