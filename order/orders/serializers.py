@@ -46,9 +46,28 @@ class MenuSerializer(serializers.ModelSerializer):
         model = Menu
         fields = ['name', 'description', 'price', 'image', 'image_url', 'options']
 
+    def validate(self, attrs):
+        options_data = self.initial_data.get('options')
+        
+        if options_data:
+            # options가 이미 리스트 형식인지 확인
+            if isinstance(options_data, str):
+                try:
+                    attrs['options'] = json.loads(options_data)
+                except json.JSONDecodeError as e:
+                    raise serializers.ValidationError("Invalid JSON format for options")
+            elif isinstance(options_data, list):
+                attrs['options'] = options_data
+            else:
+                raise serializers.ValidationError("options must be a JSON string or list format")
+        
+        return attrs
+
     def create(self, validated_data):
+        print("validated_data:", validated_data)
         restaurant_id = validated_data.pop('restaurant_id', None)  # 전달된 restaurant_id 가져오기
         options_data = validated_data.pop('options', []) # 전달된 options 배열 가져오기
+        print("options_data:", options_data)
 
         # restaurant_id가 있는 경우 해당 ID에 해당하는 Restaurant 객체 찾기
         restaurant = get_object_or_404(Restaurant, id=restaurant_id) if restaurant_id else None
@@ -56,12 +75,14 @@ class MenuSerializer(serializers.ModelSerializer):
         # Menu 객체 생성 시 restaurant 필드에서 찾은 Restaurant 객체 할당
         menu = Menu.objects.create(restaurant=restaurant, **validated_data)  # 메뉴 객체 생성
 
+
+
         # 각 옵션 그룹 및 옵션 항목 저장
         for option_group_data in options_data:
             option_group = OptionGroup.objects.create(name=option_group_data['name'], menu=menu)   # 새 옵션 그룹 생성
-            for option_data in option_group_data['options']:
-                option_name = option_data.get('name')
-                option_price = option_data.get('price')
-                OptionItem.objects.create(group=option_group, name=option_name, price=option_price)  # 옵션 항목 생성
+            
+            for option_data in option_group_data.get('options', []):
+                OptionItem.objects.create(group=option_group, name=option_data.get('name'), price=option_data.get('price'))
 
+        
         return menu  # 생성된 메뉴 객체 반환
