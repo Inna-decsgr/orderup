@@ -15,10 +15,17 @@
         <input type="number" v-model="menu.price" id="menuPrice" required>
       </div>
       <div>
-        <label for="restaurantImage">대표 사진</label>
-        <input type="text" v-model="menu.image_url" id="menuImage" required>
+        <label for="menuimage">가게 이미지</label>
+        <input 
+          type="file" 
+          id="menuimage" 
+          @change="handleImageUpload" 
+          required
+        >
+        <div v-if="imagePreview">
+          <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+        </div>
       </div>
-
       <h3>상세 옵션 추가</h3>
       <div v-for="(optionGroup, groupIndex) in optionsGroups" :key="groupIndex">
         <label>옵션 그룹 이름</label>
@@ -33,7 +40,7 @@
       </div>
       <button @click.prevent="addOptionsGroup">옵션 그룹 추가</button>
 
-      <button @click="submitForm">메뉴 등록</button>
+      <button>메뉴 등록</button>
       <button @click="handleCancel">취소</button>
     </form> 
   </div>
@@ -50,9 +57,10 @@ export default {
         name: '',
         description: '',
         price: 0,
-        image_url: ''
       },
-      optionsGroups: []
+      optionsGroups: [],
+      imageFile: null,
+      imagePreview: null
     }
   },
   props: {
@@ -66,31 +74,18 @@ export default {
     }
   },
   methods: {
-    async submitForm() {
-      // 메뉴 등록 로직 구현
-      const FormData = {
-        ...this.menu,
-        options: this.optionsGroups
-      }
+    handleImageUpload(event) {
+      console.log(event.target.files);
+      const file = event.target.files[0];
+      if (file) {
+        this.imageFile = file;
 
-      // 서버에 요청 보내기
-      console.log('메뉴 등록', FormData);
-      try {
-        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
-        const csrfToken = csrfResponse.data.csrfToken;
-        const response = await axios.post(`http://localhost:8000/order/newmenu/${this.storeid}/`, FormData, {
-          headers: {
-            'X-CSRFToken': csrfToken,
-          }
-        });
-
-        console.log('메뉴 등록 성공', response.data);
-        alert('메뉴가 등록되었습니다.');
-
-        // 수정 모드 해제해서 수정 컴포넌트 감추기
-        this.cancel();
-      } catch (error) {
-        console.error('메뉴 등록 중 오류 발생:', error);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagePreview = e.target.result;
+          console.log(this.imagePreview);
+        };
+        reader.readAsDataURL(file);
       }
     },
     addOptionsGroup() {
@@ -99,6 +94,7 @@ export default {
         name: '',
         options: []
       });
+      console.log('this.optionsGroups', this.optionsGroups)
     },
     addOption(optionGroup) {
       // 선택된 옵션 그룹에 옵션 항목 추가
@@ -106,6 +102,7 @@ export default {
         name: '',
         price: 0
       });
+      console.log('optionGroup.options', optionGroup.options); 
     },
     removeOption(optionGroup, index) {
       // 선택된 옵션 항목 삭제
@@ -117,9 +114,44 @@ export default {
         name: '',
         description: '',
         price: 0,
-        image_url: '',
       };
-      this.optionsGroups = []
+      this.optionsGroups = [],
+      this.imageFile = null;
+      this.imagePreview = null;
+    },
+    async submitForm() {
+      console.log(this.optionsGroups)
+      const formData = new FormData();
+      formData.append("name", this.menu.name);
+      formData.append("description", this.menu.description);
+      formData.append("price", this.menu.price);
+
+      if (this.imageFile) {
+        formData.append("image", this.imageFile);
+      }
+
+      formData.append("options", JSON.stringify(this.optionsGroups));
+      console.log("전송할 formData의 내용:");
+      for (let pair of formData.entries()) {
+        console.log(`${pair[0]}: ${pair[1]}`);
+      }
+      
+      try {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+        const response = await axios.post(`http://localhost:8000/order/newmenu/${this.storeid}/`, formData, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'multipart/form-data',
+          }
+        });
+
+        console.log('메뉴 등록 성공', response.data);
+        alert('메뉴가 등록되었습니다.');
+        //this.handleCancel();  // 수정 모드 해제해서 수정 컴포넌트 감추기
+      } catch (error) {
+        console.error('메뉴 등록 중 오류 발생:', error);
+      }
     }
   }
 }
