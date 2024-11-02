@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from .models import UserProfile, Restaurant, Category
+from .models import UserProfile, Restaurant
 from rest_framework import status
 from orders.models import UserProfile  
 from django.shortcuts import get_object_or_404
@@ -363,15 +363,19 @@ def create_menu(request, store_id):
             # 요청 데이터에서 메뉴 정보 추출
             menu_data = request.data.copy()
             print('메뉴 데이터', menu_data)
-            
-            # JSON 문자열로 전달된 options 파싱
-            if 'options' in menu_data:
+
+            # options 데이터 가져오기 및 JSON 파싱
+            options_str = menu_data.get('options', None)
+            if options_str:
                 try:
-                    menu_data['options'] = json.loads(menu_data['options'])
-                    print("파싱된 options", menu_data['options'])
+                    options = json.loads(options_str)
+                    print('파싱된 options', options)
+                    menu_data['options'] = options
                 except json.JSONDecodeError as e:
-                    print("JSON 파싱 오류:", str(e))
+                    print('JSON 파싱 오류', str(e))
                     return Response({'error': 'Invalid JSON format for options'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            print('최종 menu_data', menu_data)
             
             # MenuSerializer를 사용하여 데이터 유효성 검사
             menu_serializer = MenuSerializer(data=menu_data)
@@ -385,9 +389,14 @@ def create_menu(request, store_id):
                 # 이미지 파일이 있을 경우 저장
                 print('이미지 저장')
                 if 'image' in request.FILES:
-                    menu.image = request.FILES['image']
-                    menu.save()
-                print('이미지 저장하고 menu 저장')
+                    image_file = request.FILES['image']
+                    fs = FileSystemStorage()
+                    # 이미지 파일 저장하고 파일 경로 가져오기
+                    filename = fs.save(f'menus/{image_file.name}', image_file)
+                    menu.image = filename  # 이미지 필드에 파일 이름 저장
+                    menu.image_url = f"{request.build_absolute_uri('/media/')}{filename}"  # 이미지 URL 저장
+                    menu.save() # menu 객체 업데이트
+                    print('이미지 저장하고 menu 저장')
 
                 return Response(menu_serializer.data, status=status.HTTP_201_CREATED)  # 성공적으로 저장된 메뉴 반환
             else:
