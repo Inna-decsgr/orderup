@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import UserProfile, Category
 from .models import Restaurant, Menu, OptionGroup, OptionItem
+from django.shortcuts import get_object_or_404
+import json
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -37,20 +39,29 @@ class OptionGroupSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    options = OptionGroupSerializer(many=True)
+    options = OptionGroupSerializer(many=True, required=False)
+    image = serializers.ImageField(required=False)
 
     class Meta:
         model = Menu
-        fields = ['name', 'description', 'price', 'image_url', 'options']
+        fields = ['name', 'description', 'price', 'image', 'image_url', 'options']
 
     def create(self, validated_data):
-        options_data = validated_data.pop('options')
-        menu = Menu.objects.create(**validated_data)  # 메뉴 객체 생성
+        restaurant_id = validated_data.pop('restaurant_id', None)  # 전달된 restaurant_id 가져오기
+        options_data = validated_data.pop('options', []) # 전달된 options 배열 가져오기
+
+        # restaurant_id가 있는 경우 해당 ID에 해당하는 Restaurant 객체 찾기
+        restaurant = get_object_or_404(Restaurant, id=restaurant_id) if restaurant_id else None
+
+        # Menu 객체 생성 시 restaurant 필드에서 찾은 Restaurant 객체 할당
+        menu = Menu.objects.create(restaurant=restaurant, **validated_data)  # 메뉴 객체 생성
 
         # 각 옵션 그룹 및 옵션 항목 저장
         for option_group_data in options_data:
-            option_group = OptionGroup.objects.create(name=option_group_data['name'])  # 새 옵션 그룹 생성
+            option_group = OptionGroup.objects.create(name=option_group_data['name'], menu=menu)   # 새 옵션 그룹 생성
             for option_data in option_group_data['options']:
-                OptionItem.objects.create(group=option_group, **option_data)  # 옵션 항목 생성
+                option_name = option_data.get('name')
+                option_price = option_data.get('price')
+                OptionItem.objects.create(group=option_group, name=option_name, price=option_price)  # 옵션 항목 생성
 
         return menu  # 생성된 메뉴 객체 반환
