@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from .models import UserProfile, Restaurant
 from rest_framework import status
-from orders.models import UserProfile  
+from orders.models import UserProfile, Menu, OptionGroup, OptionItem
 from django.shortcuts import get_object_or_404
 from django.middleware.csrf import get_token
 from .serializers import RestaurantSerializer
@@ -406,3 +406,55 @@ def create_menu(request, store_id):
     except Exception as e:
         print(f"Error: {str(e)}")  # 에러 로그 출력
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# 가게 메뉴 조회 뷰
+@api_view(['GET'])
+def store_menu_view(request, store_id):
+    menus = Menu.objects.filter(restaurant_id=store_id)
+
+    if not menus.exists():
+        # 메뉴가 없을 경우 404 반환
+        return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    menus_data = []
+
+    for menu in menus:
+        # 메뉴에 해당하는 옵션 그룹 조회
+        optiongroups = OptionGroup.objects.filter(menu=menu)
+
+        # 각 옵션 그룹에 대한 옵션 아이템들 조회
+        optiongroups_data = []
+
+        for optiongroup in optiongroups:
+            optionitems = OptionItem.objects.filter(group=optiongroup)
+
+            optionitems_data = []
+            for optionitem in optionitems:
+                optionitems_data.append({
+                    'name': optionitem.name,
+                    'price': optionitem.price
+                })
+
+            optiongroups_data.append({
+                'group_name': optiongroup.name,
+                'items': optionitems_data
+            })
+
+        #print(f"optiongroups_data for menu {menu.id}: {optiongroups_data}")
+        
+        # 메뉴 데이터와 옵션 그룹 데이터를 menus_data에 추가
+        menus_data.append({
+            'id': menu.id,
+            'name': menu.name,
+            'description': menu.description,
+            'price': menu.price,
+            'image_url': menu.image_url,
+            'option_groups': optiongroups_data
+        })
+    
+    return Response(menus_data, status=status.HTTP_200_OK)
+
+
+
+        
