@@ -3,15 +3,15 @@
     <p>가게 관리하기 - Store ID: {{ storeid }}</p>
     <div>
       <p>메뉴판</p>
-      <div v-for="menu in menus" :key="menu.id" style="background-color: plum;">
+      <div v-for="menu in menus" :key="menu.id">
         <button>수정</button>
-        <button>삭제</button>
+        <button @click="deletemenu(menu.id)">삭제</button>
         <p>{{ menu.name }}</p>
         <p>{{ menu.description }}</p>
-        <p>{{ Math.floor(menu.price) }}</p>
+        <p>가격 {{ Math.floor(menu.price) }}원</p>
         <img :src="menu.image_url" alt="Menu Image" />
         <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
-          <h3>{{ optionGroup.group_name }}</h3>
+          <p>{{ optionGroup.group_name }}</p>
           <ul>
             <li v-for="item in optionGroup.items" :key="item.name">
               {{ item.name }} - {{ Math.floor(item.price) }}
@@ -70,6 +70,12 @@ export default {
       } catch (error) {
         console.error('메뉴 정보 불러오기 실패', error);
       }
+    },
+    async deletemenu(menuid) {
+      const response = await axios.get(`http://localhost:8000/order/deletemenu/${menuid}/`);
+      console.log(response.data);
+      alert('메뉴가 성공적으로 삭제되었습니다.')
+      this.fetchStoreMenu();
     }
   }
 }
