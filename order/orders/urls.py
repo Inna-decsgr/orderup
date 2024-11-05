@@ -16,7 +16,7 @@ urlpatterns = [
     path('deletestore/<int:store_id>/', delete_store, name='delete_store'), # 가게 삭제
     path('newmenu/<int:store_id>/', create_menu, name='create_menu'), # 메뉴 등록
     path('getmenus/<int:store_id>/', store_menu_view, name='store_menu_view'), # 메뉴 가져오기
-    path('deletemenu/<int:menu_id>/', delete_menu, name='delete_menu'), # 메뉴 등록
+    path('deletemenu/<int:menu_id>/', delete_menu, name='delete_menu'), # 메뉴 삭제
 ]
 
 

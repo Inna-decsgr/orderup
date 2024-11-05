@@ -457,4 +457,13 @@ def store_menu_view(request, store_id):
 
 
 
-        
+# 메뉴 삭제하는 뷰
+def delete_menu(request, menu_id):
+    try:
+        menu = get_object_or_404(Menu, id=menu_id)
+        menu.delete()  # 가게 삭제
+        return JsonResponse({'message': '가게가 성공적으로 삭제되었습니다.'}, status=200)
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return JsonResponse({'error': str(e)}, status=400)
+    
