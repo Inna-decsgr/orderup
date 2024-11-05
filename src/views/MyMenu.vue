@@ -3,41 +3,48 @@
     <p>가게 관리하기 - Store ID: {{ storeid }}</p>
     <div>
       <p>메뉴판</p>
+      <button @click="ShowForm">메뉴 등록</button>
+      <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid"/>
       <div v-for="menu in menus" :key="menu.id">
-        <button>수정</button>
-        <button @click="deletemenu(menu.id)">삭제</button>
-        <p>{{ menu.name }}</p>
-        <p>{{ menu.description }}</p>
-        <p>가격 {{ Math.floor(menu.price) }}원</p>
-        <img :src="menu.image_url" alt="Menu Image" />
-        <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
-          <p>{{ optionGroup.group_name }}</p>
-          <ul>
-            <li v-for="item in optionGroup.items" :key="item.name">
-              {{ item.name }} - {{ Math.floor(item.price) }}
-            </li>
-          </ul>
+        <div v-if="editMode">
+          <EditMenu :menu="menu" :canceledit="cancelEdit" />
+        </div>
+        <div v-else>
+          <button @click="editmode()">수정</button>
+          <button @click="deletemenu(menu.id)">삭제</button>
+          <p>{{ menu.name }}</p>
+          <p>{{ menu.description }}</p>
+          <p>가격 {{ Math.floor(menu.price) }}원</p>
+          <img :src="menu.image_url" alt="Menu Image" />
+          <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
+            <p>{{ optionGroup.group_name }}</p>
+            <ul>
+              <li v-for="item in optionGroup.items" :key="item.name">
+                {{ item.name }} - {{ Math.floor(item.price) }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-    <button @click="ShowForm">메뉴 등록</button>
-    <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid"/>
-  
   </div>
 </template>
 
 <script>
 import NewMenu from '../components/NewMenu.vue'
+import EditMenu from '../components/EditMenu.vue'
 import axios from 'axios';
 
 export default {
   components: {
-    NewMenu
+    NewMenu,
+    EditMenu
   },
   data() {
     return {
       NewForm: false,
       menus: [],
+      editMode: false
     }
   },
   computed: {
@@ -76,6 +83,12 @@ export default {
       console.log(response.data);
       alert('메뉴가 성공적으로 삭제되었습니다.')
       this.fetchStoreMenu();
+    },
+    editmode() {
+      this.editMode = true
+    },
+    cancelEdit() {
+      this.editMode = false
     }
   }
 }
