@@ -408,7 +408,7 @@ def create_menu(request, store_id):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# 가게 메뉴 조회 뷰
+# 메뉴 조회 뷰
 @api_view(['GET'])
 def store_menu_view(request, store_id):
     menus = Menu.objects.filter(restaurant_id=store_id)
@@ -466,4 +466,48 @@ def delete_menu(request, menu_id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
+
+
+# 메뉴 수정 뷰
+@api_view(['PUT'])
+def update_menu(request, menu_id):
+    try:
+        menu = Menu.objects.get(id=menu_id)
+
+        # 요청 데이터에서 메뉴 정보 가져오기
+        name = request.data.get('name', menu.name)
+        description = request.data.get('description', menu.description)
+        price = request.data.get('price', menu.price)
+
+        # 이미지 업데이트
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            fs = FileSystemStorage()
+            # 이미지 파일 저장하고 파일 경로 가져오기
+            filename = fs.save(f'images/{image_file.name}', image_file)
+            menu.image = filename
+            menu.image_url = f"{request.build_absolute_uri('/media/')}{filename}"
+
+        # 모든 필드들 업데이트
+        menu.name = name
+        menu.description = description
+        menu.price = price
+
+        menu.save()
+
+        return Response({
+            'message' : '메뉴 정보가 업데이트 되었습니다.',
+            'menu': {
+                'name': name,
+                'description': description,
+                'price': price,
+                'image_url': menu.image_url if menu.image else None
+            }
+        }, status=status.HTTP_200_OK)
     
+    except Menu.DoesNotExist:
+        return Response({'error': '메뉴를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
