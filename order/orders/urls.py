@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu
+from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu
 
 urlpatterns = [
     path('signup/', signup_view, name='signup'),  # 회원가입 URL
@@ -17,6 +17,7 @@ urlpatterns = [
     path('newmenu/<int:store_id>/', create_menu, name='create_menu'), # 메뉴 등록
     path('getmenus/<int:store_id>/', store_menu_view, name='store_menu_view'), # 메뉴 가져오기
     path('deletemenu/<int:menu_id>/', delete_menu, name='delete_menu'), # 메뉴 삭제
+    path('updatemenu/<int:menu_id>/', update_menu, name='update_menu'), # 메뉴 수정
 ]
 
 
