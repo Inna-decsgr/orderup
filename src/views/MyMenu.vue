@@ -5,12 +5,12 @@
       <p>메뉴판</p>
       <button @click="ShowForm">메뉴 등록</button>
       <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid"/>
-      <div v-for="menu in menus" :key="menu.id">
-        <div v-if="editMode">
-          <EditMenu :menu="menu" :canceledit="cancelEdit" />
+      <div v-for="(menu, index) in menus" :key="index">
+        <div v-if="EditNumber === index">
+          <EditMenu :menu="menu" :canceledit="cancelEdit" :getMenu="fetchStoreMenu"/>
         </div>
         <div v-else>
-          <button @click="editmode()">수정</button>
+          <button @click="editmode(index)">수정</button>
           <button @click="deletemenu(menu.id)">삭제</button>
           <p>{{ menu.name }}</p>
           <p>{{ menu.description }}</p>
@@ -44,7 +44,7 @@ export default {
     return {
       NewForm: false,
       menus: [],
-      editMode: false
+      EditNumber: null
     }
   },
   computed: {
@@ -84,11 +84,11 @@ export default {
       alert('메뉴가 성공적으로 삭제되었습니다.')
       this.fetchStoreMenu();
     },
-    editmode() {
-      this.editMode = true
+    editmode(index) {
+      this.EditNumber = index
     },
     cancelEdit() {
-      this.editMode = false
+      this.EditNumber = null
     }
   }
 }
