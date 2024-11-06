@@ -1,7 +1,7 @@
 <template>
   <div v-if="user && !isEditing">
     <h2>사용자 프로필</h2>
-    <button @click="editMode">수정</button>
+    <button @click="editMode">프로필 수정</button>
     <button @click="confirmDelete">탈퇴하기</button>
     <div>
       <div>

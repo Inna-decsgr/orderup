@@ -13,7 +13,7 @@
           <p>{{ index }}.</p>
           <button @click="editMode(index)">수정</button>
           <button @click="confirmDelete(store.id)">삭제</button>
-          <button @click="gotoMenu(store.id)">메뉴 관리</button>
+          <button @click="gotoMenu(store.id)">관리</button>
           
           <p>소유주: {{ store.owner }}</p>
           <p>가게 이름: {{ store.name }}</p>

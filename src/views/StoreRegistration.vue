@@ -44,6 +44,7 @@
       <input type="text" v-model="restaurant.delivery_fee" id="restaurantDeliveryFee" required>
     </div>
     <button type="submit" @click="registrationstore">등록하기</button>
+    <button @click="gotomyStore">뒤로가기</button>
   </form>
 </template>
 
@@ -120,9 +121,11 @@ export default {
         } else {
           console.log("Error occurred:", error.message);
         }
-}
-      
+      }
     },
+    gotomyStore() {
+      this.$router.push('/mystore');
+    }
   },
 };
 </script>

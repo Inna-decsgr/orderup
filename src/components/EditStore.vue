@@ -30,7 +30,6 @@
         <div>
           <label for="storeimage">가게 이미지</label>
           <input
-            :ref="image"
             type="file"
             id="storeimage"
             @change="handleImageUpload"
