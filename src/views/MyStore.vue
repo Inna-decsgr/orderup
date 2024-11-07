@@ -53,7 +53,7 @@ export default {
       return this.getUserId;
     },
   },
-  async mounted() {
+  mounted() {
     this.getMyStore();
   },
   methods: {
@@ -107,7 +107,8 @@ export default {
         }
       });
       console.log(response.data);
-      alert('가게가 성공적으로 삭제되었습니다.')
+      alert('가게가 성공적으로 삭제되었습니다.');
+      this.getMyStore();
     },
     gotoMenu(storeid) {
       this.$router.push({
