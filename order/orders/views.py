@@ -511,3 +511,41 @@ def update_menu(request, menu_id):
     except Exception as e:
         print(f"Error: {str(e)}")
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+# 모든 가게 정보 조회하기
+@api_view(['GET'])
+def get_all_stores(request):
+    # category 쿼리 파라미터 가져오기
+    category_name = request.query_params.get('category', None)
+
+    if category_name:
+        # 카테고리 이름으로 가게 필터링
+        stores = Restaurant.objects.filter(category__name=category_name)
+    
+    else:
+        # 음식점과 관련된 카테고리들 미리 가져오기(다대다 관계여서)
+        stores = Restaurant.objects.all().prefetch_related('categories')
+
+    if not stores.exists():
+        # 메뉴가 없을 경우 404 반환
+        return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    stores_data = []
+
+    for store in stores:
+        stores_data.append({
+            'id': store.id,
+            'name': store.name,
+            'address': store.address,
+            'phonenumber': store.phone_number,
+            'rating': store.rating,
+            'description': store.description,
+            'deliveryfee': store.delivery_fee,
+            'operatinghours': store.operating_hours,
+            'imageurl': store.image_url,
+            'categories': [category.name for category in store.categories.all()]  # 카테고리 리스트 추가
+        })
+
+    return Response(stores_data, status=status.HTTP_200_OK)
