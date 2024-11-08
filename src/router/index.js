@@ -6,6 +6,7 @@ import UserProfilePage from '../views/UserProfilePage.vue'
 import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
 import MyMenu from '../views/MyMenu.vue'
+import SearchResult from '../views/SearchResult.vue'
 
 
 const routes = [
@@ -43,6 +44,11 @@ const routes = [
     path: '/mymenu',
     name: 'mymenu',
     component: MyMenu
+  },
+  {
+    path: '/searchresult',
+    name: 'searchresult',
+    component: SearchResult
   }
 ]
 
