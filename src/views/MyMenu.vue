@@ -4,7 +4,7 @@
     <div>
       <p>메뉴판</p>
       <button @click="ShowForm">메뉴 등록</button>
-      <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid"/>
+      <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid" :getmenu="fetchStoreMenu" />
       <div v-for="(menu, index) in menus" :key="index">
         <div v-if="EditNumber === index">
           <EditMenu :menu="menu" :canceledit="cancelEdit" :getMenu="fetchStoreMenu"/>
@@ -15,7 +15,7 @@
           <p>{{ menu.name }}</p>
           <p>{{ menu.description }}</p>
           <p>가격 {{ Math.floor(menu.price) }}원</p>
-          <img :src="menu.image_url" alt="Menu Image" />
+          <img :src="menu.image_url" alt="Menu Image" style="width: 300px; height: 200px;" />
           <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
             <p>{{ optionGroup.group_name }}</p>
             <ul>
@@ -66,11 +66,14 @@ export default {
       console.log('메뉴 정보 모두 불러오기', this.storeid)
 
       try {
-        // 이미지 파일과 함께 수정 데이터 전송
-        //const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
-        //const csrfToken = csrfResponse.data.csrfToken;
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
 
-        const response = await axios.get(`http://localhost:8000/order/getmenus/${this.storeid}/`)
+        const response = await axios.get(`http://localhost:8000/order/getmenus/${this.storeid}/`, {
+          headers: {
+            'X-CSRFToken': csrfToken,  // 수정된 부분
+          }
+        })
         console.log('메뉴 정보 불러오기 성공', response.data);
         this.menus = response.data;
         console.log('불러온 메뉴들 정보', this.menus);
