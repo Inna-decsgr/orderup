@@ -71,6 +71,10 @@ export default {
     cancel: {
       type: Function,
       required: true
+    },
+    getmenu: {
+      type: Function,
+      required: true
     }
   },
   methods: {
@@ -149,6 +153,7 @@ export default {
         console.log('메뉴 등록 성공', response.data);
         alert('메뉴가 등록되었습니다.');
         this.handleCancel();  // 수정 모드 해제해서 수정 컴포넌트 감추기
+        this.getmenu();
       } catch (error) {
         console.error('메뉴 등록 중 오류 발생:', error);
       }
