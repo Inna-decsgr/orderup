@@ -7,6 +7,7 @@ import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
 import MyMenu from '../views/MyMenu.vue'
 import SearchResult from '../views/SearchResult.vue'
+import DetailStore from '../views/DetailStore.vue'
 
 
 const routes = [
@@ -49,6 +50,11 @@ const routes = [
     path: '/searchresult',
     name: 'searchresult',
     component: SearchResult
+  },
+  {
+    path: '/detailstore',
+    name: 'detailstore',
+    component: DetailStore
   }
 ]
 
