@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="filteredstore && filteredstore.length">
-      <div v-for="store in filteredstore" :key="store.id" @click="detailstore(store.id)" style="cursor:pointer">
+      <div v-for="store in filteredstore" :key="store.id" @click="detailstore({id:store.id, name: store.name})" style="cursor:pointer">
         <h3>{{ store.name }}</h3>
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
@@ -24,11 +24,11 @@ export default {
     }
   },
   methods: {
-    detailstore(storeid) {
+    detailstore(store) {
       this.$router.push({
         path: '/detailstore',
         query: {
-          storeid: storeid
+          store: JSON.stringify(store)
         }
       })
     }

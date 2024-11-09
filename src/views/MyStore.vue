@@ -13,7 +13,7 @@
           <p>{{ index }}.</p>
           <button @click="editMode(index)">수정</button>
           <button @click="confirmDelete(store.id)">삭제</button>
-          <button @click="gotoMenu(store.id)">관리</button>
+          <button @click="gotoMenu({id: store.id, name: store.name})">관리</button>
           
           <p>소유주: {{ store.owner }}</p>
           <p>가게 이름: {{ store.name }}</p>
@@ -110,11 +110,11 @@ export default {
       alert('가게가 성공적으로 삭제되었습니다.');
       this.getMyStore();
     },
-    gotoMenu(storeid) {
+    gotoMenu(store) {
       this.$router.push({
         path: '/mymenu',
         query: {
-          storeid: storeid
+          store: JSON.stringify(store)
         }
       })
     }
