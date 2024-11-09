@@ -1,5 +1,9 @@
 <template>
   <div class="home">
+    <span v-if="user"><i class="fa fa-map-marker"></i>{{ this.user.address }}</span>
+    <div>
+      <SearchBar />
+    </div>
     <div>
       <button class="category-btn" @click="categoryStore(categories[0])">Fast Food</button>
       <button class="category-btn" @click="categoryStore(categories[1])">Chinese</button>
@@ -18,11 +22,18 @@
 <script>
 import axios from 'axios';
 import FilteredStore from '../components/FilteredStore.vue'
+import SearchBar from '../components/SearchBar.vue'
 
 
 export default {
   components: {
     FilteredStore,
+    SearchBar
+  },
+  computed: {
+    user() {
+      return this.$store.getters.getUser;
+    }
   },
   data() {
     return {
@@ -36,17 +47,16 @@ export default {
         { id: "7", name: "Western Food" },
       ],
       storeData: [],
-      filteredData: []
+      filteredData: [],
     }
   },
-  created() {
+  async created() {
     this.getAllStores();
   },
   methods: {
     async getAllStores() {
       try {
         const response = await axios.get('http://localhost:8000/order/getallstores/');
-        console.log('모든 가게 정보', response.data);
         this.storeData = response.data;
       } catch (error) {
         if (error.response) {
@@ -57,12 +67,8 @@ export default {
       }
     },
     categoryStore(categoryid) {
-      console.log(categoryid);
-
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
       this.filteredData = this.storeData.filter((store) => store.categories.some((category) => category === categoryid.name));
-
-      console.log('필터된 데이터', this.filteredData);
     }
   }
 }
