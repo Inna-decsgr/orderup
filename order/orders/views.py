@@ -411,49 +411,54 @@ def create_menu(request, store_id):
 # 메뉴 조회 뷰
 @api_view(['GET'])
 def store_menu_view(request, store_id):
-    menus = Menu.objects.filter(restaurant_id=store_id)
+    try:
+        menus = Menu.objects.filter(restaurant_id=store_id)
 
-    if not menus.exists():
-        # 메뉴가 없을 경우 404 반환
-        return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
+        if not menus.exists():
+            # 메뉴가 없을 경우 404 반환
+            return Response({"message": "등록된 메뉴가 없습니다"}, status=status.HTTP_200_OK)
     
-    menus_data = []
+        menus_data = []
 
-    for menu in menus:
-        # 메뉴에 해당하는 옵션 그룹 조회
-        optiongroups = OptionGroup.objects.filter(menu=menu)
+        for menu in menus:
+            # 메뉴에 해당하는 옵션 그룹 조회
+            optiongroups = OptionGroup.objects.filter(menu=menu)
 
-        # 각 옵션 그룹에 대한 옵션 아이템들 조회
-        optiongroups_data = []
+            # 각 옵션 그룹에 대한 옵션 아이템들 조회
+            optiongroups_data = []
 
-        for optiongroup in optiongroups:
-            optionitems = OptionItem.objects.filter(group=optiongroup)
+            for optiongroup in optiongroups:
+                optionitems = OptionItem.objects.filter(group=optiongroup)
 
-            optionitems_data = []
-            for optionitem in optionitems:
-                optionitems_data.append({
-                    'name': optionitem.name,
-                    'price': optionitem.price
+                optionitems_data = []
+                for optionitem in optionitems:
+                    optionitems_data.append({
+                        'name': optionitem.name,
+                        'price': optionitem.price
+                    })
+
+                optiongroups_data.append({
+                    'group_name': optiongroup.name,
+                    'items': optionitems_data
                 })
 
-            optiongroups_data.append({
-                'group_name': optiongroup.name,
-                'items': optionitems_data
-            })
-
-        #print(f"optiongroups_data for menu {menu.id}: {optiongroups_data}")
+            #print(f"optiongroups_data for menu {menu.id}: {optiongroups_data}")
         
-        # 메뉴 데이터와 옵션 그룹 데이터를 menus_data에 추가
-        menus_data.append({
-            'id': menu.id,
-            'name': menu.name,
-            'description': menu.description,
-            'price': menu.price,
-            'image_url': menu.image_url,
-            'option_groups': optiongroups_data
-        })
+            # 메뉴 데이터와 옵션 그룹 데이터를 menus_data에 추가
+            menus_data.append({
+                'id': menu.id,
+                'name': menu.name,
+                'description': menu.description,
+                'price': menu.price,
+                'image_url': menu.image_url,
+                'option_groups': optiongroups_data
+            })
     
-    return Response(menus_data, status=status.HTTP_200_OK)
+        return Response(menus_data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")  # 로그로 출력
+        return Response({"error": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -484,7 +489,7 @@ def update_menu(request, menu_id):
             image_file = request.FILES['image']
             fs = FileSystemStorage()
             # 이미지 파일 저장하고 파일 경로 가져오기
-            filename = fs.save(f'images/{image_file.name}', image_file)
+            filename = fs.save(f'menus/{image_file.name}', image_file)
             menu.image = filename
             menu.image_url = f"{request.build_absolute_uri('/media/')}{filename}"
 
