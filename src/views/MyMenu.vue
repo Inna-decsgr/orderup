@@ -1,7 +1,8 @@
 <template>
   <div>
-    <p>가게 관리하기 - Store ID: {{ storeid }}</p>
+    <p>가게 관리하기</p>
     <div>
+      <h4>{{ store.name }}</h4>
       <p>메뉴판</p>
       <button @click="ShowForm">메뉴 등록</button>
       <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid" :getmenu="fetchStoreMenu" />
@@ -48,8 +49,8 @@ export default {
     }
   },
   computed: {
-    storeid() {
-      return this.$route.query.storeid;
+    store() {
+      return this.$route.query.store ? JSON.parse(this.$route.query.store) : null;
     }
   },
   mounted() {
@@ -69,7 +70,7 @@ export default {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
 
-        const response = await axios.get(`http://localhost:8000/order/getmenus/${this.storeid}/`, {
+        const response = await axios.get(`http://localhost:8000/order/getmenus/${this.store.id}/`, {
           headers: {
             'X-CSRFToken': csrfToken,  // 수정된 부분
           }
