@@ -4,7 +4,8 @@ import createPersistedState from 'vuex-persistedstate';
 const store = createStore({
   state() {
     return {
-      user: null, // 사용자 정보 저장
+      user: null, // 사용자 정보 저장,
+      menucart: []
     };
   },
   mutations: {
@@ -13,6 +14,9 @@ const store = createStore({
     },
     clearUser(state) {
       state.user = null;  // 사용자 정보를 초기화하는 mutation
+    },
+    setMenucart(state, cart) {
+      state.menucart = cart;
     }
   },
   actions: {
