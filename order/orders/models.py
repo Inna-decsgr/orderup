@@ -87,6 +87,10 @@ class Order(models.Model):
   status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('delivered', 'Delivered'), ('canceled', 'Canceled')])
   total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+  # 결제 정보 추가
+  payment_method = models.CharField(max_length=50, blank=True)
+  payment_details = models.JSONField(default=dict) # 결제 카드 정보 등을 JSON 형태로 저장
+
   def __str__(self):
     return f"Order #{self.id} by {self.user.username}"
   
@@ -99,3 +103,14 @@ class OrderItem(models.Model):
 
   def __str__(self):
     return f"{self.quantity} x {self.menu.name}"
+  
+
+
+# OrderItemOption
+class OrderItemOption(models.Model):
+  order_item = models.ForeignKey(OrderItem, related_name='options', on_delete=models.CASCADE)  # 주문 항목과 연결
+  name = models.CharField(max_length=100) 
+  price = models.DecimalField(max_digits=10, decimal_places=2)
+
+  def __str__(self):
+    return f"{self.name} (+{self.price}원)" 
