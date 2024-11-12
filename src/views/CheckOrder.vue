@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>주문 확인서</h3>
-    <h4><strong>[{{ store }}]</strong></h4>
+    <h4><strong>[{{ store.name }}]</strong></h4>
     <div v-for="(item, index) in menucart" :key="index" class="menu-item">
       <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
       <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
@@ -78,6 +78,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -87,7 +89,7 @@ export default {
         expiryDate: '',
         cvv: '',
       },
-      totalPrice: ''
+      totalPrice: '',
     }
   },
   computed: {
@@ -115,11 +117,11 @@ export default {
       }, 0).toLocaleString();
     },
     store() {
-      return this.$route.query.store
-    }
+      return this.$route.query.store ? JSON.parse(this.$route.query.store) : null;
+    },
   },
   methods: {
-    handlePayment() {
+    async handlePayment() {
       console.log('결제 정보:', this.paymentDetails);
       alert('결제가 완료되었습니다!');
 
@@ -161,6 +163,7 @@ export default {
           };
         }),
 
+        restaurant_id: this.store.id,
         paymentDetails: {
           cardNumber: this.paymentDetails.cardNumber,
           expiryDate: this.paymentDetails.expiryDate,
@@ -168,7 +171,22 @@ export default {
         },
         totalAmount: parseInt(this.totalCartPrice.replace(/,/g, ''))  // 총 금액(쉼표 제거)
       }
-      console.log(orderData);
+      console.log('요청 데이터', orderData);
+      console.log(this.store.id);
+
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+      const csrfToken = csrfResponse.data.csrfToken;
+
+
+      const response = await axios.post('http://localhost:8000/order/addorder/', orderData, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        }
+      });
+      console.log(response.data);
+
+
+      // 팝업창 닫기
       this.closePopup();
     },
     openPopup() {
