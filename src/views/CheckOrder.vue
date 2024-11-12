@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>주문 확인서</h3>
-    <strong>[{{ store }}]</strong>
+    <h4><strong>[{{ store }}]</strong></h4>
     <div v-for="(item, index) in menucart" :key="index" class="menu-item">
       <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
       <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
@@ -29,14 +29,67 @@
       </p>
     </div>
     
-
     <!--주문 총 금액-->
-    <button @click="ordermenu(menucart)">{{ totalCartPrice }}원 - 배달 주문하기</button>
+    <button @click="openPopup">{{ totalCartPrice }}원 - 배달 주문하기</button>
+
+    <div v-if="showPopup" class="popup">
+      <div class="popup-content">
+        <button @click="closePopup">닫기</button>
+        <form @submit.prevent="handlePayment">
+          <h3>결제 정보 입력</h3>
+          <div>
+            <label for="cardNumber">카드 번호</label>
+            <input 
+              type="text" 
+              id="cardNumber" 
+              v-model="paymentDetails.cardNumber"
+              placeholder="카드 번호"
+              required
+            />
+          </div>
+          <div>
+            <label for="cardNumber">유효 기간</label>
+            <input 
+              type="text" 
+              id="expiryDate" 
+              v-model="paymentDetails.expiryDate"
+              placeholder="MM/YY"
+              required
+            />
+          </div>
+          <div>
+            <label for="cardNumber">CVV</label>
+            <input 
+              type="text" 
+              id="cvv" 
+              v-model="paymentDetails.cvv"
+              placeholder="CVV"
+              required
+            />
+          </div>
+          <div>
+            <p>총 금액: {{ totalCartPrice }} 원</p>
+          </div>
+          <button type="submit">결제하기</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      showPopup: false,
+      paymentDetails: {
+        cardNumber: '',
+        expiryDate: '',
+        cvv: '',
+      },
+      totalPrice: ''
+    }
+  },
   computed: {
     menucart() {
       return this.$store.state.menucart;
@@ -66,13 +119,69 @@ export default {
     }
   },
   methods: {
-    ordermenu(menucart) {
-      alert('메뉴 주문')
-      console.log('주문할 메뉴', menucart)
+    handlePayment() {
+      console.log('결제 정보:', this.paymentDetails);
+      alert('결제가 완료되었습니다!');
+
+      // 데이터베이스에 주문 메뉴와 결제 정보 저장하는 로직 구현
+      const orderData = {
+        items: this.menucart.map(item => {
+          // 선택한 옵션만 포함한 객체 생성
+          const selectedOptions = [];
+
+          // 메뉴의 option_groups이 존재하는지 확인
+          if (item.menu && item.menu.option_groups) {
+            console.log("현재 메뉴 옵션 그룹:", item.menu.option_groups);
+
+            // 각 옵션 그룹을 순회
+            item.menu.option_groups.forEach(group => {
+              // 옵션 그룹의 항목을 그대로 options에 넣기
+              if (group.items && group.items.length > 0) {
+                group.items.forEach(option => {
+                  // item.options에서 해당 option의 이름을 찾아서 그 가격을 추가
+                  if (item.options && item.options[option.name]) {
+                    selectedOptions.push({
+                      name: option.name,
+                      price: item.options[option.name]
+                    });
+                  }
+                });
+              }
+            });
+          }
+
+          // 선택된 옵션이 없으면 빈 배열로 처리
+          const finalOptions = selectedOptions.length > 0 ? selectedOptions : [];
+
+          return {
+            menu_id: item.menu ? item.menu.id : item.id,
+            name: item.menu ? item.menu.name : item.name,
+            options: finalOptions,
+            price: item.menu ? item.menu.price : item.price
+          };
+        }),
+
+        paymentDetails: {
+          cardNumber: this.paymentDetails.cardNumber,
+          expiryDate: this.paymentDetails.expiryDate,
+          cvv: this.paymentDetails.cvv
+        },
+        totalAmount: parseInt(this.totalCartPrice.replace(/,/g, ''))  // 총 금액(쉼표 제거)
+      }
+      console.log(orderData);
+      this.closePopup();
+    },
+    openPopup() {
+      this.showPopup = true;
+      console.log('주문한 메뉴', this.menucart);
+    },
+    closePopup() {
+      this.showPopup = false
     }
   }
 }
 </script>
+
 
 <style>
 ul {
@@ -80,4 +189,26 @@ ul {
   padding-left: 0 !important;
   margin: 0;
 }
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 500px;
+}
+
 </style>
