@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from .models import UserProfile, Restaurant
+from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu
 from rest_framework import status
 from orders.models import UserProfile, Menu, OptionGroup, OptionItem
 from django.shortcuts import get_object_or_404
@@ -14,6 +14,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.files.storage import FileSystemStorage
 from .serializers import MenuSerializer 
 import json
+from django.db import transaction
 
 
 
@@ -554,3 +555,78 @@ def get_all_stores(request):
         })
 
     return Response(stores_data, status=status.HTTP_200_OK)
+
+
+
+# 새로운 주문 추가하기
+@api_view(['POST'])
+def add_new_order(request):
+    """
+    결제 정보를 받아서 주문을 처리하고 저장하는 API 뷰
+    """
+    # 요청 데이터에서 주문과 결제 정보 추출
+    order_data = request.data.get('items')
+    payment_details = request.data.get('paymentDetails')
+    total_amount = request.data.get('totalAmount')
+    restaurant_id = request.data.get('restaurant_id')
+
+    # restaurant_id가 유효한지 확인 (없으면 예외 처리 가능)
+    if restaurant_id:
+        try:
+            restaurant = Restaurant.objects.get(id=restaurant_id)
+        except Restaurant.DoesNotExist:
+            return Response({'error': '레스토랑을 찾을 수 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'error': '레스토랑 ID가 제공되지 않았습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    if not order_data or not payment_details or total_amount is None:
+        return Response({'error': '필수 데이터가 누락되었습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # 트랜잭션을 이용하여 여러 DB 작업을 하나의 단위로 처리
+    try:
+        with transaction.atomic():
+            # 주문 생성
+            order = Order.objects.create(
+                user=request.user,  # 로그인된 사용자
+                restaurant=restaurant,  # 예시로 레스토랑을 None으로 설정 (추후 수정 가능)
+                total_price=total_amount,
+                status='pending',
+                payment_method='카드 결제',  # 결제 방법 설정
+                payment_details=payment_details  # 결제 정보 저장
+            )
+
+            # 주문 항목 저장
+            for item_data in order_data:
+                try:
+                    menu = Menu.objects.get(id=item_data['menu_id'])
+                except Menu.DoesNotExist:
+                    return Response({'error': f"메뉴 ID {item_data['menu_id']}에 해당하는 메뉴가 없습니다."},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+                order_item = OrderItem.objects.create(
+                    order=order,
+                    menu=menu,
+                    quantity=1  # 기본 수량 1로 설정 (필요시 수정 가능)
+                )
+
+                # 옵션 처리
+                if item_data['options']:  # 옵션이 존재하는 경우에만 처리
+                    for option in item_data['options']:
+                        # option이 배열로 되어 있다면, 그 안에서 추가 처리
+                        if isinstance(option, dict):  # 옵션이 딕셔너리 형태일 경우
+                            OrderItemOption.objects.create(
+                                order_item=order_item,
+                                name=option['name'],
+                                price=option['price']
+                            )
+                        else:
+                            return Response({'error': '옵션 데이터가 잘못된 형식입니다.'},status=status.HTTP_400_BAD_REQUEST)
+
+            # 성공적으로 주문을 처리한 후 응답
+            return Response({'message': '주문이 성공적으로 처리되었습니다.'}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        # 예외 처리 (예: 트랜잭션 실패)
+        print(f"Error: {str(e)}")
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
