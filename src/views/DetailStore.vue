@@ -26,7 +26,7 @@
     </div>
 
     <div v-if="menucart.length > 0">
-      <button @click="gotoCheckOrder(this.menucart)">{{ totalPrice }}원 - 장바구니 보기 {{ this.menucart.length }}</button>
+      <button @click="gotoCheckOrder(this.menucart)">{{ totalPrice }}원 - 주문하기   {{ this.menucart.length }}</button>
     </div>
 
     <!-- 옵션 팝업 -->
@@ -48,7 +48,7 @@
           </div>
           <label><input type="checkbox"> {{ "선택 안함" }} (+0원)</label>
         </div>
-        <button @click="addToCartWithOptions">장바구니에 추가</button>
+        <button @click="addToCartWithOptions">담기</button>
         <button @click="closePopup">닫기</button>
       </div>
     </div>
@@ -143,12 +143,12 @@ export default {
     gotoCheckOrder(menucart) {
       this.$store.commit('setMenucart', menucart);
 
-      const storeName = this.store?.name;
-      if (storeName) {
+      console.log(this.store);
+      if (this.store) {
         this.$router.push({
           path: '/checkorder',
           query: {
-            store: storeName
+          store: JSON.stringify(this.store)  // store를 문자열로 변환하여 넘겨줍니다.
           }
         });
       }
