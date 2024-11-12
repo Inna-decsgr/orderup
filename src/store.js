@@ -17,6 +17,9 @@ const store = createStore({
     },
     setMenucart(state, cart) {
       state.menucart = cart;
+    },
+    clearMenucart(state) {
+      state.menucart = []; // 장바구니 정보 초기화하는 mutation
     }
   },
   actions: {

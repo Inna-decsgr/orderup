@@ -30,6 +30,7 @@
           </ul>
         </div>
       </div>
+      <button @click="removemenu">삭제</button>
       <button>{{ totalCartPrice }} - 주문하러 가기</button>
     </div>
   </div>
@@ -61,6 +62,11 @@ export default {
         return total + itemTotalPrice;
       }, 0).toLocaleString();
     },
+  },
+  methods: {
+    removemenu() {
+      this.$store.commit('clearMenucart');
+    }
   }
 }
 </script>
