@@ -5,7 +5,8 @@ const store = createStore({
   state() {
     return {
       user: null, // 사용자 정보 저장,
-      menucart: []
+      menucart: [],
+      store: []
     };
   },
   mutations: {
@@ -20,7 +21,10 @@ const store = createStore({
     },
     clearMenucart(state) {
       state.menucart = []; // 장바구니 정보 초기화하는 mutation
-    }
+    },
+    setStore(state, store) {
+      state.store = store;
+    },
   },
   actions: {
     login({ commit }, user) {
@@ -39,6 +43,9 @@ const store = createStore({
     },
     getUserId(state) {
       return state.user.id  // 사용자 정보 중 아이디만 가져오기
+    },
+    getStore(state) {
+      return state.store
     }
   },
   plugins: [createPersistedState()],

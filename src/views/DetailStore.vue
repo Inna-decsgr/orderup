@@ -1,8 +1,7 @@
 <template>
   <div>
     가게 상세 페이지
-    <h3>상호명: {{ store.name }}</h3>
-
+    <p><strong>{{ store.name }}</strong></p>
     <div v-if="menus.length > 0">
       <h4>메뉴판</h4>
       <div v-for="menu in menus" :key="menu.id">
@@ -26,7 +25,7 @@
     </div>
 
     <div v-if="menucart.length > 0">
-      <button @click="gotoCheckOrder(this.menucart)">{{ totalPrice }}원 - 주문하기   {{ this.menucart.length }}</button>
+      <button @click="gotoMyCart(this.menucart)">{{ totalPrice }}원 - 주문하기 {{ this.menucart.length }}</button>
     </div>
 
     <!-- 옵션 팝업 -->
@@ -72,7 +71,7 @@ export default {
   },
   computed: {
     store() {
-      return this.$route.query.store ? JSON.parse(this.$route.query.store) : null;
+      return this.$store.getters.getStore;
     },
     user() {
       return this.$store.getters.getUser;
@@ -140,19 +139,19 @@ export default {
       }
       return totalPrice;
     },
-    gotoCheckOrder(menucart) {
+    gotoMyCart(menucart) {
       this.$store.commit('setMenucart', menucart);
 
       console.log(this.store);
       if (this.store) {
         this.$router.push({
-          path: '/checkorder',
+          path: '/mycart',
           query: {
           store: JSON.stringify(this.store)  // store를 문자열로 변환하여 넘겨줍니다.
           }
         });
       }
-    }
+    },
   }
 }
 </script>

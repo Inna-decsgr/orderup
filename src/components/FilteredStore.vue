@@ -9,9 +9,6 @@
         <p>{{ store.description }}</p>
       </div>
     </div>
-    <div v-else>
-      <p>No stores found</p>
-    </div>
   </div>
 </template>
 
@@ -25,12 +22,8 @@ export default {
   },
   methods: {
     detailstore(store) {
-      this.$router.push({
-        path: '/detailstore',
-        query: {
-          store: JSON.stringify(store)
-        }
-      })
+      this.$router.push('/detailstore'),
+      this.$store.commit('setStore', store);
     }
   }
 }
