@@ -244,7 +244,7 @@ def store_regis(request):
 
 
 
-# 가게 정보 조회하는 뷰
+# 가게 소유쥬 id로 가게 정보 조회하는 뷰
 @api_view(['GET'])
 def my_store_view(request, user_id):
     try:
@@ -630,3 +630,68 @@ def add_new_order(request):
         # 예외 처리 (예: 트랜잭션 실패)
         print(f"Error: {str(e)}")
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# 사용자 id에 맞게 주문 내역 가져오기
+@api_view(['GET'])
+def get_order_list(request, user_id):
+    try:
+        # user_id가 일치하는 주문 조회
+        orders = Order.objects.filter(user_id=user_id)
+        
+        # 주문 데이터 저장할 리스트
+        order_data = []
+        for order in orders:
+            order_items = []
+            for item in order.items.all():
+                # 각 OrderItem과 연결된 Menu 정보
+                menu = {
+                    "menu_id": item.menu.id,
+                    "name": item.menu.name,
+                    "description": item.menu.description,
+                    "price": item.menu.price,
+                    "image_url": item.menu.image_url
+                }
+
+                # 각 OrderItem과 연결된 OrderItemOption 정보
+                options = [
+                    {
+                        "name": option.name,
+                        "price": option.price 
+                    }
+                    for option in item.options.all()
+                ]
+
+                # OrderItem 정보를 추가
+                order_items.append({
+                    "order_item_id" : item.id,
+                    "quantity" : item.quantity,
+                    "menu" : menu,
+                    "options" : options
+                })
+
+            # 주문 정보를 추가
+            order_data.append({
+                "order_id" : order.id,
+                "restaurant": {
+                    "name": order.restaurant.name,
+                    "address" : order.restaurant.address,
+                    "phone_number" : order.restaurant.phone_number,
+                    "deliveryfee" : order.restaurant.delivery_fee
+                },
+                "ordered_at": order.ordered_at,
+                "status" : order.status,
+                "total_price": order.total_price,
+                "payment_method" : order.payment_method,
+                "payment_details" : order.payment_details,
+                "items" : order_items
+            })
+
+        return Response(order_data)
+        
+    except Order.DoesNotExist:
+        return Response({"error": "No orders found for this user"}, status=404)
+
+
+
+        
