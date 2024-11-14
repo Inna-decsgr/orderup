@@ -4,6 +4,7 @@
     <div v-for="order in orderlist" :key="order.order_id">
       <div>
         <p>{{ getStatusMessage(order.status) }}</p>
+        <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
         <h5><strong>{{ order.restaurant.name }}</strong></h5>
         <div v-for="item in order.items" :key="item.order_item_id">
           <p>{{ item.menu.name }} {{ item.quantity }}개</p>
@@ -16,20 +17,20 @@
           상세 내역
           <div v-for="item in order.items" :key="item.order_item_id">
             <strong>{{ item.menu.name }} {{ item.quantity }}개</strong>
-            <li>기본: {{ item.menu.price }}원</li>
+            <li>기본: {{ item.menu.price.toLocaleString() }}원</li>
             <li v-for="option in item.options" :key="option.name">
-              {{ option.name}} ({{ option.price }}원)
+              {{ option.name}} ({{ option.price.toLocaleString() }}원)
             </li>
           </div>
-          <p>{{ order.total_price }}원</p>
+          <p>{{ order.total_price.toLocaleString() }}원</p>
         </div>
 
         <div>
-          <p>결제 금액</p>
-          <p>주문 금액 {{ order.total_price }}원</p>
-          <p>배달팁 {{ order.restaurant.deliveryfee }}</p>
+          <p><strong>결제 금액</strong></p>
+          <p>주문 금액 {{ order.total_price.toLocaleString() }}원</p>
+          <p>배달팁 {{ order.restaurant.deliveryfee.toLocaleString() }}원</p>
           <br/>
-          <p>총 결제 금액 <strong>{{ order.total_price + order.restaurant.deliveryfee }}원</strong></p>
+          <p>총 결제 금액 <strong>{{ (order.total_price + order.restaurant.deliveryfee).toLocaleString() }}원</strong></p>
           <p>결제방법 {{ order.payment_method }}</p>
         </div>
       </div>
@@ -88,6 +89,19 @@ export default {
     },
     formattedDate(date) {
       return formatDate(date);
+    },
+    async cancelorder(orderid) {
+      // 주문 취소 = 데이터베이스에서 주문 삭제 하는 로직
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+      const csrfToken = csrfResponse.data.csrfToken;
+        
+      console.log(orderid);
+      await axios.delete(`http://localhost:8000/order/deleteorder/${orderid}/`, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        }
+      });
+      this.getOrderList();
     }
   }
 }
