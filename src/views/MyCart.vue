@@ -24,19 +24,26 @@
 
         <p>
           {{ 
-            item.menu 
+            (item.menu 
             ? ( 
               item.menu.price + (item.menu.option_groups ? item.menu.option_groups.reduce((acc, group) => {return acc + group.items.reduce((groupAcc, option) => { return groupAcc + (item.options && item.options[option.name] ? item.options[option.name] : 0);
               }, 0);
             }, 0)
-            : 0)) : item.price
-          }}
+            : 0)) : item.price).toLocaleString()
+          }}원
         </p>
       </div>
+
+      <p>배달팁 : {{ this.deliveryfee.toLocaleString() }}원</p>
     
       <!--주문 총 금액-->
       <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
-      <button @click="openPopup">{{ totalCartPrice }}원 - 배달 주문하기</button>
+      <button @click="openPopup">
+        <strong>
+          {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString()}}원
+        </strong> - 배달 주문하기
+      </button>
+
 
       <div v-if="showPopup" class="popup">
         <div class="popup-content">
@@ -97,6 +104,7 @@ export default {
         cvv: '',
       },
       totalPrice: '',
+      deliveryfee: '',
     }
   },
   computed: {
@@ -121,11 +129,16 @@ export default {
 
         // 각 항목의 총 가격을 누적해서 합산
         return total + itemTotalPrice;
-      }, 0).toLocaleString();
+      }, 0);
     },
     store() {
       return this.$store.getters.getStore;
     },
+  },
+  mounted() {
+    this.getDeliveryfee(this.store.id);
+    console.log(typeof (this.deliveryfee)); // "string" 또는 "number" 출력
+    console.log(typeof(this.totalCartPrice)); // "string" 또는 "number" 출력
   },
   methods: {
     async handlePayment() {
@@ -209,6 +222,13 @@ export default {
     removemenu() {
       this.$store.commit('clearMenucart');
     },
+    async getDeliveryfee(storeid) {
+      const stores = await axios.get('http://localhost:8000/order/getallstores/');
+      console.log(stores.data);
+      const store = stores.data.find(store => store.id === storeid);
+      this.deliveryfee = store.deliveryfee.toLocaleString();
+      console.log(this.deliveryfee);
+    }
   }
 }
 </script>
