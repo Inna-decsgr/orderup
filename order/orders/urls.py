@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list
+from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, delete_order
 
 urlpatterns = [
     path('signup/', signup_view, name='signup'),  # 회원가입 URL
@@ -20,7 +20,8 @@ urlpatterns = [
     path('updatemenu/<int:menu_id>/', update_menu, name='update_menu'), # 메뉴 수정
     path('getallstores/', get_all_stores, name='get_all_stores'), # 모든 가게 정보 조회
     path('addorder/', add_new_order, name='add_new_order'), # 새로운 주문 추가
-    path('getorderlist/<int:user_id>/', get_order_list, name='get_order_list'), # 메뉴 삭제
+    path('getorderlist/<int:user_id>/', get_order_list, name='get_order_list'), # 주문 내역 조회
+    path('deleteorder/<int:order_id>/', delete_order, name='delete_order'), # 주문 내역 조회
 ]
 
 
