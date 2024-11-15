@@ -38,7 +38,7 @@
       <FilteredStore :filteredstore="filteredData"/>
     </div>
     <div>
-      <AppBanner />
+      <OrderChart />
     </div>
   </div>
 </template>
@@ -47,14 +47,14 @@
 import axios from 'axios';
 import FilteredStore from '../components/FilteredStore.vue'
 import SearchBar from '../components/SearchBar.vue'
-import AppBanner from '../components/AppBanner.vue'
+import OrderChart from '../components/OrderChart.vue'
 
 
 export default {
   components: {
     FilteredStore,
     SearchBar,
-    AppBanner
+    OrderChart
   },
   computed: {
     user() {
