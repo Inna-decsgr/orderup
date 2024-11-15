@@ -702,3 +702,43 @@ def delete_order(request, order_id):
         return JsonResponse({'message': '주문이 성공적으로 삭제되었습니다.'}, status=204)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+
+
+
+# 주문 데이터 생성 함수
+from .models import OrderChart
+from datetime import timedelta, datetime
+from django.db.models import Count
+from django.utils import timezone 
+import random
+
+def generate_fake_orders(n=100):
+    menu_ids = list(range(38, 109))
+    store_ids = list(range(5, 20))
+    user_ids = [2, 8, 9, 13, 15]
+
+    now = timezone.now()  # timezone.now()로 현재 시간 가져오기
+    orders = []
+
+    for _ in range(n):
+        # 각 주문마다 랜덤한 날짜를 생성 (최근 7일 내의 날짜)
+        random_days = random.randint(0, 7)  # 0부터 7일 사이의 랜덤 숫자
+        order_date = now - timedelta(days=random_days)  # 랜덤한 날짜 생성
+
+        order = OrderChart(
+            store_id=random.choice(store_ids),
+            menu_id=random.choice(menu_ids),
+            user_id=random.choice(user_ids),
+            order_date=order_date,  # 최근 7일 데이터
+        )
+        orders.append(order)
+
+    # 한꺼번에 저장
+    print(f"Generated {len(orders)} orders")  # 추가된 로깅
+    OrderChart.objects.bulk_create(orders)
+    print(f"Saved {len(orders)} orders to the database.")  # 저장된 주문 수 로깅
+
+def create_order_data(request):
+    generate_fake_orders(1000)  # 200개의 데이터 생성
+    orders_count = OrderChart.objects.count()  # 데이터베이스에 저장된 주문 수 확인
+    return JsonResponse({"message": f"Fake order data generated successfully! {orders_count} orders created."})
