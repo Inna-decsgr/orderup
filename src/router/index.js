@@ -9,6 +9,7 @@ import MyMenu from '../views/MyMenu.vue'
 import SearchResult from '../views/SearchResult.vue'
 import DetailStore from '../views/DetailStore.vue'
 import MyCart from '../views/MyCart.vue'
+import OrderList from '../views/OrderList.vue'
 
 
 const routes = [
@@ -61,6 +62,11 @@ const routes = [
     path: '/mycart',
     name: 'mycart',
     component: MyCart
+  },
+  {
+    path: '/orderlist',
+    name: 'orderlist',
+    component: OrderList
   }
 ]
 
