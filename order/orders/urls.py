@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
+from . import views
 from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, delete_order
 
 urlpatterns = [
@@ -22,6 +23,8 @@ urlpatterns = [
     path('addorder/', add_new_order, name='add_new_order'), # 새로운 주문 추가
     path('getorderlist/<int:user_id>/', get_order_list, name='get_order_list'), # 주문 내역 조회
     path('deleteorder/<int:order_id>/', delete_order, name='delete_order'), # 주문 내역 조회
+    path('generateorders/', views.create_order_data, name="generate_orders"), # 주문 데이터 생성 url
+    path('popular_menu/', views.get_popular_menu, name="popular_menu"),  # 주문량 많은 데이터 가져오기
 ]
 
 
