@@ -71,7 +71,7 @@ export default {
     getStatusMessage(status) {
       switch (status) {
         case 'pending':
-          return '주문 접수가 완료되었습니다.';
+          return '주문이 완료되었습니다.';
           case 'delivering':
           return '배달중이에요.';
         case 'delivered':
