@@ -742,3 +742,37 @@ def create_order_data(request):
     generate_fake_orders(1000)  # 200개의 데이터 생성
     orders_count = OrderChart.objects.count()  # 데이터베이스에 저장된 주문 수 확인
     return JsonResponse({"message": f"Fake order data generated successfully! {orders_count} orders created."})
+
+
+# 차트 데이터 반환 함수
+def get_popular_menu(request):
+    # 최근 3일 간의 주문 데이터를 가져오기
+    three_days_ago = timezone.now() - timedelta(days=3)
+    menu_counts = (
+        OrderChart.objects.filter(order_date__gte=three_days_ago)  # 최근 3일 간 데이터 필터링
+        .values("menu_id")
+        .annotate(count=Count("menu_id"))
+        .order_by("-count")
+    )
+
+    #print("Menu counts:", menu_counts)  # 쿼리 결과 출력
+
+    # 상위 8개 메뉴에 대해 메뉴 이름과 주문량을 반환
+    labels = []
+    data = []
+    for item in menu_counts[:8]:
+        try:
+            menu = Menu.objects.get(id=item["menu_id"])
+            labels.append(menu.name)
+            data.append(item["count"])
+        except Menu.DoesNotExist:
+            labels.append("Unknown")
+            data.append(item["count"])
+
+    # 서버 측에서 반환되는 데이터 확인
+    #print("Chart Data:", {"labels": labels, "data": data})  # 로그로 확인
+
+    # 차트 데이터 반환
+    chart_data = {"labels": labels, "data": data}
+    
+    return JsonResponse(chart_data)
