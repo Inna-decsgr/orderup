@@ -81,7 +81,7 @@
               />
             </div>
             <div>
-              <p>총 금액: {{ totalCartPrice }} 원</p>
+              <p>총 금액: {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString() }} 원</p>
             </div>
             <button type="submit">결제하기</button>
           </form>
@@ -189,7 +189,7 @@ export default {
           expiryDate: this.paymentDetails.expiryDate,
           cvv: this.paymentDetails.cvv
         },
-        totalAmount: parseInt(this.totalCartPrice.replace(/,/g, ''))  // 총 금액(쉼표 제거)
+        totalAmount: Number(this.deliveryfee) + this.totalCartPrice
       }
       console.log('요청 데이터', orderData);
       console.log(this.store.id);
