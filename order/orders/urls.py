@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, delete_order
+from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, delete_order, get_new_order
 
 urlpatterns = [
     path('signup/', signup_view, name='signup'),  # 회원가입 URL
@@ -25,6 +25,7 @@ urlpatterns = [
     path('deleteorder/<int:order_id>/', delete_order, name='delete_order'), # 주문 내역 조회
     path('generateorders/', views.create_order_data, name="generate_orders"), # 주문 데이터 생성 url
     path('popular_menu/', views.get_popular_menu, name="popular_menu"),  # 주문량 많은 데이터 가져오기
+    path('getneworder/<int:store_id>/', get_new_order, name='get_new_order'), # 새로운 주문 가게 주인에게 보여주기
 ]
 
 
