@@ -1,40 +1,46 @@
 <template>
   <div>
-    <h3><strong>주문 내역</strong></h3>
-    <div v-for="order in orderlist" :key="order.order_id">
-      <div>
-        <p>{{ getStatusMessage(order.status) }}</p>
-        <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
-        <h5><strong>{{ order.restaurant.name }}</strong></h5>
-        <div v-for="item in order.items" :key="item.order_item_id">
-          <p>{{ item.menu.name }} {{ item.quantity }}개</p>
-        </div>
-        <br/>
-        <p>주문 일시: {{ formattedDate(order.ordered_at) }}</p>
-        <p>주문 번호: {{ generateOrderId(order.order_id) }}</p>
-
+    <div v-if="orderlist.length > 0">
+      <h3><strong>주문 내역</strong></h3>
+      <div v-for="order in orderlist" :key="order.order_id">
         <div>
-          상세 내역
+          <p>{{ getStatusMessage(order.status) }}</p>
+          <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
+          <h5><strong>{{ order.restaurant.name }}</strong></h5>
           <div v-for="item in order.items" :key="item.order_item_id">
-            <strong>{{ item.menu.name }} {{ item.quantity }}개</strong>
-            <li>기본: {{ item.menu.price.toLocaleString() }}원</li>
-            <li v-for="option in item.options" :key="option.name">
-              {{ option.name}} ({{ option.price.toLocaleString() }}원)
-            </li>
+            <p>{{ item.menu.name }} {{ item.quantity }}개</p>
           </div>
-          <p>{{ order.total_price.toLocaleString() }}원</p>
-        </div>
-
-        <div>
-          <p><strong>결제 금액</strong></p>
-          <p>주문 금액 {{ order.total_price.toLocaleString() }}원</p>
-          <p>배달팁 {{ order.restaurant.deliveryfee.toLocaleString() }}원</p>
           <br/>
-          <p>총 결제 금액 <strong>{{ (order.total_price + order.restaurant.deliveryfee).toLocaleString() }}원</strong></p>
-          <p>결제방법 {{ order.payment_method }}</p>
+          <p>주문 일시: {{ formattedDate(order.ordered_at) }}</p>
+          <p>주문 번호: {{ generateOrderId(order.order_id) }}</p>
+
+          <div>
+            상세 내역
+            <div v-for="item in order.items" :key="item.order_item_id">
+              <strong>{{ item.menu.name }} {{ item.quantity }}개</strong>
+              <li>기본: {{ item.menu.price.toLocaleString() }}원</li>
+              <li v-for="option in item.options" :key="option.name">
+                {{ option.name}} ({{ option.price.toLocaleString() }}원)
+              </li>
+            </div>
+            <p>{{ order.total_price.toLocaleString() }}원</p>
+          </div>
+
+          <div>
+            <p><strong>결제 금액</strong></p>
+            <p>주문 금액 {{ order.total_price.toLocaleString() }}원</p>
+            <p>배달팁 {{ order.restaurant.deliveryfee.toLocaleString() }}원</p>
+            <br/>
+            <p>총 결제 금액 <strong>{{ (order.total_price + order.restaurant.deliveryfee).toLocaleString() }}원</strong></p>
+            <p>결제방법 {{ order.payment_method }}</p>
+          </div>
         </div>
+        <hr />
       </div>
-      <hr />
+    </div>
+    <div v-else>
+      <p>주문 내역이 없습니다.</p>
+      <button @click="gotoHome">주문하러 가기</button>
     </div>
   </div>
 </template>
@@ -72,7 +78,9 @@ export default {
       switch (status) {
         case 'pending':
           return '주문이 완료되었습니다.';
-          case 'delivering':
+        case 'accepted':
+          return '주문이 접수되었습니다.';
+        case 'delivering':
           return '배달중이에요.';
         case 'delivered':
           return '배달이 완료되었어요.';
@@ -102,6 +110,9 @@ export default {
         }
       });
       this.getOrderList();
+    },
+    gotoHome() {
+      this.$router.push('/')
     }
   }
 }
