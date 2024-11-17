@@ -61,11 +61,11 @@ export default {
         case 'accepted':
           return '주문 수락';
         case 'delivering':
-          return '배달중이에요.';
+          return '배달중';
         case 'delivered':
-          return '배달이 완료되었어요.';
+          return '배달 완료';
         case 'canceled':
-          return '주문이 취소되었습니다.';
+          return '주문 취소';
         default:
           return '상태 정보 없음';
       }
@@ -80,6 +80,7 @@ export default {
             'X-CSRFToken': csrfToken,
           }
         });
+        alert('주문이 수락되었습니다.')
         console.log(response.data);
     }
   }

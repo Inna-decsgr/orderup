@@ -84,7 +84,7 @@ class Order(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
   ordered_at = models.DateTimeField(auto_now_add=True)
-  status = models.CharField(max_length=20, choices=[('pending', '주문 완료'), ('accepted', '주문 접수'), ('delivering', '배달 중'), ('delivered', '배달 완료'), ('canceled', '주문 취소')])
+  status = models.CharField(max_length=20, choices=[('pending', '주문 완료'), ('accepted', '주문 수락'), ('delivering', '배달 중'), ('delivered', '배달 완료'), ('canceled', '주문 취소')])
   total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
   # 결제 정보 추가
