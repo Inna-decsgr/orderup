@@ -20,7 +20,7 @@
           </ul>
           <p><strong>결제된 금액: {{ Number(orderitem.total_price).toLocaleString() }}원</strong></p>
           <p><strong>결제 방식</strong> : {{ orderitem.payment_method }}</p>
-          <button v-if="orderitem.status === 'pending'">주문 접수하기</button>
+          <button v-if="orderitem.status === 'pending'" @click="acceptOrder(orderitem.order_id)">주문 수락하기</button>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@ export default {
         case 'pending':
           return '새로운 주문';
         case 'accepted':
-          return '주문 접수';
+          return '주문 수락';
         case 'delivering':
           return '배달중이에요.';
         case 'delivered':
@@ -70,6 +70,18 @@ export default {
           return '상태 정보 없음';
       }
     },
+    async acceptOrder(orderid) {
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+        
+        console.log(orderid);
+        const response = await axios.put(`http://localhost:8000/order/acceptorder/${orderid}/`, null, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+          }
+        });
+        console.log(response.data);
+    }
   }
 
 }
