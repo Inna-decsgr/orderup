@@ -29,9 +29,7 @@
           <div>
             <p><strong>결제 금액</strong></p>
             <p>주문 금액 {{ order.total_price.toLocaleString() }}원</p>
-            <p>배달팁 {{ order.restaurant.deliveryfee.toLocaleString() }}원</p>
-            <br/>
-            <p>총 결제 금액 <strong>{{ (order.total_price + order.restaurant.deliveryfee).toLocaleString() }}원</strong></p>
+            <p>총 결제 금액 <strong>{{ (order.total_price).toLocaleString() }}원</strong></p>
             <p>결제방법 {{ order.payment_method }}</p>
           </div>
         </div>
@@ -79,7 +77,7 @@ export default {
         case 'pending':
           return '주문이 완료되었습니다.';
         case 'accepted':
-          return '주문이 접수되었습니다.';
+          return '주문이 수락되었습니다.';
         case 'delivering':
           return '배달중이에요.';
         case 'delivered':
@@ -99,17 +97,21 @@ export default {
       return formatDate(date);
     },
     async cancelorder(orderid) {
-      // 주문 취소 = 데이터베이스에서 주문 삭제 하는 로직
-      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
-      const csrfToken = csrfResponse.data.csrfToken;
+      const isConfirmed = window.confirm('주문을 취소하시겠습니까?');
+
+      if (isConfirmed) {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
         
-      console.log(orderid);
-      await axios.delete(`http://localhost:8000/order/deleteorder/${orderid}/`, {
-        headers: {
-          'X-CSRFToken': csrfToken,
-        }
-      });
-      this.getOrderList();
+        console.log(orderid);
+        const response = await axios.put(`http://localhost:8000/order/cancelorder/${orderid}/`, null, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+          }
+        });
+        console.log(response.data);
+        this.getOrderList();
+      }
     },
     gotoHome() {
       this.$router.push('/')
