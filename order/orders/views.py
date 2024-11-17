@@ -776,3 +776,55 @@ def get_popular_menu(request):
     chart_data = {"labels": labels, "data": data}
     
     return JsonResponse(chart_data)
+
+
+
+# 주문 관리 페이지에서 새로 들어온 주문 사업자, 가게에 맞게 들고오기
+@api_view(['GET'])
+def get_new_order(request, store_id):
+    try:
+        orders = Order.objects.filter(restaurant_id=store_id)
+
+        # 주문 항목과 옵션도 포함해서 데이터 가져오기
+        order_data = []
+        for order in orders:
+            # OrderItem과 OrderItemOption 데이터를 포함시켜서 가져옴
+            items = OrderItem.objects.filter(order=order)
+            order_items = []
+            for item in items:
+                options = OrderItemOption.objects.filter(order_item=item)
+                order_items.append({
+                    'item' : item.menu.name,
+                    'price' : item.menu.price,
+                    'quantity' : item.quantity,
+                    'options' : [{ 'name' : option.name, 'price' : option.price} for option in options]
+                })
+
+            # 사용자 정보 가져오기
+            try:
+                user_profile = UserProfile.objects.get(user=order.user)
+                user_phone = user_profile.phone_number
+                user_address = user_profile.address
+            except UserProfile.DoesNotExist:
+                user_phone = None
+                user_address = None
+
+            #  주문 데이터와 항목, 옵션들 포함
+            order_data.append({
+                'order_id' : order.id,
+                'user': order.user.username,
+                'user_phone' : user_phone,
+                'user_address' : user_address,
+                'ordered_at' : order.ordered_at,
+                'status' : order.status,
+                'total_price' : str(order.total_price),
+                'payment_method' : order.payment_method,
+                'order_items' : order_items
+            })
+
+        return Response({'orders' : order_data})
+
+
+
+    except Order.DoesNotExist:
+        return Response({'error': "No orders found for this user"}, status=404)
