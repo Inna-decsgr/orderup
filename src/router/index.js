@@ -10,6 +10,7 @@ import SearchResult from '../views/SearchResult.vue'
 import DetailStore from '../views/DetailStore.vue'
 import MyCart from '../views/MyCart.vue'
 import OrderList from '../views/OrderList.vue'
+import ManageOrder from '../views/ManageOrder.vue'
 
 
 const routes = [
@@ -67,6 +68,11 @@ const routes = [
     path: '/orderlist',
     name: 'orderlist',
     component: OrderList
+  },
+  {
+    path: '/manageorder',
+    name: 'manageorder',
+    component: ManageOrder
   }
 ]
 
