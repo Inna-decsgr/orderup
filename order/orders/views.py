@@ -693,15 +693,23 @@ def get_order_list(request, user_id):
         return Response({"error": "No orders found for this user"}, status=404)
 
 
-# 주문 취소하면 주문 삭제하는 함수
-def delete_order(request, order_id):
+# 주문 취소하면 해당 주문 상태를 pending에서 canceled로 변경하기
+@api_view(['PUT'])
+def cancel_order(request, order_id):
     try:
-        order = get_object_or_404(Order, id = order_id)
-        print(order)
-        order.delete()
-        return JsonResponse({'message': '주문이 성공적으로 삭제되었습니다.'}, status=204)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
+        print(order_id)
+        # Order 객체 가져오기
+        order = Order.objects.get(id=order_id)
+        print('주문취소할 주문', order)
+
+        order.status = 'canceled'
+
+        order.save()
+
+        return JsonResponse({'message': '주문이 취소되었습니다.', 'order_id': order.id}, status=200)
+    
+    except Order.DoesNotExist:
+        return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
 
 
 
