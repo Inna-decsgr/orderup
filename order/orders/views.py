@@ -854,3 +854,21 @@ def accept_order(request, order_id):
     
     except Order.DoesNotExist:
         return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
+
+
+# 주문 수락하면 해당 주문 상태를 pending에서 accepted로 변경하기
+@api_view(['PUT'])
+def reject_order(request, order_id):
+    try:
+        print(order_id)
+        # Order 객체 가져오기
+        order = Order.objects.get(id=order_id)
+
+        order.status = 'rejected'
+
+        order.save()
+
+        return JsonResponse({'message': '주문이 거절되었습니다.', 'order_id': order.id}, status=200)
+    
+    except Order.DoesNotExist:
+        return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
