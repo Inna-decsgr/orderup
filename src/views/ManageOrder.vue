@@ -20,7 +20,8 @@
           </ul>
           <p><strong>결제된 금액: {{ Number(orderitem.total_price).toLocaleString() }}원</strong></p>
           <p><strong>결제 방식</strong> : {{ orderitem.payment_method }}</p>
-          <button v-if="orderitem.status === 'pending'" @click="acceptOrder(orderitem.order_id)">주문 수락하기</button>
+          <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'accept')">수락하기</button>
+          <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'reject')">거절하기</button>
         </div>
       </div>
     </div>
@@ -66,23 +67,29 @@ export default {
           return '배달 완료';
         case 'canceled':
           return '주문 취소';
+        case 'rejected':
+          return '주문 거절';
         default:
           return '상태 정보 없음';
       }
     },
-    async acceptOrder(orderid) {
-      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+    async handleOrder(orderid, orderType) {
+      const isConfirmed = window.confirm(`이 주문을 ${orderType === 'accept' ? '수락' : '거절'}하시겠습니까?`);
+
+      if (isConfirmed) {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
         
         console.log(orderid);
-        const response = await axios.put(`http://localhost:8000/order/acceptorder/${orderid}/`, null, {
+        const response = await axios.put(`http://localhost:8000/order/${orderType}order/${orderid}/`, null, {
           headers: {
             'X-CSRFToken': csrfToken,
           }
         });
-        alert('주문이 수락되었습니다.')
+        alert(`주문이 ${orderType === 'accept' ? '수락' : '거절'} 되었습니다.`)
         console.log(response.data);
-    }
+      }
+    },
   }
 
 }

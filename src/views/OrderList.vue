@@ -84,6 +84,8 @@ export default {
           return '배달이 완료되었어요.';
         case 'canceled':
           return '주문이 취소되었습니다.';
+        case 'rejected':
+          return '주문이 거절되었습니다.';
         default:
           return '상태 정보 없음';
       }
