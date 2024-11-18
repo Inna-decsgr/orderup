@@ -872,3 +872,13 @@ def reject_order(request, order_id):
     
     except Order.DoesNotExist:
         return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
+
+
+# 해당 가게에 새로 들어온 주문 갯수 가져오기
+@api_view(['GET'])
+def get_order_length(request, store_id):
+    orders = Order.objects.filter(restaurant_id=store_id)
+
+    order_count = orders.count()
+
+    return JsonResponse({'order_count': order_count})
