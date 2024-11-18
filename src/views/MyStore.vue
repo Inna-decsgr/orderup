@@ -14,6 +14,8 @@
           <button @click="editMode(index)">수정</button>
           <button @click="confirmDelete(store.id)">삭제</button>
           <button @click="gotoMenu({id: store.id, name: store.name})">관리</button>
+          <button v-if="user.is_owner" @click="gotoManageOrder(store.id)">새 주문 관리</button>
+          <span v-if="ordercount[store.id] !== undefined">{{ ordercount[store.id] }}</span>
           
           <p>소유주: {{ store.owner }}</p>
           <p>가게 이름: {{ store.name }}</p>
@@ -25,7 +27,7 @@
           <p>가게 운영시간: {{ store.operating_hours }}</p>
           <p>가게 평점: {{ store.rating }}</p>
           <p>배달료: {{ store.delivery_fee }}</p>
-          </div>
+        </div>
       </li>
     </ul>
   </div>
@@ -45,12 +47,17 @@ export default {
     return {
       storedata: [],
       EditNumber: null,
+      ordercount: {}
     }
   },
   computed: {
     ...mapGetters(['getUserId']),
     userid() {
       return this.getUserId;
+    },
+    ...mapGetters(['getUser']),
+    user() {
+      return this.getUser;
     },
   },
   mounted() {
@@ -70,7 +77,11 @@ export default {
         });
 
         this.storedata = response.data;
-        console.log(this.storedata);
+        console.log('가게들', this.storedata);
+
+        this.storedata.forEach(store => {
+          this.getOrderLength(store.id)
+        })
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.errorMessage = error.response.data.message || '내 가게 정보를 불러오는 데 실패했습니다.';
@@ -117,6 +128,23 @@ export default {
           store: JSON.stringify(store)
         }
       })
+    },
+    gotoManageOrder(storeid) {
+      this.$router.push({
+        path: '/manageorder',
+        query: {
+          storeid: storeid
+        }
+      })
+    },
+    async getOrderLength(storeid) {
+      try {
+        console.log('가게 아이디', storeid);
+        const response = await axios.get(`http://localhost:8000/order/orderlength/${storeid}`);
+        this.ordercount[storeid] = response.data.order_count;
+      } catch (error) {
+        console.error('주문 갯수 가져오기 실패:', error)
+      }
     }
   }
 }
