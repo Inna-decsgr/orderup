@@ -133,3 +133,16 @@ class OrderChart(models.Model):
 class Rider(models.Model):
   name = models.CharField(max_length=20)
   phone_number = models.CharField(max_length=15)
+
+
+
+# Location
+class RiderLocation(models.Model):
+  rider = models.ForeignKey(Rider, on_delete=models.CASCADE)
+  latitude = models.FloatField()
+  longitude = models.FloatField()
+  timestamp = models.DateTimeField(auto_now_add=True)
+  status = models.CharField(max_length=100, choices=[('moving', '이동 중')])
+
+  def __str__(self):
+    return f"Rider {self.rider.id} at {self.timestamp}"
