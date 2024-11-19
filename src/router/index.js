@@ -11,6 +11,7 @@ import DetailStore from '../views/DetailStore.vue'
 import MyCart from '../views/MyCart.vue'
 import OrderList from '../views/OrderList.vue'
 import ManageOrder from '../views/ManageOrder.vue'
+import SelectRider from '../views/SelectRider.vue'
 
 
 const routes = [
@@ -73,6 +74,11 @@ const routes = [
     path: '/manageorder',
     name: 'manageorder',
     component: ManageOrder
+  },
+  {
+    path: '/selectrider',
+    name: 'selectrider',
+    component: SelectRider
   }
 ]
 
