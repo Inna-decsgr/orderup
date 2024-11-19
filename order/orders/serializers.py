@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import UserProfile, Category
-from .models import Restaurant, Menu, OptionGroup, OptionItem
+from .models import Restaurant, Menu, OptionGroup, OptionItem, Rider
 from django.shortcuts import get_object_or_404
 import json
 
@@ -86,3 +86,10 @@ class MenuSerializer(serializers.ModelSerializer):
 
         
         return menu  # 생성된 메뉴 객체 반환
+    
+
+
+class RiderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rider
+        fields = ['id', 'name', 'phone_number']
