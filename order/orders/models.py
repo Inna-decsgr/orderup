@@ -127,3 +127,9 @@ class OrderChart(models.Model):
 
   def __str__(self):
     return f"Order {self.order_id} - Store {self.store_id} - Menu {self.menu_id}"
+
+
+# Rider
+class Rider(models.Model):
+  name = models.CharField(max_length=20)
+  phone_number = models.CharField(max_length=15)
