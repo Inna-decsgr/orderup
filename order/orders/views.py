@@ -3,12 +3,12 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu
+from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu, Category
 from rest_framework import status
-from orders.models import UserProfile, Menu, OptionGroup, OptionItem
+from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider
 from django.shortcuts import get_object_or_404
 from django.middleware.csrf import get_token
-from .serializers import RestaurantSerializer
+from .serializers import RestaurantSerializer, RiderSerializer
 from rest_framework import generics
 from decimal import Decimal, InvalidOperation
 from django.core.files.storage import FileSystemStorage
@@ -715,7 +715,8 @@ def cancel_order(request, order_id):
 
 # 주문 데이터 생성 함수
 from .models import OrderChart
-from datetime import timedelta, datetime
+from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 from django.db.models import Count
 from django.utils import timezone 
 import random
@@ -755,9 +756,10 @@ def create_order_data(request):
 # 차트 데이터 반환 함수
 def get_popular_menu(request):
     # 최근 3일 간의 주문 데이터를 가져오기
-    three_days_ago = timezone.now() - timedelta(days=3)
+    one_month_ago = timezone.now() - relativedelta(months=1)
+
     menu_counts = (
-        OrderChart.objects.filter(order_date__gte=three_days_ago)  # 최근 3일 간 데이터 필터링
+        OrderChart.objects.filter(order_date__gte=one_month_ago)  # 최근 3일 간 데이터 필터링
         .values("menu_id")
         .annotate(count=Count("menu_id"))
         .order_by("-count")
@@ -845,9 +847,7 @@ def accept_order(request, order_id):
         print(order_id)
         # Order 객체 가져오기
         order = Order.objects.get(id=order_id)
-
         order.status = 'accepted'
-
         order.save()
 
         return JsonResponse({'message': '주문이 수락되었습니다.', 'order_id': order.id}, status=200)
@@ -856,22 +856,38 @@ def accept_order(request, order_id):
         return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
 
 
-# 주문 수락하면 해당 주문 상태를 pending에서 accepted로 변경하기
+# 주문 거절하면 해당 주문 상태를 pending에서 rejected로 변경하기
 @api_view(['PUT'])
 def reject_order(request, order_id):
     try:
         print(order_id)
         # Order 객체 가져오기
         order = Order.objects.get(id=order_id)
-
         order.status = 'rejected'
-
         order.save()
 
         return JsonResponse({'message': '주문이 거절되었습니다.', 'order_id': order.id}, status=200)
     
     except Order.DoesNotExist:
         return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
+    
+
+
+# 배달 픽업하면 해당 주문 상태를 accepted에서 delivering으로 변경하기
+@api_view(['PUT'])
+def delivering_order(request, order_id):
+    try:
+        print(order_id)
+        # Order 객체 가져오기
+        order = Order.objects.get(id=order_id)
+        order.status = 'delivering'
+        order.save()
+
+        return JsonResponse({'message': '배달원이 음식을 픽업하고 배달중입니다.', 'order_id': order.id}, status=200)
+    
+    except Order.DoesNotExist:
+        return JsonResponse({'error': '주문을 찾을 수 없습니다.'}, status=404)
+
 
 
 # 해당 가게에 새로 들어온 주문 갯수 가져오기
@@ -882,3 +898,12 @@ def get_order_length(request, store_id):
     order_count = orders.count()
 
     return JsonResponse({'order_count': order_count})
+
+
+# 배달 라이더 정보 가져오기
+@api_view(['GET'])
+def get_rider_info(request):
+    riders = Rider.objects.all()
+    serializer = RiderSerializer(riders, many=True)
+    return JsonResponse({"rider_info": serializer.data})
+
