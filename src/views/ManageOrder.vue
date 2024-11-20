@@ -5,6 +5,7 @@
       <div v-for="order in orders" :key="order.order_id">
         <div v-for="orderitem in order" :key="orderitem.order_id">
           <p><strong>주문 번호</strong> : {{ orderitem.order_id }}</p>
+          <p>주문 일시 : {{ formattedDate(orderitem.ordered_at) }}</p>
           <p><strong>주문 상태</strong> : {{ getStatusMessage(orderitem.status) }}</p>
           <p><strong>주소</strong> : {{ orderitem.user_address }}</p>
           <p><strong>주문자 번호</strong> : {{ orderitem.user_phone }}</p>
@@ -22,6 +23,14 @@
           <p><strong>결제 방식</strong> : {{ orderitem.payment_method }}</p>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'accept')">수락하기</button>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'reject')">거절하기</button>
+          <div v-if="orderitem.status === 'accepted' || orderitem.status === 'delivering'">
+            <p>음식 조리 중</p>
+            <button @click="gotoSelectRider({ order_id: orderitem.order_id, status: orderitem.status })">
+              조리 완료
+            </button>
+            {{ orderitem }}
+          </div>
+          <hr/>
         </div>
       </div>
     </div>
@@ -33,6 +42,7 @@
 
 <script>
 import axios from 'axios';
+import { formatDate } from '../utils/dateutils';
 
 export default {
   data() {
@@ -88,8 +98,20 @@ export default {
         });
         alert(`주문이 ${orderType === 'accept' ? '수락' : '거절'} 되었습니다.`)
         console.log(response.data);
+        this.getNewOrder();
       }
     },
+    formattedDate(date) {
+      return formatDate(date);
+    },
+    gotoSelectRider(order) {
+      this.$router.push({
+        path: '/selectrider',
+        query: {
+          order: JSON.stringify(order)
+        }
+      })
+    }
   }
 
 }
