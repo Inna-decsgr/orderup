@@ -5,6 +5,14 @@
       <div v-for="order in orderlist" :key="order.order_id">
         <div>
           <p>{{ getStatusMessage(order.status) }}</p>
+          <p v-if="order.status === 'accepted'">
+            <i class="fa-solid fa-fire-burner"></i>
+            음식을 맛있게 조리하고 있습니다
+          </p>
+          <button v-if="order.status === 'delivering'" @click="showLocation(order.order_id)">배달 현황보기</button>
+          <div v-if="showDelivering[order.order_id]" class="popup">
+            <RiderLocation :cancel="closepopup" :orderid="order.order_id" />
+          </div>
           <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
           <h5><strong>{{ order.restaurant.name }}</strong></h5>
           <div v-for="item in order.items" :key="item.order_item_id">
@@ -45,13 +53,20 @@
 
 <script>
 import axios from 'axios';
+import {reactive} from 'vue'
+
 import { formatDate } from '../utils/dateutils';
+import RiderLocation from '../components/RiderLocation.vue'
 
 export default {
   data() {
     return {
       orderlist: [],
+      showDelivering: reactive({}),
     }
+  },
+  components: {
+    RiderLocation
   },
   computed: {
     user() {
@@ -79,7 +94,7 @@ export default {
         case 'accepted':
           return '주문이 수락되었습니다.';
         case 'delivering':
-          return '배달중이에요.';
+          return '배달원이 음식을 픽업하고 배달중입니다💨';
         case 'delivered':
           return '배달이 완료되었어요.';
         case 'canceled':
@@ -117,11 +132,27 @@ export default {
     },
     gotoHome() {
       this.$router.push('/')
+    },
+    showLocation(orderid) {
+      this.showDelivering[orderid] = true
+    },
+    closepopup(orderid) {
+      this.showDelivering[orderid] = false
     }
   }
 }
 </script>
 
 <style>
-
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
