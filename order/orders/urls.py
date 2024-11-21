@@ -2,9 +2,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order
+from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order
 
 urlpatterns = [
+    path('/', home, name='home'),  # 회원가입 URL
     path('signup/', signup_view, name='signup'),  # 회원가입 URL
     path('login/', login_view, name='login'),  # 로그인 URL
     path('edituser/<int:user_id>/', update_user, name='edituser'), # 사용자 정보 수정 URL

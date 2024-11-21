@@ -15,8 +15,11 @@ from django.core.files.storage import FileSystemStorage
 from .serializers import MenuSerializer 
 import json
 from django.db import transaction
+from django.shortcuts import render
 
 
+def home(request):
+    return render(request, 'index.html')
 
 
 # 회원가입
