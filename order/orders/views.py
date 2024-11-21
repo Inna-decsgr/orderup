@@ -756,6 +756,8 @@ def create_order_data(request):
     return JsonResponse({"message": f"Fake order data generated successfully! {orders_count} orders created."})
 
 
+import logging
+logger = logging.getLogger(__name__)
 # 차트 데이터 반환 함수
 def get_popular_menu(request):
     try:
@@ -791,6 +793,7 @@ def get_popular_menu(request):
     
         return JsonResponse(chart_data)
     except Exception as e:
+        logger.error(f"Error in popular_menu: {str(e)}")  # 로그 기록
         return JsonResponse({'error': str(e)}, status=500)
 
 

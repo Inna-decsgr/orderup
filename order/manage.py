@@ -17,7 +17,7 @@ def main():
         ) from exc
     
     # 배포 환경에서 포트 설정
-    port = os.environ.get("PORT", 8000)
+    port = os.environ.get("PORT", 10000)
     if "runserver" in sys.argv:
         sys.argv = [sys.argv[0], "runserver", f"0.0.0.0:{port}"]
 
