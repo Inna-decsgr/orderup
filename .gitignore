@@ -50,3 +50,5 @@ myenv_orderup/Lib/site-packages/
 
 
 \media
+
+gunicorn.exe
