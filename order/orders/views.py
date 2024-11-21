@@ -15,11 +15,11 @@ from django.core.files.storage import FileSystemStorage
 from .serializers import MenuSerializer 
 import json
 from django.db import transaction
-from django.shortcuts import render
+from django.http import HttpResponse
 
 
 def home(request):
-    return render(request, 'index.html')
+    return HttpResponse("Welcome to the home page!")
 
 
 # 회원가입
