@@ -14,7 +14,7 @@ from pathlib import Path
 from decouple import config
 import os
 
-PORT = os.environ.get("PORT", 8000)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='orderup'),  # 데이터베이스 이름
         'USER': config('DB_USER', default='root'),  # MySQL 사용자 이름
         'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
-        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'HOST': config('DB_HOST', default='localhost'),
         'PORT': config('DB_PORT', default='3306'),
     }
 }
