@@ -29,7 +29,7 @@ export default {
   },
   mounted() {
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}&callback=initMap&v=weekly&libraries=marker&language=ko&region=KR`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=places&language=ko&region=KR`;
     script.async = true;
     script.defer = true;
 
@@ -52,8 +52,6 @@ export default {
       // Maps와 Marker 라이브러리 불러오기
       // eslint-disable-next-line
       const { Map } = await google.maps.importLibrary("maps");
-      // eslint-disable-next-line
-      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
       // 구글 맵 API에서 필요한 요소 불러와서 지도 객체 생성
       this.map = new Map(document.getElementById("map"), {
@@ -65,18 +63,18 @@ export default {
 
       // 마커 추가
       // eslint-disable-next-line
-      const marker = new AdvancedMarkerElement({
+      const marker = new google.maps.Marker({
         map: this.map,
         position: position,
         style: {
           icon: {
-      // eslint-disable-next-line
+            // eslint-disable-next-line
             path: google.maps.SymbolPath.CIRCLE,
-      fillColor: "red",
-      fillOpacity: 1,
-      strokeColor: "white",
-      strokeWeight: 2,
-      scale: 8
+            fillColor: "red",
+            fillOpacity: 1,
+            strokeColor: "white",
+            strokeWeight: 2,
+            scale: 8
           }
         }
       });
