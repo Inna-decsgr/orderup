@@ -65,7 +65,7 @@ CORS_ALLOWED_ORIGINS = [  # 허용할 출처를 설정해서 해당 출처에서
 
 # 모든 출처에서의 요청을 허용하지 않겠다는 설정. 
 # 허용된 출처만 접근할 수 있도록 설정
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 
 # 쿠키나 인증 헤더를 포함한 요청을 허용하도록
 CORS_ALLOW_CREDENTIALS = True 
