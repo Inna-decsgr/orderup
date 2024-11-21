@@ -61,7 +61,6 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [  # 허용할 출처를 설정해서 해당 출처에서 요청할 때 CORS 오류 방지
     "http://localhost:8080",  # Vue.js가 실행 중인 URL
     "http://127.0.0.1:8080",
-    "https://orderup-qm9vmyh09-innas-projects-81fd8c82.vercel.app"
 ]
 
 # 모든 출처에서의 요청을 허용하지 않겠다는 설정. 
@@ -115,7 +114,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='orderup'),  # 데이터베이스 이름
         'USER': config('DB_USER', default='root'),  # MySQL 사용자 이름
         'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='3306'),
     }
 }
