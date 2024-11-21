@@ -14,6 +14,8 @@ from pathlib import Path
 from decouple import config
 import os
 
+PORT = os.environ.get("PORT", 8000)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +29,7 @@ SECRET_KEY = 'django-insecure-rr3y#=9re4t5qona*0rr882m_z6ghc8&l=j_r-s990ibxm_7tn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -56,20 +58,29 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [  # 허용할 출처를 설정해서 해당 출처에서 요청할 때 CORS 오류 방지
     "http://localhost:8080",  # Vue.js가 실행 중인 URL
     "http://127.0.0.1:8080"
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False # true에서 false로 변경
-CORS_ALLOW_CREDENTIALS = True # 추가
+# 모든 출처에서의 요청을 허용하지 않겠다는 설정. 
+# 허용된 출처만 접근할 수 있도록 설정
+CORS_ALLOW_ALL_ORIGINS = False
 
-# CSRF 설정 => 추가
+# 쿠키나 인증 헤더를 포함한 요청을 허용하도록
+CORS_ALLOW_CREDENTIALS = True 
+
+
+
+# 이 출처에서 오는 요청에 대해 CSRF 검사를 신뢰하겠다는 설정 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
 ]
-CSRF_COOKIE_HTTPONLY = False  # JavaScript에서 쿠키 접근 가능
+# CSRF 쿠키가 JavaScript로 접근 가능하도록 허용하는 설정
+CSRF_COOKIE_HTTPONLY = False
+
+# HTTPS에서만 쿠키를 허용하지 않고, HTTP에서도 허용하겠다는 설정
 CSRF_COOKIE_SECURE = False
 
 
