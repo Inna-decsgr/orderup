@@ -60,7 +60,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [  # 허용할 출처를 설정해서 해당 출처에서 요청할 때 CORS 오류 방지
     "http://localhost:8080",  # Vue.js가 실행 중인 URL
-    "http://127.0.0.1:8080"
+    "http://127.0.0.1:8080",
+    "https://orderup-7zpo6e91n-innas-projects-81fd8c82.vercel.app"
 ]
 
 # 모든 출처에서의 요청을 허용하지 않겠다는 설정. 

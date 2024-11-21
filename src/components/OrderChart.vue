@@ -26,7 +26,7 @@ export default {
   methods: {
     async getChartData() {
       try {
-        const response = await axios.get('https://orderup-tlcl.onrender.com/order/popular_menu/');
+        const response = await axios.get('https://orderup-7zpo6e91n-innas-projects-81fd8c82.vercel.app/order/popular_menu/');
         this.chartData = response.data;
         console.log(this.chartData);
         this.createChart();
