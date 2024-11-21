@@ -758,37 +758,40 @@ def create_order_data(request):
 
 # 차트 데이터 반환 함수
 def get_popular_menu(request):
-    # 최근 3일 간의 주문 데이터를 가져오기
-    one_month_ago = timezone.now() - relativedelta(months=1)
+    try:
+        # 최근 3일 간의 주문 데이터를 가져오기
+        one_month_ago = timezone.now() - relativedelta(months=1)
 
-    menu_counts = (
-        OrderChart.objects.filter(order_date__gte=one_month_ago)  # 최근 3일 간 데이터 필터링
-        .values("menu_id")
-        .annotate(count=Count("menu_id"))
-        .order_by("-count")
-    )
+        menu_counts = (
+            OrderChart.objects.filter(order_date__gte=one_month_ago)  # 최근 3일 간 데이터 필터링
+            .values("menu_id")
+            .annotate(count=Count("menu_id"))
+            .order_by("-count")
+        )
 
-    #print("Menu counts:", menu_counts)  # 쿼리 결과 출력
+        #print("Menu counts:", menu_counts)  # 쿼리 결과 출력
 
-    # 상위 8개 메뉴에 대해 메뉴 이름과 주문량을 반환
-    labels = []
-    data = []
-    for item in menu_counts[:8]:
-        try:
-            menu = Menu.objects.get(id=item["menu_id"])
-            labels.append(menu.name)
-            data.append(item["count"])
-        except Menu.DoesNotExist:
-            labels.append("Unknown")
-            data.append(item["count"])
+        # 상위 8개 메뉴에 대해 메뉴 이름과 주문량을 반환
+        labels = []
+        data = []
+        for item in menu_counts[:8]:
+            try:
+                menu = Menu.objects.get(id=item["menu_id"])
+                labels.append(menu.name)
+                data.append(item["count"])
+            except Menu.DoesNotExist:
+                labels.append("Unknown")
+                data.append(item["count"])
 
-    # 서버 측에서 반환되는 데이터 확인
-    #print("Chart Data:", {"labels": labels, "data": data})  # 로그로 확인
+        # 서버 측에서 반환되는 데이터 확인
+        #print("Chart Data:", {"labels": labels, "data": data})  # 로그로 확인
 
-    # 차트 데이터 반환
-    chart_data = {"labels": labels, "data": data}
+        # 차트 데이터 반환
+        chart_data = {"labels": labels, "data": data}
     
-    return JsonResponse(chart_data)
+        return JsonResponse(chart_data)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 
 
