@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rr3y#=9re4t5qona*0rr882m_z6ghc8&l=j_r-s990ibxm_7tn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -116,6 +116,9 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
         'HOST': config('DB_HOST', default='autorack.proxy.rlwy.net'),
         'PORT': config('DB_PORT', default='20457'),
+        'OPTIONS': {
+            'unix_socket': '/var/run/mysqld/mysqld.sock',  # 소켓 파일 경로
+        },
     }
 }
 
