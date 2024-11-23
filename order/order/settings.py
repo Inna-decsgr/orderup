@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='orderup'),  # 데이터베이스 이름
         'USER': config('DB_USER', default='root'),  # MySQL 사용자 이름
         'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': config('DB_HOST', default='mysql.railway.internal'),
         'PORT': config('DB_PORT', default='3306'),
     }
 }
