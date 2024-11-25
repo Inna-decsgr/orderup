@@ -14,7 +14,13 @@ export default {
   data() {
     return {
       map: null,
-      isMapLoaded: false
+      marker: null,
+      positions: [
+        { lat: 37.5665, lng: 126.9780 }, // 음식점
+        { lat: 37.5700, lng: 126.9850 }, // 고객 1
+        { lat: 37.5800, lng: 127.0000 }, // 고객 2
+      ],
+      currentIndex: 0,  // 현재 위치 인덱스
     }
   },
   props: {
@@ -28,17 +34,20 @@ export default {
     }
   },
   mounted() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=places&language=ko&region=KR`;
-    script.async = true;
-    script.defer = true;
+    if (!document.getElementById('google-maps-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-maps-script';
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GOOGLE_MAPS_API_KEY}&callback=initMap&libraries=places&language=ko&region=KR`;
+      script.async = true;
+      script.defer = true;
 
-    script.onload = () => {
-      this.initMap()
+      script.onload = () => {
+        this.initMap();
+      }
+      document.head.appendChild(script);
+
+      window.initMap = this.initMap.bind(this);
     }
-    document.head.appendChild(script);
-
-    window.initMap = this.initMap.bind(this);
   },
   methods: {
     handleCancel() {
@@ -47,9 +56,8 @@ export default {
 
     async initMap() {
       // Google Maps API가 로드되면 호출되는 초기화 함수
-      const position = { lat: 37.5665, lng: 126.9780 };
+      const position = this.positions[0];
 
-      // Maps와 Marker 라이브러리 불러오기
       // eslint-disable-next-line
       const { Map } = await google.maps.importLibrary("maps");
 
@@ -59,11 +67,10 @@ export default {
         center: position,
         mapId: process.env.VUE_APP_GOOGLE_MAPS_MAP_ID
       });
-      console.log(this.map);
 
       // 마커 추가
       // eslint-disable-next-line
-      const marker = new google.maps.Marker({
+      this.marker = new google.maps.Marker({
         map: this.map,
         position: position,
         style: {
@@ -78,7 +85,31 @@ export default {
           }
         }
       });
-      console.log('마커', marker);
+
+      console.log('Marker initialized', this.marker);
+      // 마커 이동 함수 실행
+    },
+    moveMarker() {
+      // 현재 위치가 마지막 위치까지 도달하지 않았으면 이동
+      if (this.currentIndex < this.positions.length) {
+        const position = this.positions[this.currentIndex];
+
+        // 마커의 위치 업데이트
+        this.marker.setPosition(position);
+
+        // 지도 중심 업데이트
+        this.map.setCenter(position);
+
+        // 다음 위치로 이동
+        this.currentIndex++;
+
+        setTimeout(() => {
+          this.moveMarker(); // 재귀 호출로 계속 위치 업데이트
+        }, 1000); // 1000ms(1초) 간격으로 이동
+      }
+    },
+    startMoving() {
+      this.moveMarker();
     }
   }
 }
