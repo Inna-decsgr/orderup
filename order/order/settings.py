@@ -78,7 +78,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:8080",
 ]
 # CSRF 쿠키가 JavaScript로 접근 가능하도록 허용하는 설정
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = True
 
 # HTTPS에서만 쿠키를 허용하지 않고, HTTP에서도 허용하겠다는 설정
 CSRF_COOKIE_SECURE = False
@@ -108,17 +108,28 @@ WSGI_APPLICATION = 'order.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.mysql',
+        #'NAME': config('DB_NAME', default='orderup'),  # 데이터베이스 이름
+        #'USER': config('DB_USER', default='root'),  # MySQL 사용자 이름
+        #'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
+        #'HOST': config('DB_HOST', default='autorack.proxy.rlwy.net'),
+        #'PORT': config('DB_PORT', default='20457'),
+        #'OPTIONS': {
+            #'unix_socket': '/var/run/mysqld/mysqld.sock',  # 소켓 파일 경로
+        #},
+    #}
+#}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME', default='orderup'),  # 데이터베이스 이름
         'USER': config('DB_USER', default='root'),  # MySQL 사용자 이름
         'PASSWORD': config('DB_PASSWORD'),  # MySQL 비밀번호
-        'HOST': config('DB_HOST', default='autorack.proxy.rlwy.net'),
-        'PORT': config('DB_PORT', default='20457'),
-        'OPTIONS': {
-            'unix_socket': '/var/run/mysqld/mysqld.sock',  # 소켓 파일 경로
-        },
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='3306'),
     }
 }
 
