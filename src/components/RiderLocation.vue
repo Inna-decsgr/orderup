@@ -113,7 +113,7 @@ export default {
 
         // 목표 지점에 도달할 때까지 일정 거리만큼 이동하도록 설정 step을 거리로 변경
         const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
-        const step = Math.min(distance, 0.0005);  // 한 번에 이동할 거리로 계산
+        const step = Math.min(distance, 0.00003);  // 한 번에 이동할 거리로 계산
 
         // 이동할 비율로 새로운 위치 계산
         const latStep = (latDiff / distance) * step;
