@@ -88,29 +88,68 @@ export default {
 
       console.log('Marker initialized', this.marker);
       // 마커 이동 함수 실행
+      this.startMoving();
     },
     moveMarker() {
       // 현재 위치가 마지막 위치까지 도달하지 않았으면 이동
-      if (this.currentIndex < this.positions.length) {
-        const position = this.positions[this.currentIndex];
+      if (this.currentIndex < this.positions.length - 1 && this.marker) {
+         // 현재 마커의 위치 가져오기
+        const currentLatLng = this.marker.getPosition();
 
-        // 마커의 위치 업데이트
-        this.marker.setPosition(position);
+        // LatLng 객체에서 숫자 좌표로 변환
+        const currentPosition = {
+          lat: currentLatLng.lat(),
+          lng: currentLatLng.lng(),
+        };
+
+        const nextPosition = this.positions[this.currentIndex + 1];
+
+        console.log("현재 위치:", currentPosition);
+        console.log("다음 목표 위치:", nextPosition);
+
+
+        // 각 좌표 간 차이를 계산
+        const latDiff = nextPosition.lat - currentPosition.lat;
+        const lngDiff = nextPosition.lng - currentPosition.lng;
+
+        // 이동할 비율 계산 (0 ~ 1 사이의 값)
+        const step = 0.05; // 0.5%씩 이동 (더 작은 값으로 조절할 수 있음)
+        const newLat = currentPosition.lat + latDiff * step;
+        const newLng = currentPosition.lng + lngDiff * step;
+
+        // 새로운 위치로 마커 위치 업데이트
+        const newPosition = { lat: newLat, lng: newLng };
+        this.marker.setPosition(newPosition);
 
         // 지도 중심 업데이트
-        this.map.setCenter(position);
+        this.map.setCenter(newPosition);
 
-        // 다음 위치로 이동
-        this.currentIndex++;
+        // 목표 위치 도달 확인
+        const latReached = Math.abs(newLat - nextPosition.lat) < 0.0001;
+        const lngReached = Math.abs(newLng - nextPosition.lng) < 0.0001;
 
-        setTimeout(() => {
-          this.moveMarker(); // 재귀 호출로 계속 위치 업데이트
-        }, 1000); // 1000ms(1초) 간격으로 이동
+        // 목표 위치에 도달한 경우
+        if (latReached && lngReached) {
+          console.log(`목표 위치 도달: ${nextPosition.lat}, ${nextPosition.lng}`);
+          this.currentIndex++; // 다음 위치로 이동
+        }
+
+        // 계속 이동
+        if (this.currentIndex < this.positions.length - 1) {
+          setTimeout(() => {
+            this.moveMarker();
+          }, 200);
+        } else {
+          console.log("모든 경로 이동 완료");
+        }
       }
     },
     startMoving() {
-      this.moveMarker();
-    }
+      if (this.marker) {
+        this.currentIndex = 0;  // 초기화
+        this.moveMarker();  // 마커 이동 시작
+      }
+    },
   }
 }
 </script>
