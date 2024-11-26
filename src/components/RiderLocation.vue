@@ -103,7 +103,6 @@ export default {
         };
 
         const nextPosition = this.positions[this.currentIndex + 1];
-
         console.log("현재 위치:", currentPosition);
         console.log("다음 목표 위치:", nextPosition);
 
@@ -112,10 +111,16 @@ export default {
         const latDiff = nextPosition.lat - currentPosition.lat;
         const lngDiff = nextPosition.lng - currentPosition.lng;
 
-        // 이동할 비율 계산 (0 ~ 1 사이의 값)
-        const step = 0.05; // 0.5%씩 이동 (더 작은 값으로 조절할 수 있음)
-        const newLat = currentPosition.lat + latDiff * step;
-        const newLng = currentPosition.lng + lngDiff * step;
+        // 목표 지점에 도달할 때까지 일정 거리만큼 이동하도록 설정 step을 거리로 변경
+        const distance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
+        const step = Math.min(distance, 0.0005);  // 한 번에 이동할 거리로 계산
+
+        // 이동할 비율로 새로운 위치 계산
+        const latStep = (latDiff / distance) * step;
+        const lngStep = (lngDiff / distance) * step;
+
+        const newLat = currentPosition.lat + latStep;
+        const newLng = currentPosition.lng + lngStep;
 
         // 새로운 위치로 마커 위치 업데이트
         const newPosition = { lat: newLat, lng: newLng };
