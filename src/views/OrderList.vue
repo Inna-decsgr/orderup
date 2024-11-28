@@ -11,7 +11,7 @@
           </p>
           <button v-if="order.status === 'delivering'" @click="showLocation(order.order_id)">배달 현황보기</button>
           <div v-if="showDelivering[order.order_id]" class="popup">
-            <RiderLocation :cancel="closepopup" :orderid="order.order_id" ref="RiderLocationComponent" />
+            <RiderLocation :cancel="closepopup" :orderid="order.order_id" />
           </div>
           <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
           <h5><strong>{{ order.restaurant.name }}</strong></h5>
@@ -134,18 +134,7 @@ export default {
       this.$router.push('/')
     },
     showLocation(orderid) {
-      this.showDelivering[orderid] = true
-
-      // Vue의 nextTick을 사용해서 렌더링 후 startMoving 호출될 수 있도록
-      this.$nextTick(() => {
-        const riderLocationComponent = this.$refs.RiderLocationComponent;
-
-        if (riderLocationComponent && typeof riderLocationComponent.startMoving === 'function') {
-          riderLocationComponent.startMoving();
-        } else {
-          console.error('startMoving 메서드가 정의되지 않았습니다.')
-        }
-      })
+      this.showDelivering[orderid] = true 
     },
     closepopup(orderid) {
       this.showDelivering[orderid] = false
