@@ -21,6 +21,7 @@ export default {
         { lat: 37.5800, lng: 127.0000 }, // 고객 2
       ],
       currentIndex: 0,  // 현재 위치 인덱스
+      isWaiting: false,
     }
   },
   props: {
@@ -90,9 +91,8 @@ export default {
       // 마커 이동 함수 실행
       this.startMoving();
     },
-    moveMarker() {
-      // 현재 위치가 마지막 위치까지 도달하지 않았으면 이동
-      if (this.currentIndex < this.positions.length - 1 && this.marker) {
+    moveMarker() {// 현재 위치가 마지막 위치까지 도달하지 않았으면 이동
+      if (this.currentIndex < this.positions.length - 1 && this.marker && !this.isWaiting) {
          // 현재 마커의 위치 가져오기
         const currentLatLng = this.marker.getPosition();
 
@@ -136,16 +136,31 @@ export default {
         // 목표 위치에 도달한 경우
         if (latReached && lngReached) {
           console.log(`목표 위치 도달: ${nextPosition.lat}, ${nextPosition.lng}`);
-          this.currentIndex++; // 다음 위치로 이동
-        }
+          this.currentIndex++;
 
-        // 계속 이동
-        if (this.currentIndex < this.positions.length - 1) {
+
+          // 첫 번째 배달지에서 5초 대기
+          if (this.currentIndex === 1) {
+            console.log("첫 번째 배달지 도착, 5초 대기중....");
+            this.isWaiting = true;
+            setTimeout(() => {
+              this.isWaiting = false;
+              console.log('다음으로 이동할 배달지', this.currentIndex);
+              this.moveMarker();
+            }, 5000);
+            return;
+          }
+
+          if (this.currentIndex === this.positions.length - 1) {
+            console.log("배달을 마쳤습니다.");
+            return;
+          }
+
+          this.moveMarker();  // 다음 위치로 이동
+        } else {
           setTimeout(() => {
             this.moveMarker();
           }, 200);
-        } else {
-          console.log("모든 경로 이동 완료");
         }
       }
     },
@@ -158,6 +173,7 @@ export default {
   }
 }
 </script>
+
 
 
 
