@@ -22,6 +22,7 @@ export default {
       ],
       currentIndex: 0,  // 현재 위치 인덱스
       isWaiting: false,
+      isTracking: false,
     }
   },
   props: {
@@ -52,6 +53,7 @@ export default {
   },
   methods: {
     handleCancel() {
+      this.isTracking = false;
       this.cancel(this.orderid)
     },
 
@@ -87,12 +89,10 @@ export default {
         }
       });
 
-      console.log('Marker initialized', this.marker);
-      // 마커 이동 함수 실행
       this.startMoving();
     },
     moveMarker() {// 현재 위치가 마지막 위치까지 도달하지 않았으면 이동
-      if (this.currentIndex < this.positions.length - 1 && this.marker && !this.isWaiting) {
+      if (this.currentIndex < this.positions.length - 1 && this.marker && !this.isWaiting && this.isTracking) {
          // 현재 마커의 위치 가져오기
         const currentLatLng = this.marker.getPosition();
 
@@ -145,8 +145,7 @@ export default {
             this.isWaiting = true;
             setTimeout(() => {
               this.isWaiting = false;
-              console.log('다음으로 이동할 배달지', this.currentIndex);
-              this.moveMarker();
+              if (this.isTracking) this.moveMarker();
             }, 5000);
             return;
           }
@@ -156,10 +155,10 @@ export default {
             return;
           }
 
-          this.moveMarker();  // 다음 위치로 이동
+          if (this.isTracking) this.moveMarker();  // 다음 위치로 이동
         } else {
           setTimeout(() => {
-            this.moveMarker();
+            if (this.isTracking) this.moveMarker();
           }, 200);
         }
       }
@@ -167,6 +166,7 @@ export default {
     startMoving() {
       if (this.marker) {
         this.currentIndex = 0;  // 초기화
+        this.isTracking = true;
         this.moveMarker();  // 마커 이동 시작
       }
     },
