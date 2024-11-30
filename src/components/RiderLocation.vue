@@ -60,6 +60,8 @@ export default {
     async initMap() {
       // Google Maps API가 로드되면 호출되는 초기화 함수
       const position = this.positions[0];
+      const position1 = this.positions[1]; 
+      const position2 = this.positions[2]; 
 
       // eslint-disable-next-line
       const { Map } = await google.maps.importLibrary("maps");
@@ -69,6 +71,40 @@ export default {
         zoom: 18,
         center: position,
         mapId: process.env.VUE_APP_GOOGLE_MAPS_MAP_ID
+      });
+
+      // 배달지 표시
+      // eslint-disable-next-line
+      this.marker1 = new google.maps.Marker({
+        map: this.map,
+        position: position1,
+        style: {
+          icon: {
+            // eslint-disable-next-line
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "red",
+            fillOpacity: 1,
+            strokeColor: "white",
+            strokeWeight: 2,
+            scale: 8
+          }
+        }
+      });
+      // eslint-disable-next-line
+      this.marker2 = new google.maps.Marker({
+        map: this.map,
+        position: position2,
+        style: {
+          icon: {
+            // eslint-disable-next-line
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "red",
+            fillOpacity: 1,
+            strokeColor: "white",
+            strokeWeight: 2,
+            scale: 8
+          }
+        }
       });
 
       // 마커 추가
