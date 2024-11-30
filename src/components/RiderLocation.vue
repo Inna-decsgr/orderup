@@ -76,16 +76,12 @@ export default {
       this.marker = new google.maps.Marker({
         map: this.map,
         position: position,
-        style: {
-          icon: {
-            // eslint-disable-next-line
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "red",
-            fillOpacity: 1,
-            strokeColor: "white",
-            strokeWeight: 2,
-            scale: 8
-          }
+        icon: {
+          url: "/motocycle.svg",
+          // eslint-disable-next-line
+          scaledSize: new google.maps.Size(60, 60), 
+          // eslint-disable-next-line
+          anchor: new google.maps.Point(20, 40), 
         }
       });
 
