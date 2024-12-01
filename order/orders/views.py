@@ -916,3 +916,18 @@ def get_rider_info(request):
     serializer = RiderSerializer(riders, many=True)
     return JsonResponse({"rider_info": serializer.data})
 
+
+# 배달이 완료되면 해당 주문 상태를 delivering에서 delivered로 변경하기
+@api_view(['PUT'])
+def completed_delivery(request, order_id):
+    try:
+        print(order_id)
+        # Order 객체 가져오기
+        order = Order.objects.get(id=order_id)
+        order.status = 'delivered'
+        order.save()
+
+        return JsonResponse({'message': '배달이 완료되었습니다.', 'order_id': order.id}, status=200)
+    
+    except Order.DoesNotExist:
+        return JsonResponse({'error': '배달 중 오류가 발생했습니다.'}, status=404)
