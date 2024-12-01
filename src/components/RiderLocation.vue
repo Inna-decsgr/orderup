@@ -1,10 +1,11 @@
 <template>
   <div class="popup-content">
-    라이더 배달 현황
+    <span>{{ isDelivering ? '배달 중' : '배달 완료' }}</span>
     <button @click="handleCancel">x</button>
     <div>
       <div id="map" style="width:100%; height:500px"></div>
     </div>
+    <button v-if="!isDelivering" @click="confirm">배달 확인</button>
   </div>
 </template>
 
@@ -23,6 +24,7 @@ export default {
       currentIndex: 0,  // 현재 위치 인덱스
       isWaiting: false,
       isTracking: false,
+      isDelivering: true
     }
   },
   props: {
@@ -184,6 +186,7 @@ export default {
 
           if (this.currentIndex === this.positions.length - 1) {
             console.log("배달을 마쳤습니다.");
+            this.isDelivering = false;
             return;
           }
 
@@ -202,6 +205,10 @@ export default {
         this.moveMarker();  // 마커 이동 시작
       }
     },
+    confirm() {
+      this.$emit('confirm');
+      this.cancel(this.orderid)
+    }
   }
 }
 </script>
