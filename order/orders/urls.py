@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order
+from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery
 
 urlpatterns = [
     path('', home, name='home'), 
@@ -32,6 +32,7 @@ urlpatterns = [
     path('orderlength/<int:store_id>/', get_order_length, name='get_order_length'), # 새로 들어온 주문 갯수 받아오기
     path('riderinfo/', get_rider_info, name='get_rider_info'), # 배달원 정보 가져오기
     path('pickupfood/<int:order_id>/', delivering_order, name='delivering_order'), # 음식 픽업 후 배달중
+    path('completedelivery/<int:order_id>/', completed_delivery, name='completed_delivery'), # 음식 픽업 후 배달중
 
     
 ]
