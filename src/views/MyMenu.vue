@@ -5,7 +5,7 @@
       <h4>{{ store.name }}</h4>
       <p>메뉴판</p>
       <button @click="ShowForm">메뉴 등록</button>
-      <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="storeid" :getmenu="fetchStoreMenu" />
+      <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="store.id" :getmenu="fetchStoreMenu" />
       <div v-for="(menu, index) in menus" :key="index">
         <div v-if="EditNumber === index">
           <EditMenu :menu="menu" :canceledit="cancelEdit" :getMenu="fetchStoreMenu"/>
