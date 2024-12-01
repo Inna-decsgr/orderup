@@ -11,7 +11,7 @@
           </p>
           <button v-if="order.status === 'delivering'" @click="showLocation(order.order_id)">배달 현황보기</button>
           <div v-if="showDelivering[order.order_id]" class="popup">
-            <RiderLocation :cancel="closepopup" :orderid="order.order_id" />
+            <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
           <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
           <h5><strong>{{ order.restaurant.name }}</strong></h5>
@@ -138,6 +138,20 @@ export default {
     },
     closepopup(orderid) {
       this.showDelivering[orderid] = false
+    },
+    async handleConfirm(orderid) {
+      console.log('확인 버튼 클릭됨! orderlist에서 처리')
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+        
+        console.log(orderid);
+        const response = await axios.put(`http://localhost:8000/order/completedelivery/${orderid}/`, null, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+          }
+        });
+      console.log(response.data);
+      this.getOrderList();
     }
   }
 }
