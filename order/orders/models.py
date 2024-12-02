@@ -146,3 +146,19 @@ class RiderLocation(models.Model):
 
   def __str__(self):
     return f"Rider {self.rider.id} at {self.timestamp}"
+  
+
+
+from django.core.exceptions import ValidationError
+# Review
+class Review(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+  image = models.ImageField(upload_to='reviews/', blank=True, null=True) 
+  image_url = models.URLField(null=False, default="")
+  rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])  # 1~5점 제한
+  date = models.DateTimeField(auto_now_add=True)
+  content = models.TextField(max_length=500)
+
+  def clean(self):
+    if not self.image and not self.image_url:
+      raise ValidationError("Either an image or an image URL must be provided")
