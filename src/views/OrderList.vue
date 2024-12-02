@@ -5,6 +5,7 @@
       <div v-for="order in orderlist" :key="order.order_id">
         <div>
           <p>{{ getStatusMessage(order.status) }}</p>
+          <button v-if="order.status === 'delivered'" @click="gotoReview(order)">후기 작성하기</button>
           <p v-if="order.status === 'accepted'">
             <i class="fa-solid fa-fire-burner"></i>
             음식을 맛있게 조리하고 있습니다
@@ -152,6 +153,11 @@ export default {
         });
       console.log(response.data);
       this.getOrderList();
+    },
+    gotoReview(order) {
+      console.log(order);
+      this.$router.push('/newreview');
+      this.$store.commit('setOrder', order)
     }
   }
 }
