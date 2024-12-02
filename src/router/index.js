@@ -12,6 +12,7 @@ import MyCart from '../views/MyCart.vue'
 import OrderList from '../views/OrderList.vue'
 import ManageOrder from '../views/ManageOrder.vue'
 import SelectRider from '../views/SelectRider.vue'
+import RegisterReview from '../views/RegisterReview.vue'
 
 
 const routes = [
@@ -79,7 +80,13 @@ const routes = [
     path: '/selectrider',
     name: 'selectrider',
     component: SelectRider
-  }
+  },
+  {
+    path: '/newreview',
+    name: 'newreview',
+    component: RegisterReview
+  },
+  
 ]
 
 const router = createRouter({
