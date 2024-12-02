@@ -6,7 +6,8 @@ const store = createStore({
     return {
       user: null, // 사용자 정보 저장,
       menucart: [],
-      store: []
+      store: [],
+      order: []
     };
   },
   mutations: {
@@ -25,6 +26,9 @@ const store = createStore({
     setStore(state, store) {
       state.store = store;
     },
+    setOrder(state, order) {
+      state.order = order;
+    }
   },
   actions: {
     login({ commit }, user) {
@@ -46,6 +50,9 @@ const store = createStore({
     },
     getStore(state) {
       return state.store
+    },
+    getOrder(state) {
+      return state.order
     }
   },
   plugins: [createPersistedState()],
