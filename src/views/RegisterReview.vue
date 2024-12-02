@@ -17,11 +17,26 @@
         </div>
         
       </div>
-      <div>사진 첨부하기</div>
-      <input 
-        type="text" 
-        placeholder="음식의 맛, 양, 포장 상태 등 음식에 대한 솔직한 리뷰를 남겨주세요.(선택사항)"
-      >
+      <div>
+        <button @click="showFileInput = !showFileInput">사진 첨부하기</button>
+        <input 
+          v-if="showFileInput"
+          type="file"
+          accept="image/*"
+          @change="handleFileUpload"
+        >
+        <div v-if="this.imagePreview">
+          <img :src="this.imagePreview" alt="이미지 미리보기" style="width:300px; height:200px">
+        </div>
+      </div>
+      <div>
+        <textarea
+          placeholder="음식의 맛, 양, 포장 상태 등 음식에 대한 솔직한 리뷰를 남겨주세요.(선택사항)"
+          rows="4"
+          cols="50"
+          style="resize: vertical;"
+        ></textarea>
+      </div>
       <button>완료</button>
     </div>
   </div>
@@ -33,6 +48,9 @@ export default {
     return {
       rating: 0,  // 클릭된 최종 별점
       hoveredStar: 0,  // 사용자가 마우스 호버 중인 별
+      showFileInput: false,
+      uploadedFile: null,
+      imageFile: null,
     };
   },
   computed: {
@@ -60,6 +78,20 @@ export default {
     isHalfStar(star) {
       // 반만 채워진 별 표시 조건
       return star <= this.hoveredStar;
+    },
+    handleFileUpload(event) {
+      console.log(event.target.files)
+      this.uploadedFile = event.target.files[0];
+      console.log('업로드된 파일:', this.uploadedFile);
+
+      if (this.uploadedFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagePreview = e.target.result;
+          console.log('미리보기 URL',this.imagePreview);
+        };
+        reader.readAsDataURL(this.uploadedFile);
+      }
     }
   }
 }
