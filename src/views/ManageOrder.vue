@@ -23,12 +23,11 @@
           <p><strong>결제 방식</strong> : {{ orderitem.payment_method }}</p>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'accept')">수락하기</button>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'reject')">거절하기</button>
-          <div v-if="orderitem.status === 'accepted' || orderitem.status === 'delivering'">
+          <div v-if="orderitem.status === 'accepted'">
             <p>음식 조리 중</p>
             <button @click="gotoSelectRider({ order_id: orderitem.order_id, status: orderitem.status })">
               조리 완료
             </button>
-            {{ orderitem }}
           </div>
           <hr/>
         </div>
