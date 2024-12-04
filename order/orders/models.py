@@ -153,6 +153,7 @@ from django.core.exceptions import ValidationError
 # Review
 class Review(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+  store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True)  
   image = models.ImageField(upload_to='reviews/', blank=True, null=True) 
   image_url = models.URLField(null=False, default="")
   rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])  # 1~5점 제한
