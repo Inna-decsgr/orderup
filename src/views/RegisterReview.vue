@@ -31,18 +31,21 @@
       </div>
       <div>
         <textarea
+          v-model="reviewText"
           placeholder="음식의 맛, 양, 포장 상태 등 음식에 대한 솔직한 리뷰를 남겨주세요.(선택사항)"
           rows="4"
           cols="50"
           style="resize: vertical;"
         ></textarea>
       </div>
-      <button>완료</button>
+      <button @click="submitReview">완료</button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -50,12 +53,21 @@ export default {
       hoveredStar: 0,  // 사용자가 마우스 호버 중인 별
       showFileInput: false,
       uploadedFile: null,
+      imagePreview: null,
       imageFile: null,
+      storeid: null,
+      reviewText: ""
     };
   },
   computed: {
     order() {
       return this.$store.getters.getOrder;
+    },
+    store() {
+      return this.$store.getters.getStore;
+    },
+    user() {
+      return this.$store.getters.getUser;
     }
   },
   methods: {
@@ -85,12 +97,42 @@ export default {
       console.log('업로드된 파일:', this.uploadedFile);
 
       if (this.uploadedFile) {
+        this.imageFile = this.uploadedFile;
         const reader = new FileReader();
         reader.onload = (e) => {
           this.imagePreview = e.target.result;
           console.log('미리보기 URL',this.imagePreview);
         };
         reader.readAsDataURL(this.uploadedFile);
+      }
+    },
+    async submitReview() {
+      this.storeid = this.order.restaurant.id;
+      console.log(this.storeid);
+      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+      const csrfToken = csrfResponse.data.csrfToken;
+
+      const formData = new FormData();
+      formData.append("rating", this.rating);
+      formData.append("userid", this.user.id)
+      formData.append("review", this.reviewText);
+
+      if (this.uploadedFile) {
+        formData.append("image", this.uploadedFile);
+      }
+
+      console.log(formData);
+
+      try {
+        const response = await axios.post(`http://localhost:8000/order/newreview/${this.storeid}/`, formData, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+            "Content-Type": "multipart/form-data",
+          }
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error('리뷰 등록 중 오류 발생:', error)
       }
     }
   }
