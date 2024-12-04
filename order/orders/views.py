@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu, Category
 from rest_framework import status
-from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider
+from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider, Review
 from django.shortcuts import get_object_or_404
 from django.middleware.csrf import get_token
 from .serializers import RestaurantSerializer, RiderSerializer
@@ -677,6 +677,7 @@ def get_order_list(request, user_id):
             order_data.append({
                 "order_id" : order.id,
                 "restaurant": {
+                    "id": order.restaurant_id,
                     "name": order.restaurant.name,
                     "address" : order.restaurant.address,
                     "phone_number" : order.restaurant.phone_number,
@@ -931,3 +932,65 @@ def completed_delivery(request, order_id):
     
     except Order.DoesNotExist:
         return JsonResponse({'error': '배달 중 오류가 발생했습니다.'}, status=404)
+    
+
+
+@api_view(['POST'])
+def register_review(request, store_id):
+    if request.method == 'POST':
+
+        print(request.data)
+
+        try:
+            #요청 데이터에서 메뉴 정보 추출
+            rating = request.POST.get("rating")
+            review_content = request.POST.get("review")
+            user_id = request.POST.get("userid")
+            
+            try:
+                user = User.objects.get(pk=user_id)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "User not found"}, status=404)
+            
+            # 가게 객체 가져오기
+            store = get_object_or_404(Restaurant, pk=store_id)
+
+            # 리뷰 생성
+            review = Review(
+                user_id=user.id,
+                store=store,
+                rating=rating,
+                content=review_content,
+                date=timezone.now()
+            )
+
+            # 이미지 저장
+            if 'image' in request.FILES:
+                image_file = request.FILES['image']
+                fs = FileSystemStorage()
+                # 이미지 파일 저장
+                filename = fs.save(f'reviews/{image_file.name}', image_file)
+                review.image = filename 
+                review.image_url = f"{request.build_absolute_uri('/media/')}{filename}"  
+
+            review.save()
+
+            # JSON 응답을 위해 이미지 필드를 문자열로 변환
+            image_url = review.image.url if review.image else None
+
+            return JsonResponse({
+                "message": "Review successfully created",
+                "review_id": review.id,
+                "user": user.id,
+                "store": store.id,
+                "rating": review.rating,
+                "content": review.content,
+                "date": review.date,
+                "image": image_url,
+                "image_url": review.image_url
+            }, status=201)
+        
+        except Exception as e:
+            return JsonResponse({"error": f"An error occurred: {e}"},  status=500)
+
+        
