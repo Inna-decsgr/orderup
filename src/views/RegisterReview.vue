@@ -116,12 +116,11 @@ export default {
       formData.append("rating", this.rating);
       formData.append("userid", this.user.id)
       formData.append("review", this.reviewText);
+      formData.append("orderid", this.order.order_id)
 
       if (this.uploadedFile) {
         formData.append("image", this.uploadedFile);
       }
-
-      console.log(formData);
 
       try {
         const response = await axios.post(`http://localhost:8000/order/newreview/${this.storeid}/`, formData, {
@@ -131,10 +130,13 @@ export default {
           }
         });
         console.log(response.data);
+        alert("리뷰 등록이 완료되었습니다. 소중한 리뷰를 남겨주셔서 감사합니다.")
+        this.$router.push('/')
+
       } catch (error) {
         console.error('리뷰 등록 중 오류 발생:', error)
       }
-    }
+    },
   }
 }
 </script>
