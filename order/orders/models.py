@@ -90,6 +90,9 @@ class Order(models.Model):
   # 결제 정보 추가
   payment_method = models.CharField(max_length=50, blank=True)
   payment_details = models.JSONField(default=dict) # 결제 카드 정보 등을 JSON 형태로 저장
+  
+  # 리뷰 여부
+  review = models.BooleanField(default=False)
 
   def __str__(self):
     return f"Order #{self.id} by {self.user.username}"
@@ -153,7 +156,8 @@ from django.core.exceptions import ValidationError
 # Review
 class Review(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
-  store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True)  
+  store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True) 
+  order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True)
   image = models.ImageField(upload_to='reviews/', blank=True, null=True) 
   image_url = models.URLField(null=False, default="")
   rating = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])  # 1~5점 제한
