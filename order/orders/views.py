@@ -934,7 +934,7 @@ def completed_delivery(request, order_id):
         return JsonResponse({'error': '배달 중 오류가 발생했습니다.'}, status=404)
     
 
-
+# 새 리뷰 등록하기
 @api_view(['POST'])
 def register_review(request, store_id):
     if request.method == 'POST':
@@ -946,6 +946,7 @@ def register_review(request, store_id):
             rating = request.POST.get("rating")
             review_content = request.POST.get("review")
             user_id = request.POST.get("userid")
+            order_id= request.POST.get("orderid")
             
             try:
                 user = User.objects.get(pk=user_id)
@@ -955,13 +956,20 @@ def register_review(request, store_id):
             # 가게 객체 가져오기
             store = get_object_or_404(Restaurant, pk=store_id)
 
+            # 해당 주문 가져오기
+            try:
+                order = Order.objects.get(pk=order_id, user=user, restaurant=store)
+            except Order.DoesNotExist:
+                return JsonResponse({"error": "Order not found or does not match user/store"}, status=404)
+
             # 리뷰 생성
             review = Review(
                 user_id=user.id,
                 store=store,
                 rating=rating,
                 content=review_content,
-                date=timezone.now()
+                date=timezone.now(),
+                order_id=order_id
             )
 
             # 이미지 저장
@@ -975,12 +983,17 @@ def register_review(request, store_id):
 
             review.save()
 
+            # 해당 주문의 review 필드 True로 업데이트
+            order.review = True
+            order.save()
+
             # JSON 응답을 위해 이미지 필드를 문자열로 변환
             image_url = review.image.url if review.image else None
 
             return JsonResponse({
                 "message": "Review successfully created",
                 "review_id": review.id,
+                "order_id": review.order_id,
                 "user": user.id,
                 "store": store.id,
                 "rating": review.rating,
@@ -994,3 +1007,5 @@ def register_review(request, store_id):
             return JsonResponse({"error": f"An error occurred: {e}"},  status=500)
 
         
+
+
