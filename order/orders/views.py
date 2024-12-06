@@ -688,7 +688,8 @@ def get_order_list(request, user_id):
                 "total_price": order.total_price,
                 "payment_method" : order.payment_method,
                 "payment_details" : order.payment_details,
-                "items" : order_items
+                "items" : order_items,
+                "review": order.review
             })
 
         return Response(order_data)
@@ -1006,6 +1007,36 @@ def register_review(request, store_id):
         except Exception as e:
             return JsonResponse({"error": f"An error occurred: {e}"},  status=500)
 
-        
 
+# 해당 가게의 리뷰 모두 가져오기
+@api_view(['GET'])
+def get_all_reviews(request, store_id):
+    try:
+        # 특정 가게 가져오기
+        store = Restaurant.objects.get(id=store_id)
 
+        # 해당 가게의 모든 리뷰 가져오기
+        reviews = store.reviews.select_related('user')
+        print(reviews)
+
+        # 리뷰 정보 담을 리스트 생성
+        reviews_data = []
+        for review in reviews:
+            review_data = {
+                'review_id': review.id,
+                'rating': review.rating,
+                'content': review.content,
+                'date': review.date,
+                'image_url': review.image_url,
+                'user' : {
+                    'id' : review.user.id,
+                    'username': review.user.username
+                }
+            }
+            reviews_data.append(review_data)
+
+        return JsonResponse({'store_id': store.id, 'reviews': reviews_data}, safe=False)
+    
+    except Restaurant.DoesNotExist:
+        return JsonResponse({'error': '가게를 찾을 수 없습니다.'}, status=404)
+    
