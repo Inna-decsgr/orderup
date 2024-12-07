@@ -3,6 +3,10 @@
     가게 상세 페이지
     <p><strong>{{ store.name }}</strong></p>
     <div v-if="menus.length > 0">
+      <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
+      <div v-if="storeReview && allreviews.length > 0">
+        <AllReviews :cancel="closereview" :reviews="this.allreviews"/>
+      </div>
       <h4>메뉴판</h4>
       <div v-for="menu in menus" :key="menu.id">
         <p>{{ menu.name }}</p>
@@ -57,6 +61,7 @@
 
 <script>
 import axios from 'axios';
+import AllReviews from '../components/AllReviews.vue'
 
 export default {
   data() {
@@ -66,8 +71,13 @@ export default {
       showPopup: false,
       selectedMenu: [],
       selectedOptions: {},
-      optiongroups: []
+      optiongroups: [],
+      storeReview: false,
+      allreviews: []
     }
+  },
+  components: {
+    AllReviews
   },
   computed: {
     store() {
@@ -82,6 +92,7 @@ export default {
   },
   mounted() {
     this.getMenus(this.store.id);
+    this.AllReviews();
   },
   methods: {
     async getMenus(storeid) {
@@ -152,6 +163,22 @@ export default {
         });
       }
     },
+    async AllReviews() {
+      try {
+        const response = await axios.get(`http://localhost:8000/order/allreviews/${this.store.id}`);
+        console.log(response.data);
+        this.allreviews = response.data.reviews;
+        console.log('리뷰 개수', this.allreviews.length);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    },
+    showreview() {
+      this.storeReview = true
+    },
+    closereview() {
+      this.storeReview = false
+    }
   }
 }
 </script>
