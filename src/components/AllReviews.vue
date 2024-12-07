@@ -2,9 +2,9 @@
   <div>
     <div v-if="reviews.length > 0">
       <p><strong>모든 리뷰</strong></p>
+      <button @click="handleCancel">X</button>
       <div v-for="review in reviews" :key="review.review_id" class="review">
         <p><strong>{{ review.user.username }}</strong></p>
-        <span>{{ review.rating }}</span>
         <div class="star-rating">
           <div class="stars">
             <i
@@ -12,7 +12,7 @@
               :key="star" 
               class="fa fa-star"
               :class="{'active': star <= review.rating}"
-            ></i><span v-if="review.rating !== 0">{{ review.rating }}</span>
+            ></i><span v-if="review.rating !== 0" class="ratingscore">{{ review.rating }}</span>
           </div>
         </div>
         <span>{{ new Date(review.date).toLocaleDateString() }}</span>
@@ -21,17 +21,20 @@
         <p>{{ review.content }}</p>
       </div>
     </div>
-    <p v-else>등록된 리뷰가 없습니다.</p>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
-  data() {
-    return {
-      reviews: []
+  props: {
+    cancel: {
+      type: Function,
+      required: true
+    },
+    reviews: {
+      type: Array,
+      required: true
     }
   },
   computed: {
@@ -39,22 +42,13 @@ export default {
       return this.$store.getters.getStore;
     },
   },
-  created() {
-    this.AllReviews();
-  },
   methods: {
     isFullStar(star) {
       // 완전히 채워진 별 표시 조건
       return star <= this.rating;
     },
-    async AllReviews() {
-      try {
-        const response = await axios.get(`http://localhost:8000/order/allreviews/${this.store.id}`);
-        console.log(response.data);
-        this.reviews = response.data.reviews
-      } catch (error) {
-        console.error('Error fetching reviews:', error);
-      }
+    handleCancel() {
+      this.cancel();
     }
   }
 }
@@ -85,7 +79,7 @@ export default {
 
 .stars {
   display: flex;
-  justify-content: center;
+  align-items: center;
 }
 
 .stars .fa {
@@ -97,6 +91,10 @@ export default {
 .stars .fa.active{
   color: rgb(250, 215, 19);
   /*text-shadow: 0 0 5px rgb(230, 204, 62);*/
+}
+
+.ratingscore {
+  padding-left: 10px;
 }
 
 </style>
