@@ -7,17 +7,9 @@
     <div>
       <ul v-if="storedata">
         <li v-for="(store, index) in storedata" :key="index">
-          <div v-if="EditNumber === index">
-            <EditStore :store="store" :cancel="handleCancel" :getStore="getMyStore"/>
-          </div>
-          <div v-else>
+          <div>
             <p>{{ index }}.</p>
-            <button @click="editMode(index)">수정</button>
-            <button @click="confirmDelete(store.id)">삭제</button>
-            <button @click="gotoMenu({id: store.id, name: store.name})">관리</button>
-            <button v-if="user.is_owner" @click="gotoManageOrder(store.id)">새 주문 관리</button>
-            <span v-if="ordercount[store.id] !== undefined">{{ ordercount[store.id] }}</span>
-          
+            <button @click="gotoManageStore({store, index})">가게 관리하기</button>
             <p>소유주: {{ store.owner }}</p>
             <p>가게 이름: {{ store.name }}</p>
             <p>가게 전화번호: {{ store.phone_number }}</p>
@@ -39,27 +31,18 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
-import EditStore from '../components/EditStore.vue'
+
 
 export default {
-  components: {
-    EditStore
-  },
   data() {
     return {
-      storedata: [],
-      EditNumber: null,
-      ordercount: {}
+      storedata: []
     }
   },
   computed: {
     ...mapGetters(['getUserId']),
     userid() {
       return this.getUserId;
-    },
-    ...mapGetters(['getUser']),
-    user() {
-      return this.getUser;
     },
   },
   mounted() {
@@ -80,10 +63,6 @@ export default {
 
         this.storedata = response.data;
         console.log('가게들', this.storedata);
-
-        this.storedata.forEach(store => {
-          this.getOrderLength(store.id)
-        })
       } catch (error) {
         if (error.response && error.response.status === 400) {
           this.errorMessage = error.response.data.message || '내 가게 정보를 불러오는 데 실패했습니다.';
@@ -96,57 +75,9 @@ export default {
     gotoRegistrationStore() {
       this.$router.push('/registrationstore')
     },
-    editMode(index) {
-      this.EditNumber = index;
-    },
-    handleCancel() {
-      this.EditNumber = null;
-    },
-    confirmDelete(storeid) {
-      const isConfirmed = confirm('정말로 가게를 삭제하시겠습니까?');
-      if (isConfirmed) {
-        this.deleteStore(storeid); 
-      }
-    },
-    async deleteStore(storeid) {
-      // 가게 삭제 로직 구현
-      console.log(storeid);
-      const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
-      const csrfToken = csrfResponse.data.csrfToken;
-
-      const response = await axios.delete(`http://localhost:8000/order/deletestore/${storeid}/`, {
-        headers: {
-          'X-CSRFToken': csrfToken,
-        }
-      });
-      console.log(response.data);
-      alert('가게가 성공적으로 삭제되었습니다.');
-      this.getMyStore();
-    },
-    gotoMenu(store) {
-      this.$router.push({
-        path: '/mymenu',
-        query: {
-          store: JSON.stringify(store)
-        }
-      })
-    },
-    gotoManageOrder(storeid) {
-      this.$router.push({
-        path: '/manageorder',
-        query: {
-          storeid: storeid
-        }
-      })
-    },
-    async getOrderLength(storeid) {
-      try {
-        console.log('가게 아이디', storeid);
-        const response = await axios.get(`http://localhost:8000/order/orderlength/${storeid}`);
-        this.ordercount[storeid] = response.data.order_count;
-      } catch (error) {
-        console.error('주문 갯수 가져오기 실패:', error)
-      }
+    gotoManageStore({ store }) {
+      this.$router.push('/manageStore');
+      this.$store.commit('setStore', store);
     }
   }
 }
