@@ -5,14 +5,13 @@ import SignupPage from '../views/SignupPage.vue'
 import UserProfilePage from '../views/UserProfilePage.vue'
 import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
-import MyMenu from '../views/MyMenu.vue'
 import SearchResult from '../views/SearchResult.vue'
 import DetailStore from '../views/DetailStore.vue'
 import MyCart from '../views/MyCart.vue'
 import OrderList from '../views/OrderList.vue'
-import ManageOrder from '../views/ManageOrder.vue'
 import SelectRider from '../views/SelectRider.vue'
 import RegisterReview from '../views/RegisterReview.vue'
+import ManageStore from '../views/ManageStore.vue'
 
 
 const routes = [
@@ -47,11 +46,6 @@ const routes = [
     component: StoreRegistration
   },
   {
-    path: '/mymenu',
-    name: 'mymenu',
-    component: MyMenu
-  },
-  {
     path: '/searchresult',
     name: 'searchresult',
     component: SearchResult
@@ -72,11 +66,6 @@ const routes = [
     component: OrderList
   },
   {
-    path: '/manageorder',
-    name: 'manageorder',
-    component: ManageOrder
-  },
-  {
     path: '/selectrider',
     name: 'selectrider',
     component: SelectRider
@@ -86,7 +75,11 @@ const routes = [
     name: 'newreview',
     component: RegisterReview
   },
-  
+  {
+    path: '/manageStore',
+    name: 'ManageStore',
+    component: ManageStore
+  },
 ]
 
 const router = createRouter({
