@@ -2,6 +2,8 @@
   <div>
     <h2>가게 수정</h2>
     <div>
+      <button @click="updateStore">수정</button>
+      <button @click="handleCancel">취소</button>
       <form @submit.prevent="updateStore">
         <label for="storename">가게 이름</label>
         <input 
@@ -72,8 +74,6 @@
         >
       </form>
     </div>
-    <button @click="updateStore">수정</button>
-    <button @click="handleCancel">취소</button>
   </div>
 </template>
 
@@ -90,10 +90,6 @@ export default {
       type: Function,
       required: true
     },
-    getStore: {
-      type: Function,
-      required: true
-    }
   },
   data() {
     return {
@@ -153,7 +149,6 @@ export default {
         alert('정보 수정이 성공적으로 완료되었습니다.')
         this.$router.push('/mystore');
         this.cancel();
-        this.getStore();
       } catch (error) {
         console.error('가게 정보 수정 실패', error);
       }
