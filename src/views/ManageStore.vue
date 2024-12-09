@@ -18,7 +18,7 @@
       <ManageOrder :storeid="store.id" :cancel="handleCancel" />
     </div>
     <div v-if="showreview">
-      <ManageReview />
+      <ManageReview :storeid="store.id"/>
     </div>
   </div>
 </template>
