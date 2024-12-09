@@ -2,8 +2,9 @@
   <div>
     <div v-if="reviews.length > 0">
       <p><strong>모든 리뷰</strong></p>
-      <button @click="handleCancel">X</button>
+      <button v-if="user && !user.is_owner" @click="handleCancel">X</button>
       <div v-for="review in reviews" :key="review.review_id" class="review">
+        <button v-if="user && user.is_owner" @click="removeReview(review.review_id)">삭제하기</button>
         <p><strong>{{ review.user.username }}</strong></p>
         <div class="star-rating">
           <div class="stars">
@@ -25,22 +26,30 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   props: {
     cancel: {
       type: Function,
-      required: true
+      required: false
     },
     reviews: {
       type: Array,
       required: true
+    },
+    getallreviews: {
+      type: Function,
+      required: false
     }
   },
   computed: {
     store() {
       return this.$store.getters.getStore;
     },
+    user() {
+      return this.$store.getters.getUser;
+    }
   },
   methods: {
     isFullStar(star) {
@@ -49,6 +58,23 @@ export default {
     },
     handleCancel() {
       this.cancel();
+    },
+    async removeReview(reviewid) {
+      const isConfirmed = window.confirm('리뷰를 삭제하시겠습니까?');
+
+      if(isConfirmed) {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        const response = await axios.delete(`http://localhost:8000/order/removereview/${reviewid}/`, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+          }
+        });
+        console.log(response.data);
+        alert("리뷰가 성공적으로 삭제되었습니다.");
+        this.getallreviews();
+      }
     }
   }
 }
