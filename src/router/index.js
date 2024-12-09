@@ -12,6 +12,7 @@ import OrderList from '../views/OrderList.vue'
 import SelectRider from '../views/SelectRider.vue'
 import RegisterReview from '../views/RegisterReview.vue'
 import ManageStore from '../views/ManageStore.vue'
+import MyReview from '../views/MyReview.vue'
 
 
 const routes = [
@@ -79,6 +80,11 @@ const routes = [
     path: '/manageStore',
     name: 'ManageStore',
     component: ManageStore
+  },
+  {
+    path: '/myreview',
+    name: 'MyReview',
+    component: MyReview
   },
 ]
 
