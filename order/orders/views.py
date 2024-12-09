@@ -1039,4 +1039,13 @@ def get_all_reviews(request, store_id):
     
     except Restaurant.DoesNotExist:
         return JsonResponse({'error': '가게를 찾을 수 없습니다.'}, status=404)
-    
+
+
+# 리뷰 삭제하는 뷰
+def remove_reviews(request, review_id):
+    try:
+        review = get_object_or_404(Review, id=review_id)
+        review.delete()  # 리뷰 삭제
+        return JsonResponse({'message': '리뷰가 성공적으로 삭제되었습니다.'}, status=204)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
