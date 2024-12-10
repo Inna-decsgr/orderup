@@ -8,7 +8,7 @@
           <button v-if="order.review === false && order.status === 'delivered'" @click="gotoReview(order)">후기 작성하기</button>
           <div v-if="order.review === true">
             <p>후기 작성완료</p>
-            <button @click="gotoMyReview">후기 보러가기</button>
+            <button @click="gotoMyReview(order.restaurant.id)">후기 보러가기</button>
           </div>
           <p v-if="order.status === 'accepted'">
             <i class="fa-solid fa-fire-burner"></i>
@@ -163,8 +163,13 @@ export default {
       this.$router.push('/newreview');
       this.$store.commit('setOrder', order)
     },
-    gotoMyReview() {
-      this.$router.push('/myreview');
+    gotoMyReview(storeid) {
+      this.$router.push({
+        path: '/myreview',
+        query: {
+          storeid: storeid
+        }
+      });
     }
   }
 }
