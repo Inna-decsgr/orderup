@@ -49,6 +49,8 @@ export default {
             'X-CSRFToken': csrfToken,
           }
       });
+      alert('배달을 시작합니다.');
+      this.$router.push("/manageStore");
       console.log(response.data);
     }
   }
