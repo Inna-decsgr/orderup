@@ -6,7 +6,7 @@
     <button @click="confirmDelete(store.id)">가게 삭제</button>
     <button @click="gotoMenu({id: store.id, name: store.name})">메뉴 관리</button>
     <button @click="gotoReview">리뷰 관리</button>
-    <button @click="showNewOrder">새 주문 관리</button>
+    <button @click="showNewOrder">주문 관리</button>
     <span v-if="ordercount[store.id] !== undefined">{{ ordercount[store.id] }}</span>
     <div v-if="editmode">
       <EditStore :store="store" :cancel="handleCancel" />

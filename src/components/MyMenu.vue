@@ -2,7 +2,7 @@
   <div>
     <div>
       <p>메뉴판</p>
-      <button @click="ShowForm">메뉴 등록</button>
+      <button @click="ShowForm">+메뉴 등록</button>
       <button @click="cancel">취소</button>
       <NewMenu v-if="this.NewForm" :cancel="cancel" :storeid="store.id" :getmenu="fetchStoreMenu" />
       <div v-for="(menu, index) in menus" :key="index">

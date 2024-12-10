@@ -40,7 +40,7 @@
       </div>
       <button @click.prevent="addOptionsGroup">옵션 그룹 추가</button>
 
-      <button>메뉴 등록</button>
+      <button>완료</button>
       <button @click="handleCancel">취소</button>
     </form> 
   </div>
