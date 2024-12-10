@@ -904,7 +904,7 @@ def delivering_order(request, order_id):
 # 해당 가게에 새로 들어온 주문 갯수 가져오기
 @api_view(['GET'])
 def get_order_length(request, store_id):
-    orders = Order.objects.filter(restaurant_id=store_id)
+    orders = Order.objects.filter(restaurant_id=store_id, status='pending')
 
     order_count = orders.count()
 
@@ -1049,3 +1049,29 @@ def remove_reviews(request, review_id):
         return JsonResponse({'message': '리뷰가 성공적으로 삭제되었습니다.'}, status=204)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+    
+
+
+# 내가 작성한 리뷰 불러오기
+@api_view(['GET'])
+def get_my_review(request):
+    userid = request.GET.get('userid')
+    storeid = request.GET.get('storeid')
+
+    # Review 테이블에서 조건에 맞는 리뷰 가져오기
+    reviews = Review.objects.filter(user_id=userid, store_id=storeid).select_related('user')
+
+    # 필요한 데이터 추출
+    review_list = [
+        {
+            'id': review.id,
+            'content': review.content,
+            'rating': review.rating,
+            'username': review.user.username,
+            'date': review.date,
+            'image_url': review.image_url
+        }
+        for review in reviews
+    ]
+
+    return JsonResponse({'reviews': review_list})
