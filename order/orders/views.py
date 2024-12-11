@@ -1075,3 +1075,34 @@ def get_my_review(request):
     ]
 
     return JsonResponse({'reviews': review_list})
+
+
+# 리뷰 수정하는 뷰 함수
+@api_view(['PUT'])
+def edit_my_review(request, review_id):
+    try:
+        print(review_id)
+        # Order 객체 가져오기
+        review = Review.objects.get(id=review_id)
+
+        # 요청에서 전달받은 데이터 처리
+        content = request.data.get('content')
+        rating = request.data.get('rating')
+
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            fs = FileSystemStorage()
+            filename = fs.save(f'reviews/{image_file.name}', image_file)
+            review.image = filename
+            review.image_url = f"{request.build_absolute_uri('/media/')}{filename}"
+
+        # 수정된 내용 반영
+        review.content = content
+        review.rating = rating
+
+        review.save()
+
+        return JsonResponse({'message': '리뷰를 성공적으로 수정하였습니다.', 'review_id': review.id}, status=200)
+    
+    except Review.DoesNotExist:
+        return JsonResponse({'error': '리뷰를 찾을 수 없습니다.'}, status=404)
