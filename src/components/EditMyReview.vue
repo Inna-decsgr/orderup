@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="editReview">
+    <form>
       <div>
         <label for="reviewcontent">리뷰 내용</label><br/>
         <textarea
@@ -36,12 +36,13 @@
           </div>
       </div>
     </form>
-    <button @click="editReview">완료</button>
+    <button type="submit" @click="editReview(localReviews[0].id)">완료</button>
     <button @click="cancel">취소</button>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   props: {
@@ -75,6 +76,39 @@ export default {
           this.imagePreview = e.target.result;
         };
         reader.readAsDataURL(file);
+      }
+    },
+    async editReview(reviewid) {
+      const reviewData = {
+        content: this.localReviews[0].content,
+        rating: this.currentRating,
+        image: this.imageFile || this.localReviews[0].image_url
+      };
+
+      console.log('수정된 리뷰 데이터', reviewData);
+
+      const formData = new FormData();
+      formData.append('content', reviewData.content);
+      formData.append('rating', reviewData.rating);
+
+      // 이미지가 변경되면 새 이미지로 없으면 기존 이미지 사용
+      if (reviewData.image) {
+        formData.append('image', reviewData.image);
+      }
+
+      try {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+        
+        const response = await axios.put(`http://localhost:8000/order/editmyreview/${reviewid}`, formData, {
+          headers: {
+            'X-CSRFToken': csrfToken,
+          }
+        });
+        console.log('서버 응답', response.data);
+      } catch (error) {
+        console.error('리뷰 수정 중 오류', error);
+        alert('리뷰 수정 중 오류가 발생했습니다.')
       }
     },
     updateRating(star) {
