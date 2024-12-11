@@ -1,6 +1,8 @@
 <template>
   작성한 리뷰
-  <div v-for="review in reviews" :key="review.id">
+  <button v-if="!isEditReview" @click="editReview">리뷰 수정하기</button>
+  <div v-if="!isEditReview">
+    <div v-for="review in reviews" :key="review.id">
       <p><strong>{{ review.username }}</strong></p>
       <div class="star-rating">
         <div class="stars">
@@ -16,17 +18,26 @@
       <br/>
       <img v-if="review.image_url" :src="review.image_url" alt="Review Image" class="review-image">
       <p>{{ review.content }}</p>
+    </div>
+  </div>
+  <div v-else>
+    <EditMyReview :cancel="cancelEdit" :reviews="reviews"/>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { formatDate } from '../utils/dateutils';
+import EditMyReview from '../components/EditMyReview.vue';
 
 export default {
+  components: {
+    EditMyReview
+  },
   data() {
     return {
-      reviews: []
+      reviews: [],
+      isEditReview: false
     }
   },
   computed: {
@@ -54,6 +65,12 @@ export default {
     formattedDate(date) {
       return formatDate(date);
     },
+    editReview() {
+      this.isEditReview = true;
+    },
+    cancelEdit() {
+      this.isEditReview = false;
+    }
   }
 }
 </script>
