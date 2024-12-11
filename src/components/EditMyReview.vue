@@ -100,12 +100,13 @@ export default {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
         
-        const response = await axios.put(`http://localhost:8000/order/editmyreview/${reviewid}`, formData, {
+        const response = await axios.put(`http://localhost:8000/order/editmyreview/${reviewid}/`, formData, {
           headers: {
             'X-CSRFToken': csrfToken,
           }
         });
         console.log('서버 응답', response.data);
+        this.cancel();
       } catch (error) {
         console.error('리뷰 수정 중 오류', error);
         alert('리뷰 수정 중 오류가 발생했습니다.')
