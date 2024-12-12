@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
-from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu, Category
+from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu, Category, Like
 from rest_framework import status
 from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider, Review
 from django.shortcuts import get_object_or_404
@@ -1082,7 +1082,7 @@ def get_my_review(request):
 def edit_my_review(request, review_id):
     try:
         print(review_id)
-        # Order 객체 가져오기
+        # 리뷰 객체 가져오기
         review = Review.objects.get(id=review_id)
 
         # 요청에서 전달받은 데이터 처리
@@ -1106,3 +1106,29 @@ def edit_my_review(request, review_id):
     
     except Review.DoesNotExist:
         return JsonResponse({'error': '리뷰를 찾을 수 없습니다.'}, status=404)
+
+# 가게 찜하기
+@api_view(['POST'])
+def toggle_like(request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            store_id = request.data.get("storeid")
+
+            # Like가 이미 존재하는지 확인
+            like, created = Like.objects.get_or_create(user=user, store_id=store_id)
+
+            if not created:
+                # 이미 존재하면 is_active 상태를 반전시키기
+                like.is_active = not like.is_active
+            else:
+                # 새로 생성된 경우 is_active를 true로 설정
+                like.is_active = True
+                like.created_at = timezone.now()
+
+            like.save()
+            print(like.is_active)
+            return JsonResponse({'is_active': like.is_active}, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({'error': '유저를 찾을 수 없습니다.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
