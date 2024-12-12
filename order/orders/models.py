@@ -36,6 +36,7 @@ class Restaurant(models.Model):
   image_url = models.URLField(null=False)  # 이미지 URL 저장
   delivery_fee = models.DecimalField(max_digits=7, decimal_places=2)
   menus = models.ManyToManyField('Menu', related_name='restaurants', blank=True)
+  liked_users = models.ManyToManyField(User, through='Like', related_name='liked_restaurants')
 
   def __str__(self):
     return self.name
