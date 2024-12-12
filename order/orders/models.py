@@ -167,3 +167,14 @@ class Review(models.Model):
   def clean(self):
     if not self.image and not self.image_url:
       raise ValidationError("Either an image or an image URL must be provided")
+
+
+# Like
+class Like(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='like')
+  store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='like')
+  created_at = models.DateTimeField(auto_now_add=True)
+  is_active = models.BooleanField(default=False)
+
+  def __str__(self):
+    return f"{self.user.username} likes {self.store.name}"
