@@ -1132,3 +1132,32 @@ def toggle_like(request, user_id):
             return JsonResponse({'error': '유저를 찾을 수 없습니다.'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+
+
+# 가게들 찜 정보 불러오기
+@api_view(['GET'])
+def get_store_likes(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+
+        # Like 모델에서 해당 유저가 찜한 정보를 추출하기
+        likes = Like.objects.filter(user=user, is_active=True).select_related('store')
+
+        # 유저가 찜한 가게의 정보를 JSON 형태로 반환
+        store_likes = [
+            {
+                'store_id' : like.store.id,
+                'store_name' : like.store.name,
+                'created_at' : like.created_at,
+                'is_active' : like.is_active
+            }
+            for like in likes
+        ]
+
+        return JsonResponse({'likes': store_likes}, safe=False)
+    
+    except User.DoesNotExist:
+            return JsonResponse({'error': '유저를 찾을 수 없습니다.'}, status=404)
+    except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
