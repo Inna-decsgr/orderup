@@ -1,11 +1,12 @@
 <template>
   가게 찜
   <button @click="toggleLike">
-    <i :class="`fa-${this.isactive ? 'solid' : 'regular'} fa-heart`"></i>
+    <i :class="`fa-${isactive ? 'solid' : 'regular'} fa-heart`"></i>
   </button>
   {{ this.isactive }}
   {{ storeid }}
   {{ user.id }}
+  {{ this.likedstore }}
 </template>
 
 <script>
@@ -15,17 +16,18 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      isactive: false
+      isactive: this.likedstore.includes(this.storeid) ? true : false
     }
   },
   props: {
     storeid: {
       type: Number,
       required: true
+    },
+    likedstore: {
+      type: Array,
+      required: true
     }
-  },
-  mounted() {
-    //this.getStoreLike()
   },
   computed: {
     ...mapGetters(['getUser']),
@@ -34,10 +36,6 @@ export default {
     },
   },
   methods: {
-    async getStoreLike() {
-      await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`, { storeid: this.storeid });
-    },
-
     async toggleLike() {
       try {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
