@@ -4,7 +4,8 @@
     <div v-if="user">
       <p>{{ user.username }}님 <span v-if="user.is_owner" style="font-weight: bold;">- 사업자</span></p>
       <div v-if="!user.is_owner">
-        <button @click="gotoCart"><i class="fa-solid fa-cart-shopping"></i></button>
+        <button @click="gotoCart"><i class="fa-solid fa-cart-shopping"></i> 장바구니</button>
+        <button @click="gotoLike">찜</button>
         <button @click="gotoOrderList">주문 내역</button>
       </div>
     </div>
@@ -40,6 +41,9 @@ export default {
     },
     gotoOrderList() {
       this.$router.push('/orderlist')
+    },
+    gotoLike() {
+      this.$router.push('/userlike')
     }
   }
 }
