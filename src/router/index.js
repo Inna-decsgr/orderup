@@ -13,6 +13,7 @@ import SelectRider from '../views/SelectRider.vue'
 import RegisterReview from '../views/RegisterReview.vue'
 import ManageStore from '../views/ManageStore.vue'
 import MyReview from '../views/MyReview.vue'
+import UserStoreLike from '../views/UserStoreLike.vue'
 
 
 const routes = [
@@ -85,6 +86,11 @@ const routes = [
     path: '/myreview',
     name: 'MyReview',
     component: MyReview
+  },
+  {
+    path: '/userlike',
+    name: 'UserStoreLike',
+    component: UserStoreLike
   },
 ]
 
