@@ -51,13 +51,15 @@ import axios from 'axios';
 import FilteredStore from '../components/FilteredStore.vue'
 import SearchBar from '../components/SearchBar.vue'
 import OrderChart from '../components/OrderChart.vue'
+import RecentOrderStore from '../components/RecentOrderStore.vue'
 
 
 export default {
   components: {
     FilteredStore,
     SearchBar,
-    OrderChart
+    OrderChart,
+    RecentOrderStore
   },
   computed: {
     user() {
