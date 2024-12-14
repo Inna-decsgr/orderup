@@ -40,6 +40,9 @@
     <div>
       <OrderChart />
     </div>
+    <div>
+      <RecentOrderStore />
+    </div>
   </div>
 </template>
 
