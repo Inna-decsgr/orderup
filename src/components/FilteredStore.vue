@@ -41,9 +41,9 @@ export default {
   },
   methods: {
     async getStoreLike() {
-      const stores = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`, { storeid: this.storeid });
-      console.log(stores.data);
-      this.likedstore = stores.data.likes.map(like => like.store_id);
+      const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`, { storeid: this.storeid });
+      console.log(response.data);
+      this.likedstore = response.data.likes.map(like => like.store_id);
       console.log('가게 아이디들', this.likedstore);
       
     },
