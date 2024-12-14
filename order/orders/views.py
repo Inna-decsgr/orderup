@@ -1149,8 +1149,14 @@ def get_store_likes(request, user_id):
             {
                 'store_id' : like.store.id,
                 'store_name' : like.store.name,
+                'rating' : like.store.rating,
+                'review_count': like.store.reviews.count(),
+                'delivery_fee' : float(like.store.delivery_fee),
+                'description' : like.store.description,
+                'image' : like.store.image.url if like.store.image else None,
+                'image_url' : like.store.image_url,
                 'created_at' : like.created_at,
-                'is_active' : like.is_active
+                'is_active' : like.is_active,
             }
             for like in likes
         ]
