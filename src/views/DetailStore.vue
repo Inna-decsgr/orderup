@@ -91,7 +91,7 @@ export default {
     }
   },
   mounted() {
-    this.getMenus(this.store.id);
+    this.getMenus(this.store.id || this.store.store_id);
     this.AllReviews();
   },
   methods: {
@@ -165,7 +165,7 @@ export default {
     },
     async AllReviews() {
       try {
-        const response = await axios.get(`http://localhost:8000/order/allreviews/${this.store.id}`);
+        const response = await axios.get(`http://localhost:8000/order/allreviews/${this.store.id || this.store.store_id}`);
         console.log(response.data);
         this.allreviews = response.data.reviews;
         console.log('리뷰 개수', this.allreviews.length);
