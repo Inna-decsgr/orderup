@@ -681,7 +681,10 @@ def get_order_list(request, user_id):
                     "name": order.restaurant.name,
                     "address" : order.restaurant.address,
                     "phone_number" : order.restaurant.phone_number,
-                    "deliveryfee" : order.restaurant.delivery_fee
+                    "deliveryfee" : order.restaurant.delivery_fee,
+                    "rating": order.restaurant.rating,
+                    "description": order.restaurant.description,
+                    'image_url': order.restaurant.image_url
                 },
                 "ordered_at": order.ordered_at,
                 "status" : order.status,
