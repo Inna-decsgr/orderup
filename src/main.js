@@ -8,7 +8,8 @@ axios.defaults.withCredentials = true;  // Axios 요청에서 쿠키를 포함�
 
 // Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js' 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import './index.css'
 
 createApp(App)
   .use(router)
