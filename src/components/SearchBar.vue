@@ -8,7 +8,7 @@
         v-model="keyword"
         @keyup.enter="goResultPage"
       />
-      <button class="btn btn-outline-secondary" type="button" @click="goResultPage">검색</button>
+      <button class="btn btn-outline-secondary" type="button" @click="goResultPage" :disabled="!keyword.trim()">검색</button>
     </div>
   </div>
 </template>
