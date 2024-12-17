@@ -767,10 +767,10 @@ logger = logging.getLogger(__name__)
 def get_popular_menu(request):
     try:
         # 최근 3일 간의 주문 데이터를 가져오기
-        one_month_ago = timezone.now() - relativedelta(months=1)
+        one_year_ago = timezone.now() - timedelta(days=365)
 
         menu_counts = (
-            OrderChart.objects.filter(order_date__gte=one_month_ago)  # 최근 3일 간 데이터 필터링
+            OrderChart.objects.filter(order_date__gte=one_year_ago)  # 최근 1년간 데이터 필터링
             .values("menu_id")
             .annotate(count=Count("menu_id"))
             .order_by("-count")
