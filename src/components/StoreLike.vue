@@ -16,7 +16,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      isactive: this.likedstore.includes(this.storeid) ? true : false
+      isactive: Array.isArray(this.likedstore) && this.likedstore.includes(this.storeid) ? true : false
     }
   },
   props: {
@@ -26,7 +26,8 @@ export default {
     },
     likedstore: {
       type: Array,
-      required: true
+      required: true,
+      default: () => []
     }
   },
   computed: {
