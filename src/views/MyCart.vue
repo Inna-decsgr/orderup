@@ -6,7 +6,7 @@
       <button @click="gotoHome">+더 담으러 가기</button>
     </div>
     <div v-else>
-      <p><strong>[{{ store.name }}]</strong></p>
+      <p><strong>{{ store.name }}</strong></p>
       <div v-for="(item, index) in menucart" :key="index" class="menu-item">
         <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
         <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
@@ -225,9 +225,15 @@ export default {
     async getDeliveryfee(storeid) {
       const stores = await axios.get('http://localhost:8000/order/getallstores/');
       console.log(stores.data);
+
       const store = stores.data.find(store => store.id === storeid);
-      this.deliveryfee = store.deliveryfee.toLocaleString();
-      console.log(this.deliveryfee);
+
+      if (store && store.deliveryfee) {
+        this.deliveryfee = store.deliveryfee.toLocaleString();
+        console.log(this.deliveryfee);
+      } else {
+        console.error('Store or delivery fee not found');
+      }
     }
   }
 }
