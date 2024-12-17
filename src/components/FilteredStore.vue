@@ -5,7 +5,7 @@
         <h3 @click="detailstore({id:store.id, name: store.name})" style="cursor:pointer">
           {{ store.name }}
         </h3>
-        <StoreLike :storeid="store.id" :likedstore="this.likedstore" />
+        <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
         <p>{{ store.rating }}</p>
@@ -21,6 +21,11 @@ import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
+  data() {
+    return {
+      likedstore : []
+    }
+  },
   components: {
     StoreLike
   },
