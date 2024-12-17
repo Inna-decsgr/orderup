@@ -1,6 +1,7 @@
 <template>
   <div>
     <h5>장바구니</h5>
+    <button @click="clearcart">장바구니 비우기</button>
     <div v-if="menucart.length === 0">
       <p>장바구니가 텅 비었어요</p>
       <button @click="gotoHome">+더 담으러 가기</button>
@@ -234,6 +235,9 @@ export default {
       } else {
         console.error('Store or delivery fee not found');
       }
+    },
+    clearcart() {
+      this.$store.commit('clearMenucart');
     }
   }
 }
