@@ -38,10 +38,10 @@
       <FilteredStore :filteredstore="filteredData"/>
     </div>
     <div>
-      <OrderChart />
+      <RecentOrderStore />
     </div>
     <div>
-      <RecentOrderStore />
+      <OrderChart />
     </div>
   </div>
 </template>
