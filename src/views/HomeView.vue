@@ -40,7 +40,7 @@
     <div>
       <RecentOrderStore />
     </div>
-    <div>
+    <div v-if="!showfilteredstore">
       <OrderChart />
     </div>
   </div>
@@ -79,6 +79,7 @@ export default {
       ],
       storeData: [],
       filteredData: [],
+      showfilteredstore:false
     }
   },
   async created() {
@@ -100,6 +101,7 @@ export default {
     categoryStore(categoryid) {
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
       this.filteredData = this.storeData.filter((store) => store.categories.some((category) => category === categoryid.name));
+      this.showfilteredstore = true
     }
   }
 }
