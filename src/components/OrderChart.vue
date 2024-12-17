@@ -1,6 +1,7 @@
 <template>
   <div style="margin-top: 20px;">
-    <h6 style="text-align: center;"><strong>최근 가장 많이 주문된 메뉴</strong></h6>
+    <h5 style="text-align: center;"><strong>이런 메뉴는 어때요?</strong></h5>
+    <p style="text-align: center;"><strong>많이 주문된 메뉴들</strong></p>
     <div>
       <canvas id="myChart"></canvas>
     </div>
