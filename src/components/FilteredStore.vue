@@ -6,6 +6,7 @@
           {{ store.name }}
         </h3>
         <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+        <p v-if="!couponstores.includes(store.id)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
         <p>{{ store.rating }}</p>
@@ -23,7 +24,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      likedstore : []
+      likedstore: [],
+      couponstores: []
     }
   },
   components: {
@@ -42,15 +44,21 @@ export default {
     },
   },
   mounted() {
-    this.getStoreLike()
+    this.getStoreLike();
+    this.getOrderStore();
   },
   methods: {
     async getStoreLike() {
       const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`, { storeid: this.storeid });
       console.log(response.data);
       this.likedstore = response.data.likes.map(like => like.store_id);
-      console.log('가게 아이디들', this.likedstore);
-      
+    },
+    async getOrderStore() {
+      console.log(this.user.id)
+      const response = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
+      console.log('요청 데이터', response.data);
+      this.couponstores = response.data.map(order => order.restaurant.id)
+      console.log('주문한 가게들g', this.couponstores);
     },
     detailstore(store) {
       this.$router.push('/detailstore'),
