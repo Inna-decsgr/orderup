@@ -1217,3 +1217,35 @@ def get_store_coupon(request, user_id):
         return JsonResponse({"error": "가게를 찾을 수 없습니다."}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+
+
+
+# 사용자가 발급받은 모든 쿠폰 가져오기
+@api_view(['GET'])
+def get_all_coupons(request, user_id):
+    try:
+        user_profile = UserProfile.objects.get(user_id=user_id)
+
+        # 해당 사용자가 발급받은 모든 쿠폰 조회
+        coupons = UserCoupon.objects.filter(user_profile=user_profile)
+
+        # 직렬화된 쿠폰 데이터 생성
+        coupon_data = [
+            {
+                'coupon_code': coupon.coupon.code,
+                'is_used': coupon.is_used,
+                'store': coupon.store.name if coupon.store else None,
+                'created_at': coupon.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+            for coupon in coupons
+        ]
+
+        return JsonResponse({'coupons': coupon_data}, safe=False)
+    
+    except UserProfile.DoesNotExist:
+            return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+    except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+
