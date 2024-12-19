@@ -4,7 +4,12 @@
     <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
     <div v-if="menus.length > 0">
       <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
-      <button @click="getCoupon(2000)">첫 주문 2000원 할인 쿠폰 받기</button>
+      <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)">
+        <p>쿠폰 발급 완료</p>
+      </div>
+      <div v-else>
+        <button @click="getCoupon(2000)">첫 주문 2000원 할인 쿠폰 받기</button>
+      </div>
       <div v-if="storeReview && allreviews.length > 0">
         <AllReviews :cancel="closereview" :reviews="this.allreviews"/>
       </div>
@@ -75,7 +80,8 @@ export default {
       optiongroups: [],
       storeReview: false,
       allreviews: [],
-      allcoupons: []
+      allcoupons: [],
+      allcouponstores: []
     }
   },
   components: {
@@ -95,6 +101,7 @@ export default {
   mounted() {
     this.getMenus(this.store.id || this.store.store_id || this.store.restaurant.id);
     this.AllReviews();
+    this.getAllCoupons();
   },
   methods: {
     async getMenus(storeid) {
@@ -193,6 +200,18 @@ export default {
         })
         console.log('쿠폰 발급받기', response.data);
         this.coupon = response.data;
+      } catch (error) {
+        console.error('Error fetching coupon:', error);
+      }
+    },
+    async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
+      try {
+        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`, { storeid: this.store.id })
+        console.log('해당 가게에서 발급받은 모든 쿠폰 가져오기', response.data);
+
+        this.allcoupons = response.data.coupons;  // 응답에서 coupons 배열만 사용
+        this.allcouponstores = this.allcoupons.map(coupon => coupon.store); // store만 모아서 배열에 저장
+        console.log(this.allcouponstores);  // 확인용 출력
       } catch (error) {
         console.error('Error fetching coupon:', error);
       }
