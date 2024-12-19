@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from .models import UserProfile, Restaurant, Order, OrderItem, OrderItemOption, Menu, Category, Like
 from rest_framework import status
-from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider, Review
+from orders.models import UserProfile, Menu, OptionGroup, OptionItem, Rider, Review, Coupon, UserCoupon
 from django.shortcuts import get_object_or_404
 from django.middleware.csrf import get_token
 from .serializers import RestaurantSerializer, RiderSerializer
@@ -1170,3 +1170,50 @@ def get_store_likes(request, user_id):
             return JsonResponse({'error': '유저를 찾을 수 없습니다.'}, status=404)
     except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+
+
+# 쿠폰 발급하는 뷰
+@api_view(['POST'])
+def get_store_coupon(request, user_id):
+    try:
+        # 요청에서 storeid랑 discount_amount 가져오기
+        data = request.data
+        store_id = data.get('storeid')
+        discount_amount = data.get('discount_amount')
+
+        # 사용자 프로필과 가게 정보 가져오기
+        user_profile = UserProfile.objects.get(user_id=user_id)
+        store = Restaurant.objects.get(id=store_id)
+
+        # 유효한 쿠폰이 있는지 확인하기
+        coupon, created = Coupon.objects.get_or_create(
+            code=f'FIRST{discount_amount}',  # 쿠폰 코드 예시
+            defaults={'discount_amount': discount_amount, 'is_active': True}
+        )
+        
+        if coupon.is_active:
+            # UserCoupon 모델에 새 쿠폰 발급
+            user_coupon = UserCoupon.objects.create(
+                user_profile=user_profile,
+                coupon = coupon,
+                store=store,
+                is_used=False
+            )
+
+            return JsonResponse({
+                "message": "쿠폰이 발급되었습니다.",
+                "coupon_code": coupon.code,
+                "discount_amount": coupon.discount_amount,
+                "store": store.name,
+                'user_coupon_id': user_coupon.id
+            }, status=200)
+        else:
+            return JsonResponse({"error": "유효하지 않은 쿠폰입니다."}, status=400)
+
+    except UserProfile.DoesNotExist:
+        return JsonResponse({"error": "사용자를 찾을 수 없습니다."}, status=404)
+    except Restaurant.DoesNotExist:
+        return JsonResponse({"error": "가게를 찾을 수 없습니다."}, status=404)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
