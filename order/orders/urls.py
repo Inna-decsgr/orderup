@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes
+from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes, get_store_coupon
 
 urlpatterns = [
     path('', home, name='home'), 
@@ -39,7 +39,8 @@ urlpatterns = [
     path('getmyreview/', get_my_review, name='get_my_review'), # 내가 작성한 리뷰 불러오기
     path('editmyreview/<int:review_id>/', edit_my_review, name='edit_my_review'), # 내가 작성한 리뷰 수정하기
     path('changelike/<int:user_id>/', toggle_like, name='toggle_like'), # 가게 찜하기
-    path('getstorelikes/<int:user_id>/', get_store_likes, name='get_store_likes'), # 가게 찜하기
+    path('getstorelikes/<int:user_id>/', get_store_likes, name='get_store_likes'), # 사용자가 찜한 가게 가져오기
+    path('getcoupon/<int:user_id>/', get_store_coupon, name='get_store_coupon'), # 쿠폰 발급받기
 ]
 
 
