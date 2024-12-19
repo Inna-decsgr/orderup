@@ -95,6 +95,18 @@ class Order(models.Model):
   # 리뷰 여부
   review = models.BooleanField(default=False)
 
+  # 쿠폰 필드 추가
+  user_coupon = models.ForeignKey('UserCoupon', null=True, blank=True, on_delete=models.SET_NULL)
+  final_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
+  def save(self, *args, **kwargs):
+    # 쿠폰 적용 계산
+    if self.user_coupon and not self.user_coupon.is_used:
+        self.final_price = max(0, self.total_price - self.user_coupon.coupon.discount_amount)
+    else:
+        self.final_price = self.total_price
+    super().save(*args, **kwargs)
+
   def __str__(self):
     return f"Order #{self.id} by {self.user.username}"
   
@@ -185,6 +197,7 @@ class Coupon(models.Model):
 class UserCoupon(models.Model):
   user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='user_coupons')
   coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+  store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
   is_used = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
 
