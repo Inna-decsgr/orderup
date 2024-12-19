@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes, get_store_coupon
+from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes, get_store_coupon, get_all_coupons
 
 urlpatterns = [
     path('', home, name='home'), 
@@ -41,6 +41,7 @@ urlpatterns = [
     path('changelike/<int:user_id>/', toggle_like, name='toggle_like'), # 가게 찜하기
     path('getstorelikes/<int:user_id>/', get_store_likes, name='get_store_likes'), # 사용자가 찜한 가게 가져오기
     path('getcoupon/<int:user_id>/', get_store_coupon, name='get_store_coupon'), # 쿠폰 발급받기
+    path('getallcoupons/<int:user_id>/', get_all_coupons, name='get_all_coupons'), # 사용자가 발급받은 모든 쿠폰들 가져오기
 ]
 
 
