@@ -4,6 +4,7 @@
     <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
     <div v-if="menus.length > 0">
       <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
+      <button @click="getCoupon(2000)">첫 주문 2000원 할인 쿠폰 받기</button>
       <div v-if="storeReview && allreviews.length > 0">
         <AllReviews :cancel="closereview" :reviews="this.allreviews"/>
       </div>
@@ -73,7 +74,8 @@ export default {
       selectedOptions: {},
       optiongroups: [],
       storeReview: false,
-      allreviews: []
+      allreviews: [],
+      allcoupons: []
     }
   },
   components: {
@@ -178,7 +180,23 @@ export default {
     },
     closereview() {
       this.storeReview = false
-    }
+    },
+    async getCoupon(discountamount) { // 쿠폰 발급받기
+      try {
+        const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+        const csrfToken = csrfResponse.data.csrfToken;
+
+        const response = await axios.post(`http://localhost:8000/order/getcoupon/${this.user.id}/`, { storeid: this.store.id, discount_amount : discountamount }, {
+          headers: {
+            'X-CSRFToken': csrfToken,  
+          }
+        })
+        console.log('쿠폰 발급받기', response.data);
+        this.coupon = response.data;
+      } catch (error) {
+        console.error('Error fetching coupon:', error);
+      }
+    },
   }
 }
 </script>
