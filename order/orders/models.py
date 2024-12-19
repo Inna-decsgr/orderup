@@ -110,7 +110,7 @@ class OrderItem(models.Model):
   
 
 
-# OrderItemOption
+# 주문 옵션 아이템 모델
 class OrderItemOption(models.Model):
   order_item = models.ForeignKey(OrderItem, related_name='options', on_delete=models.CASCADE)  # 주문 항목과 연결
   name = models.CharField(max_length=100) 
@@ -121,7 +121,7 @@ class OrderItemOption(models.Model):
   
 
 
-# OrderChart
+# 주문에 도움주는 차트 관련 모델
 class OrderChart(models.Model):
   order_id = models.AutoField(primary_key=True)  
   store_id = models.IntegerField()  
@@ -133,28 +133,16 @@ class OrderChart(models.Model):
     return f"Order {self.order_id} - Store {self.store_id} - Menu {self.menu_id}"
 
 
-# Rider
+# 라이더 모델
 class Rider(models.Model):
   name = models.CharField(max_length=20)
   phone_number = models.CharField(max_length=15)
 
-
-
-# Location
-class RiderLocation(models.Model):
-  rider = models.ForeignKey(Rider, on_delete=models.CASCADE)
-  latitude = models.FloatField()
-  longitude = models.FloatField()
-  timestamp = models.DateTimeField(auto_now_add=True)
-  status = models.CharField(max_length=100, choices=[('moving', '이동 중')])
-
-  def __str__(self):
-    return f"Rider {self.rider.id} at {self.timestamp}"
   
 
 
 from django.core.exceptions import ValidationError
-# Review
+# 리뷰 모델
 class Review(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
   store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews', null=True, blank=True) 
@@ -170,7 +158,7 @@ class Review(models.Model):
       raise ValidationError("Either an image or an image URL must be provided")
 
 
-# Like
+# 찜 모델
 class Like(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='like')
   store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='like')
@@ -179,3 +167,26 @@ class Like(models.Model):
 
   def __str__(self):
     return f"{self.user.username} likes {self.store.name}"
+  
+
+# 쿠폰 모델
+class Coupon(models.Model):
+  code = models.CharField(max_length=20, unique=True)
+  discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
+  is_active = models.BooleanField(default=True)
+  expiration_date = models.DateTimeField(null=True, blank=True)
+
+  def __str__(self):
+    return f"{self.code} - {self.discount_amount} 할인"
+  
+
+
+# 사용자와 쿠폰 관계 모델
+class UserCoupon(models.Model):
+  user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='user_coupons')
+  coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+  is_used = models.BooleanField(default=False)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+        return f"{self.user_profile.user.username} - {self.coupon.code} ({'사용됨' if self.is_used else '미사용'})"
