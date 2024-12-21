@@ -7,6 +7,7 @@
         <button @click="gotoCart"><i class="fa-solid fa-cart-shopping"></i> 장바구니</button>
         <button @click="gotoLike">찜</button>
         <button @click="gotoOrderList">주문 내역</button>
+        <button @click="gotoMyOrderUp">마이 오더업</button>
       </div>
     </div>
     <router-view/>
@@ -44,6 +45,9 @@ export default {
     },
     gotoLike() {
       this.$router.push('/userlike')
+    },
+    gotoMyOrderUp() {
+      this.$router.push('/myorderup')
     }
   }
 }
