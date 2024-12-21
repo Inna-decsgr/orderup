@@ -14,6 +14,7 @@ import RegisterReview from '../views/RegisterReview.vue'
 import ManageStore from '../views/ManageStore.vue'
 import MyReview from '../views/MyReview.vue'
 import UserStoreLike from '../views/UserStoreLike.vue'
+import MyOrderup from '../views/MyOrderup.vue'
 
 
 const routes = [
@@ -91,6 +92,11 @@ const routes = [
     path: '/userlike',
     name: 'UserStoreLike',
     component: UserStoreLike
+  },
+  {
+    path: '/myorderup',
+    name: 'MyOrderup',
+    component: MyOrderup
   },
 ]
 
