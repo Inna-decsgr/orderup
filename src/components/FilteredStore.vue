@@ -6,7 +6,7 @@
           {{ store.name }}
         </h3>
         <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
-        <p v-if="!couponstores.includes(store.id)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
+        <p v-if="!allcouponstores.includes(store.name)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
         <p>{{ store.rating }}</p>
@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       likedstore: [],
-      couponstores: []
+      allcouponstores: []
     }
   },
   components: {
@@ -42,10 +42,13 @@ export default {
     user() {
       return this.getUser;
     },
+    store() {
+      return this.$store.getters.getStore;
+    }
   },
   mounted() {
     this.getStoreLike();
-    this.getOrderStore();
+    this.getAllCoupons();
   },
   methods: {
     async getStoreLike() {
@@ -53,17 +56,22 @@ export default {
       console.log(response.data);
       this.likedstore = response.data.likes.map(like => like.store_id);
     },
-    async getOrderStore() {
-      console.log(this.user.id)
-      const response = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
-      console.log('요청 데이터', response.data);
-      this.couponstores = response.data.map(order => order.restaurant.id)
-      console.log('주문한 가게들g', this.couponstores);
-    },
     detailstore(store) {
       this.$router.push('/detailstore'),
       this.$store.commit('setStore', store);
-    }
+    },
+    async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
+      try {
+        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`, { storeid: this.store.id })
+
+        this.allcoupons = response.data.coupons;  // 응답에서 coupons 배열만 사용
+        this.allcouponstores = this.allcoupons.map(coupon => coupon.store); // store만 모아서 배열에 저장
+        console.log('사용자가 받은 모든 쿠폰 가져오기'
+        , this.allcouponstores);  // 확인용 출력
+      } catch (error) {
+        console.error('Error fetching coupon:', error);
+      }
+    },
   }
 }
 </script>
