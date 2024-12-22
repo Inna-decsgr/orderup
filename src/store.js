@@ -7,7 +7,8 @@ const store = createStore({
       user: null, // 사용자 정보 저장,
       menucart: [],
       store: [],
-      order: []
+      order: [],
+      likedstore: []
     };
   },
   mutations: {
@@ -28,6 +29,17 @@ const store = createStore({
     },
     setOrder(state, order) {
       state.order = order;
+    },
+    setLikedStores(state, likedStores) {
+      state.likedstore = likedStores;
+    },
+    addStoreToLiked(state, storeid) {
+      if (!state.likedstore.includes(storeid)) {
+        state.likedstore.push(storeid);
+      }
+    },
+    removeStoreFromLiked(state, storeid) {
+      state.likedstore = state.likedstore.filter(id => id !== storeid);
     }
   },
   actions: {
@@ -53,6 +65,9 @@ const store = createStore({
     },
     getOrder(state) {
       return state.order
+    },
+    getLikedStore(state) {
+      return state.likedstore
     }
   },
   plugins: [createPersistedState()],
