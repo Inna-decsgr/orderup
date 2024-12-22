@@ -5,7 +5,7 @@
     <div v-if="menus.length > 0">
       <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
       <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)">
-        <p>쿠폰 발급 완료</p>
+        <p>2000원 할인 쿠폰 발급 완료</p>
       </div>
       <div v-else>
         <button @click="getCoupon(2000)">첫 주문 2000원 할인 쿠폰 받기</button>
@@ -206,7 +206,7 @@ export default {
     },
     async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
       try {
-        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`, { storeid: this.store.id })
+        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
         console.log('해당 가게에서 발급받은 모든 쿠폰 가져오기', response.data);
 
         this.allcoupons = response.data.coupons;  // 응답에서 coupons 배열만 사용

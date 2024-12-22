@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p><strong>찜</strong></p>
+    <p><strong>찜한 가게</strong></p>
     <p>총 {{ this.likedstores.length }}개</p>
     <div v-for="store in this.likedstores" :key="store.id" @click="gotoStoreDetail(store)" class="store_item">
       <div class="store_image">
@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     async getStoreLike() {
-      const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`, { storeid: this.storeid });
+      const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`);
       console.log(response.data);
       this.likedstores = response.data.likes;
       console.log('사용자가 찜한 가게들', this.likedstores);
