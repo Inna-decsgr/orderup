@@ -47,6 +47,14 @@ export default {
             'X-CSRFToken': csrfToken,
           }
         });
+
+        if (response.data.is_active) {
+          this.$store.commit('addStoreToLiked', this.storeid);
+        } else {
+          this.$store.commit('removeStoreFromLiked', this.storeid);
+        }
+
+        // isactive 상태 업데이트 (하트 아이콘을 위한 상태)
         this.isactive = response.data.is_active;
       } catch (error) {
         console.error("Error toggling like:", error);
