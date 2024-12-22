@@ -1,9 +1,11 @@
 <template>
   <div>
-    가게 상세 페이지
     <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
     <div v-if="menus.length > 0">
-      <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
+      <div>
+        <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
+        <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+      </div>
       <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)">
         <p>2000원 할인 쿠폰 발급 완료</p>
       </div>
@@ -68,6 +70,8 @@
 <script>
 import axios from 'axios';
 import AllReviews from '../components/AllReviews.vue'
+import StoreLike from '../components/StoreLike.vue'
+import { mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -81,13 +85,16 @@ export default {
       storeReview: false,
       allreviews: [],
       allcoupons: [],
-      allcouponstores: []
+      allcouponstores: [],
+      likedstore: []
     }
   },
   components: {
-    AllReviews
+    AllReviews,
+    StoreLike
   },
   computed: {
+    ...mapGetters(['getLikedStore']),
     store() {
       return this.$store.getters.getStore;
     },
@@ -102,6 +109,7 @@ export default {
     this.getMenus(this.store.id || this.store.store_id || this.store.restaurant.id);
     this.AllReviews();
     this.getAllCoupons();
+    this.likedstore = this.getLikedStore;
   },
   methods: {
     async getMenus(storeid) {
