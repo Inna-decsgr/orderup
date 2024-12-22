@@ -38,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUser']),
+    ...mapGetters(['getUser', 'getLikedStore']),
     user() {
       return this.getUser;
     },
@@ -49,12 +49,19 @@ export default {
   mounted() {
     this.getStoreLike();
     this.getAllCoupons();
+    this.likedstore = this.getLikedStore;
   },
   methods: {
     async getStoreLike() {
-      const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`);
-      console.log(response.data);
-      this.likedstore = response.data.likes.map(like => like.store_id);
+      try {
+        const response = await axios.get(`http://localhost:8000/order/getstorelikes/${this.user.id}/`);
+        console.log(response.data);
+
+        // Vuex에 likedstore 배열 저장
+        this.$store.commit('setLikedStores', response.data.likes.map(like => like.store_id));
+      } catch (error) {
+        console.error('Error fetching liked stores:', error);
+      }
     },
     detailstore(store) {
       this.$router.push('/detailstore'),
