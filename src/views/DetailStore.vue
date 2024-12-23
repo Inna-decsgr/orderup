@@ -196,6 +196,18 @@ export default {
     closereview() {
       this.storeReview = false
     },
+    async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
+      try {
+        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
+        console.log('해당 가게에서 발급받은 모든 쿠폰 가져오기', response.data);
+
+        this.allcoupons = response.data.coupons;  // 응답에서 coupons 배열만 사용
+        this.allcouponstores = this.allcoupons.map(coupon => coupon.store); // store만 모아서 배열에 저장
+        console.log(this.allcouponstores);  // 확인용 출력
+      } catch (error) {
+        console.error('Error fetching coupon:', error);
+      }
+    },
     async getCoupon(discountamount) { // 쿠폰 발급받기
       try {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
@@ -208,18 +220,7 @@ export default {
         })
         console.log('쿠폰 발급받기', response.data);
         this.coupon = response.data;
-      } catch (error) {
-        console.error('Error fetching coupon:', error);
-      }
-    },
-    async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
-      try {
-        const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
-        console.log('해당 가게에서 발급받은 모든 쿠폰 가져오기', response.data);
-
-        this.allcoupons = response.data.coupons;  // 응답에서 coupons 배열만 사용
-        this.allcouponstores = this.allcoupons.map(coupon => coupon.store); // store만 모아서 배열에 저장
-        console.log(this.allcouponstores);  // 확인용 출력
+        this.getAllCoupons();
       } catch (error) {
         console.error('Error fetching coupon:', error);
       }
