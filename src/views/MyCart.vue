@@ -23,7 +23,7 @@
           </ul>
         </div>
 
-        <p>
+        <p v-if="item.menu && item.menu.option_groups">
           {{ 
             (item.menu 
             ? ( 
