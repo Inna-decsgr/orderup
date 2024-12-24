@@ -2,6 +2,7 @@
   <div>
     <h5>장바구니</h5>
     <button @click="clearcart">장바구니 비우기</button>
+    <p v-if="couponCount">사용 가능한 쿠폰이 {{couponCount}}개 있습니다.</p>
     <div v-if="menucart.length === 0">
       <p>장바구니가 텅 비었어요</p>
       <button @click="gotoHome">+더 담으러 가기</button>
@@ -106,6 +107,7 @@ export default {
       },
       totalPrice: '',
       deliveryfee: '',
+      allcouponstores: []
     }
   },
   computed: {
@@ -135,9 +137,16 @@ export default {
     store() {
       return this.$store.getters.getStore;
     },
+    user() {
+      return this.$store.getters.getUser;
+    },
+    couponCount() {
+      return this.allcouponstores.filter(coupon => coupon === this.store.id).length;
+    }
   },
   mounted() {
     this.getDeliveryfee(this.store.id);
+    this.showStoreCoupon();
   },
   methods: {
     async handlePayment() {
@@ -236,6 +245,12 @@ export default {
     },
     clearcart() {
       this.$store.commit('clearMenucart');
+    },
+    async showStoreCoupon() {
+      const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
+
+      this.allcouponstores = response.data.coupons.map(coupon => coupon.store_id); // store만 모아서 배열에 저장
+      console.log('모든 쿠폰들', this.allcouponstores);
     }
   }
 }
