@@ -37,14 +37,27 @@
       </div>
 
       <p>배달팁 : {{ this.deliveryfee }}원</p>
+
+      <div>
+        <label>
+          <input type="checkbox" v-model="showDiscount" />
+          {{this.discount}}원 쿠폰 적용하기
+        </label>
+      </div>
+
+      <div>
+        <p>
+          {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString()}}원
+        </p>
+        <p v-if="showDiscount">
+          - {{ Number(this.discount).toLocaleString() }}원
+        </p>
+        <p>총 금액 : {{ (Number(this.deliveryfee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}</p>
+      </div>
     
       <!--주문 총 금액-->
       <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
-      <button @click="openPopup">
-        <strong>
-          {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString()}}원
-        </strong> - 배달 주문하기
-      </button>
+      <button @click="openPopup">주문하기</button>
 
 
       <div v-if="showPopup" class="popup">
@@ -83,7 +96,7 @@
               />
             </div>
             <div>
-              <p>총 금액: {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString() }} 원</p>
+              <p>총 금액: {{ (Number(this.deliveryfee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}} 원</p>
             </div>
             <button type="submit">결제하기</button>
           </form>
@@ -107,7 +120,9 @@ export default {
       },
       totalPrice: '',
       deliveryfee: '',
-      allcouponstores: []
+      allcouponstores: [],
+      discount: '',
+      showDiscount: false
     }
   },
   computed: {
@@ -197,7 +212,7 @@ export default {
           expiryDate: this.paymentDetails.expiryDate,
           cvv: this.paymentDetails.cvv
         },
-        totalAmount: Number(this.deliveryfee) + this.totalCartPrice
+        totalAmount: Number(this.deliveryfee) + this.totalCartPrice - (this.showDiscount ? Number(this.discount) : 0)
       }
       console.log('요청 데이터', orderData);
       console.log(this.store.id);
@@ -250,7 +265,9 @@ export default {
       const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
 
       this.allcouponstores = response.data.coupons.map(coupon => coupon.store_id); // store만 모아서 배열에 저장
-      console.log('모든 쿠폰들', this.allcouponstores);
+      console.log(response.data.coupons);
+      this.discount = response.data.coupons.find(coupon => coupon.store_id === this.store.id)?.discount_amount;
+      console.log(this.discount || 0);
     }
   }
 }
