@@ -35,7 +35,7 @@
         </p>
       </div>
 
-      <p>배달팁 : {{ this.deliveryfee.toLocaleString() }}원</p>
+      <p>배달팁 : {{ this.deliveryfee }}원</p>
     
       <!--주문 총 금액-->
       <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
@@ -138,8 +138,6 @@ export default {
   },
   mounted() {
     this.getDeliveryfee(this.store.id);
-    console.log(typeof (this.deliveryfee)); // "string" 또는 "number" 출력
-    console.log(typeof(this.totalCartPrice)); // "string" 또는 "number" 출력
   },
   methods: {
     async handlePayment() {
@@ -230,7 +228,7 @@ export default {
       const store = stores.data.find(store => store.id === storeid);
 
       if (store && store.deliveryfee) {
-        this.deliveryfee = store.deliveryfee.toLocaleString();
+        this.deliveryfee = store.deliveryfee;
         console.log(this.deliveryfee);
       } else {
         console.error('Store or delivery fee not found');
