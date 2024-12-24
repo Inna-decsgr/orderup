@@ -1238,7 +1238,7 @@ def get_all_coupons(request, user_id):
                 'store_id': coupon.store.id if coupon.store else None,
                 'store': coupon.store.name if coupon.store else None,
                 'created_at': coupon.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'discount_amount': f"{coupon.coupon.discount_amount:,.0f}",
+                'discount_amount': f"{coupon.coupon.discount_amount:.0f}",
                 'expired_date': (coupon.created_at + timedelta(days=365)).strftime('%Y-%m-%d %H:%M:%S')
             }
             for coupon in coupons
