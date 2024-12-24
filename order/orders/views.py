@@ -1235,6 +1235,7 @@ def get_all_coupons(request, user_id):
             {
                 'coupon_code': coupon.coupon.code,
                 'is_used': coupon.is_used,
+                'store_id': coupon.store.id if coupon.store else None,
                 'store': coupon.store.name if coupon.store else None,
                 'created_at': coupon.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                 'discount_amount': f"{coupon.coupon.discount_amount:,.0f}",
