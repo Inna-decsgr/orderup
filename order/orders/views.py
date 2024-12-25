@@ -1279,6 +1279,11 @@ def get_all_user_reviews(request, user_id):
                 'user' : {
                     'id' : review.user.id,
                     'username': review.user.username
+                },
+                'store': {
+                    'store_id': review.store.id,
+                    'store_name': review.store.name, 
+                    'store_address': review.store.address
                 }
             }
             reviews_data.append(review_data)
