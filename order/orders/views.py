@@ -1252,3 +1252,38 @@ def get_all_coupons(request, user_id):
             return JsonResponse({'error': str(e)}, status=500)
 
 
+
+# 사용자가 작성한 리뷰 모두 가져오기
+@api_view(['GET'])
+def get_all_user_reviews(request, user_id):
+    try:
+        # 특정 가게 가져오기
+        user = User.objects.get(id=user_id)
+
+        # 해당 가게의 모든 리뷰 가져오기
+        reviews = user.reviews.all().select_related('user')
+
+        if not reviews.exists():
+            return JsonResponse({'user_id': user.id, 'reviews': [], 'message': '리뷰가 없습니다.'}, status=200)
+        print(reviews)
+
+        # 리뷰 정보 담을 리스트 생성
+        reviews_data = []
+        for review in reviews:
+            review_data = {
+                'review_id': review.id,
+                'rating': review.rating,
+                'content': review.content,
+                'date': review.date,
+                'image_url': review.image_url,
+                'user' : {
+                    'id' : review.user.id,
+                    'username': review.user.username
+                }
+            }
+            reviews_data.append(review_data)
+
+        return JsonResponse({'user_id': user.id, 'reviews': reviews_data}, safe=False)
+    
+    except User.DoesNotExist:
+        return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
