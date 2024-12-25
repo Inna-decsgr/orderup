@@ -22,7 +22,22 @@
 
       <!--리뷰 리스트-->
       <div>
-        <p v-if="showReviews">내가 쓴 리뷰들</p>
+        <div v-for="review in userreviews" :key="review.id">
+          <p><strong>{{ review.store.store_name }}</strong></p>
+          <div class="star-rating">
+            <div class="stars">
+              <i
+              v-for="star in 5"
+              :key="star" 
+              class="fa fa-star"
+              :class="{'active': star <= review.rating}"
+              ></i><span v-if="review.rating !== 0" class="ratingscore">{{ review.rating }}</span>
+            </div>
+          </div>
+          <p>{{review.date}}</p>
+          <p>{{ review.content }}</p>
+          <img :src="review.image_url" alt="가게 이미지" style="width: 200px; height: 200px;">
+        </div>
       </div>
 
 
