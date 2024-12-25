@@ -39,7 +39,7 @@
       <p>배달팁 : {{ this.deliveryfee }}원</p>
 
       <div>
-        <label v-if="this.showDiscount">
+        <label v-if="couponCount">
           <input type="checkbox" v-model="showDiscount" />
           {{this.discount}}원 쿠폰 적용하기
         </label>
