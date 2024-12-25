@@ -1,16 +1,26 @@
 <template>
   마이 오더업 페이지
   <div>
-    <p>쿠폰함</p>
-    <p>보유쿠폰 {{ allcoupons.length }}장</p>
-  </div>
-  <div v-for="coupon in allcoupons" :key="coupon.created_at">
-    <div style="border: 1px solid black; margin-top: 10px;">
-      <p>{{ coupon.store }} - {{ coupon.discount_amount }}원</p>
-      <p>첫 주문 {{ coupon.discount_amount }}원 할인</p>
-      <p>최소주문금액: 10,000원</p>
-      <p>사용기간: {{ formattedDate(coupon.expired_date) }}</p>
+    <!--쿠폰함-->
+    <div>
+      <button @click="showCoupon">쿠폰함</button>
+      <button @click="showAllReviews">내가 쓴 리뷰</button>
     </div>
+    <div>
+      <div v-if="showallcoupons">
+      <p>보유쿠폰 {{ allcoupons.length }}장</p>
+      <div v-for="coupon in allcoupons" :key="coupon.created_at">
+        <div style="border: 1px solid black; margin-top: 10px;">
+          <p>{{ coupon.store }} - {{ coupon.discount_amount }}원</p>
+          <p>첫 주문 {{ coupon.discount_amount }}원 할인</p>
+          <p>최소주문금액: 10,000원</p>
+          <p>사용기간: {{ formattedDate(coupon.expired_date) }}</p>
+          <button @click="goStoreDetailPage({id:coupon.store_id, name:coupon.store})">주문하러 가기</button>
+        </div>
+      </div>
+    </div>
+    <p v-if="showReviews">내가 쓴 리뷰들</p>
+      </div>
   </div>
 </template>
 
@@ -21,7 +31,9 @@ import { formatDate } from '../utils/dateutils';
 export default {
   data() {
     return {
-      allcoupons: []
+      allcoupons: [],
+      showallcoupons: false,
+      showReviews: false
     }
   },
   computed: {
@@ -47,6 +59,18 @@ export default {
         console.error('Error fetching coupon:', error);
       }
     },
+    goStoreDetailPage(store) {
+      this.$router.push('/detailstore'),
+      this.$store.commit('setStore', store);
+    },
+    showCoupon() {
+      this.showallcoupons = true;
+      this.showReviews = false;
+    },
+    showAllReviews() {
+      this.showReviews = true
+      this.showallcoupons = false;
+    }
   }
 }
 </script>
