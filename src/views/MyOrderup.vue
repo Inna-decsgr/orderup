@@ -1,26 +1,32 @@
 <template>
   마이 오더업 페이지
   <div>
-    <!--쿠폰함-->
     <div>
       <button @click="showCoupon">쿠폰함</button>
       <button @click="showAllReviews">내가 쓴 리뷰</button>
     </div>
     <div>
+      <!--쿠폰함-->
       <div v-if="showallcoupons">
-      <p>보유쿠폰 {{ allcoupons.length }}장</p>
-      <div v-for="coupon in allcoupons" :key="coupon.created_at">
-        <div style="border: 1px solid black; margin-top: 10px;">
-          <p>{{ coupon.store }} - {{ coupon.discount_amount }}원</p>
-          <p>첫 주문 {{ coupon.discount_amount }}원 할인</p>
-          <p>최소주문금액: 10,000원</p>
-          <p>사용기간: {{ formattedDate(coupon.expired_date) }}</p>
-          <button @click="goStoreDetailPage({id:coupon.store_id, name:coupon.store})">주문하러 가기</button>
+        <p>보유쿠폰 {{ allcoupons.length }}장</p>
+        <div v-for="coupon in allcoupons" :key="coupon.created_at">
+          <div style="border: 1px solid black; margin-top: 10px;">
+            <p>{{ coupon.store }} - {{ coupon.discount_amount }}원</p>
+            <p>첫 주문 {{ coupon.discount_amount }}원 할인</p>
+            <p>최소주문금액: 10,000원</p>
+            <p>사용기간: {{ formattedDate(coupon.expired_date) }}</p>
+            <button @click="goStoreDetailPage({id:coupon.store_id, name:coupon.store})">주문하러 가기</button>
+          </div>
         </div>
       </div>
-    </div>
-    <p v-if="showReviews">내가 쓴 리뷰들</p>
+
+      <!--리뷰 리스트-->
+      <div>
+        <p v-if="showReviews">내가 쓴 리뷰들</p>
       </div>
+
+
+    </div>
   </div>
 </template>
 
@@ -33,7 +39,8 @@ export default {
     return {
       allcoupons: [],
       showallcoupons: false,
-      showReviews: false
+      showReviews: false,
+      userreviews: []
     }
   },
   computed: {
@@ -42,7 +49,8 @@ export default {
     },
   },
   mounted() {
-    this.getAllCoupons()
+    this.getAllCoupons();
+    this.getAllReviews();
   }, 
   methods: {
     formattedDate(date) {
@@ -57,6 +65,15 @@ export default {
         console.log(this.allcoupons);  // 확인용 출력
       } catch (error) {
         console.error('Error fetching coupon:', error);
+      }
+    },
+    async getAllReviews() {
+      try {
+        const response = await axios.get(`http://localhost:8000/order/getalluserreviews/${this.user.id}/`)
+        this.userreviews = response.data.reviews
+        console.log('사용자가 작성한 모든 리뷰', this.userreviews);
+      }catch (error) {
+        console.error('Error fetching reviews:', error);
       }
     },
     goStoreDetailPage(store) {
