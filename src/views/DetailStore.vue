@@ -110,8 +110,10 @@ export default {
   mounted() {
     this.getMenus(this.store.id || this.store.store_id || this.store.restaurant.id);
     this.AllReviews();
-    this.getAllCoupons();
     this.likedstore = this.getLikedStore;
+    if (this.user && this.user.id) {
+      this.getAllCoupons();
+    }
   },
   methods: {
     async getMenus(storeid) {
@@ -119,13 +121,18 @@ export default {
       this.menus = response.data
     },
     addCart(menu) {
-      if (menu.option_groups && menu.option_groups.length > 0) {
-        // 만약 메뉴에 옵션이 있을 경우 옵션 팝업 열기
-        this.openPopup(menu.option_groups, menu)
-      } else { // 옵션이 없는 메뉴라면 바로 장바구니에 추가
-        alert('장바구니에 메뉴가 추가되었습니다.');
-        this.menucart.push({ ...menu })
-        console.log('단일 메뉴', this.menucart);
+      if (this.user && this.user.id) {
+        if (menu.option_groups && menu.option_groups.length > 0) {
+          // 만약 메뉴에 옵션이 있을 경우 옵션 팝업 열기
+          this.openPopup(menu.option_groups, menu)
+        } else { // 옵션이 없는 메뉴라면 바로 장바구니에 추가
+          alert('장바구니에 메뉴가 추가되었습니다.');
+          this.menucart.push({ ...menu })
+          console.log('단일 메뉴', this.menucart);
+        }
+      } else {
+        alert("로그인이 필요한 서비스입니다.");
+        this.$router.push('/login');
       }
     },
     openPopup(optiongroups, menu) {
