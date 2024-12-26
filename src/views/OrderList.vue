@@ -89,7 +89,7 @@ export default {
       //alert('사용자 id에 맞는 주문 내역 가져오기');
       console.log(this.user.id)
       const orders = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
-      this.orderlist = orders.data;
+      this.orderlist = orders.data.sort((a, b) => new Date(b.ordered_at) - new Date(a.ordered_at));
       console.log('주문 내역들', this.orderlist);
     },
     getStatusMessage(status) {
