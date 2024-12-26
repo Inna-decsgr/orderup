@@ -4,7 +4,7 @@
     <div>
       <SearchBar />
     </div>
-    <div v-if="user && !user.is_owner">
+    <div v-if="!user || (user && !user.is_owner)">
       <div>
         <button class="category-btn" @click="categoryStore(categories[0])">
           <i class="fa-solid fa-burger"></i>
