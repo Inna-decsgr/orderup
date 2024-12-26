@@ -227,10 +227,8 @@ export default {
         }
       });
       console.log(response.data);
-
-
-      // 팝업창 닫기
       this.closePopup();
+      this.$router.push('/orderlist');
     },
     openPopup() {
       this.showPopup = true;
