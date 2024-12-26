@@ -21,7 +21,7 @@
       </div>
 
       <!--리뷰 리스트-->
-      <div>
+      <div v-if="showReviews">
         <div v-for="review in userreviews" :key="review.id">
           <p><strong>{{ review.store.store_name }}</strong></p>
           <div class="star-rating">
@@ -36,7 +36,9 @@
           </div>
           <p>{{review.date}}</p>
           <p>{{ review.content }}</p>
-          <img :src="review.image_url" alt="가게 이미지" style="width: 200px; height: 200px;">
+          <div v-if="review.image_url">
+            <img :src="review.image_url" alt="가게 이미지" style="width: 200px; height: 200px;">
+          </div>
         </div>
       </div>
 

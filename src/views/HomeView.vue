@@ -4,44 +4,46 @@
     <div>
       <SearchBar />
     </div>
-    <div>
-      <button class="category-btn" @click="categoryStore(categories[0])">
-        <i class="fa-solid fa-burger"></i>
-        <p>Fast Food</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[1])">
-        <i class="fa-solid fa-bowl-food"></i>
-        <p>Chinese</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[2])">
-        <i class="fa-solid fa-hotdog"></i>
-        <p>Snack Food</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[3])">
-        <i class="fa-solid fa-fish"></i>
-        <p>Japanese</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[4])">
-        <i class="fa-solid fa-ice-cream"></i>
-        <p>Dessert</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[5])">
-        <i class="fa-solid fa-bowl-rice"></i>
-        <p>Asian</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[6])">
-        <i class="fa-solid fa-shrimp"></i>
-        <p>Western Food</p>
-      </button>
-    </div>
-    <div>
-      <FilteredStore :filteredstore="filteredData"/>
-    </div>
-    <div v-if="user && user.id">
-      <RecentOrderStore />
-    </div>
-    <div v-if="!showfilteredstore">
-      <OrderChart />
+    <div v-if="user && !user.is_owner">
+      <div>
+        <button class="category-btn" @click="categoryStore(categories[0])">
+          <i class="fa-solid fa-burger"></i>
+          <p>Fast Food</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[1])">
+          <i class="fa-solid fa-bowl-food"></i>
+          <p>Chinese</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[2])">
+          <i class="fa-solid fa-hotdog"></i>
+          <p>Snack Food</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[3])">
+          <i class="fa-solid fa-fish"></i>
+          <p>Japanese</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[4])">
+          <i class="fa-solid fa-ice-cream"></i>
+          <p>Dessert</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[5])">
+          <i class="fa-solid fa-bowl-rice"></i>
+          <p>Asian</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[6])">
+          <i class="fa-solid fa-shrimp"></i>
+          <p>Western Food</p>
+        </button>
+      </div>
+      <div>
+        <FilteredStore :filteredstore="filteredData"/>
+      </div>
+      <div v-if="user && user.id">
+        <RecentOrderStore />
+      </div>
+      <div v-if="!showfilteredstore">
+        <OrderChart />
+      </div>
     </div>
   </div>
 </template>
