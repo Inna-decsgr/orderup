@@ -37,7 +37,7 @@
     <div>
       <FilteredStore :filteredstore="filteredData"/>
     </div>
-    <div>
+    <div v-if="user && user.id">
       <RecentOrderStore />
     </div>
     <div v-if="!showfilteredstore">

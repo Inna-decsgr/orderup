@@ -5,7 +5,9 @@
         <h3 @click="detailstore({id:store.id, name: store.name})" style="cursor:pointer">
           {{ store.name }}
         </h3>
-        <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+        <div v-if="user && user.id">
+          <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+        </div>
         <p v-if="!allcouponstores.includes(store.name)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
@@ -47,8 +49,10 @@ export default {
     }
   },
   mounted() {
-    this.getStoreLike();
-    this.getAllCoupons();
+    if (this.user && this.user.id) {
+      this.getStoreLike();
+      this.getAllCoupons();
+    }
     this.likedstore = this.getLikedStore;
   },
   methods: {

@@ -4,7 +4,9 @@
     <div v-if="menus.length > 0">
       <div>
         <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
-        <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+        <div v-if="user && user.id">
+          <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+        </div>
       </div>
       <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)">
         <p>2000원 할인 쿠폰 발급 완료</p>
