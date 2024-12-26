@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="stores.length > 0">
     <p style="text-align: center; margin-top: 30px;"><strong>최근에 주문한 가게들</strong></p>
     <swiper :slidesPerView="3" spaceBetween="10">
       <swiper-slide v-for="store in stores" :key="store.id" class="recent_store_item">

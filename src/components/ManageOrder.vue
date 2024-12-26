@@ -46,7 +46,7 @@ import { formatDate } from '../utils/dateutils';
 export default {
   props: {
     storeid: {
-      type: Object,
+      type: Number,
       required: true,
     }
   },
