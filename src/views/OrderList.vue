@@ -46,7 +46,7 @@
             <p v-if="order.discount_amount">쿠폰 적용 : - {{ order.discount_amount }}원</p>
             <p>
               총 결제금액 
-              <span v-if="order.discount_amount">{{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)).toLocaleString() }}</span> {{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)
+              <span v-if="order.discount_amount" class="originalprice">{{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)).toLocaleString() }}원</span> {{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)
               - Number(order.discount_amount)).toLocaleString() }}원
             </p>
             <p>결제방법 {{ order.payment_method }}</p>
@@ -192,5 +192,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.originalprice{
+  color: gray;
+  text-decoration: line-through;
 }
 </style>
