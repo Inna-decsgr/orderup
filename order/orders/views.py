@@ -572,19 +572,31 @@ def add_new_order(request):
     payment_details = request.data.get('paymentDetails')
     total_amount = request.data.get('totalAmount')
     restaurant_id = request.data.get('restaurant_id')
+    user_coupon_id = request.data.get('user_coupon_id')
+    discount_amount = request.data.get('discount_amount')
 
-    # restaurant_id가 유효한지 확인 (없으면 예외 처리 가능)
+
     if restaurant_id:
         try:
             restaurant = Restaurant.objects.get(id=restaurant_id)
+            delivery_fee = restaurant.delivery_fee or 0
         except Restaurant.DoesNotExist:
             return Response({'error': '레스토랑을 찾을 수 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'error': '레스토랑 ID가 제공되지 않았습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
+    
+    user_coupon = None
+    if user_coupon_id:
+        print(restaurant_id)
+        print(user_coupon_id)
+        try:
+            user_profile = UserProfile.objects.get(user_id=user_coupon_id)
+            print(user_profile)
+            user_coupon = UserCoupon.objects.get(store_id=restaurant_id, user_profile_id=user_profile.id, is_used=False)
+        except UserCoupon.DoesNotExist:
+            return Response({'error': '해당 쿠폰 정보를 찾을 수 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if not order_data or not payment_details or total_amount is None:
-        return Response({'error': '필수 데이터가 누락되었습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # 트랜잭션을 이용하여 여러 DB 작업을 하나의 단위로 처리
     try:
@@ -592,12 +604,25 @@ def add_new_order(request):
             # 주문 생성
             order = Order.objects.create(
                 user=request.user,  # 로그인된 사용자
-                restaurant=restaurant,  # 예시로 레스토랑을 None으로 설정 (추후 수정 가능)
+                restaurant=restaurant,
                 total_price=total_amount,
                 status='pending',
-                payment_method='카드 결제',  # 결제 방법 설정
-                payment_details=payment_details  # 결제 정보 저장
+                payment_method='카드 결제', 
+                payment_details=payment_details,
+                user_coupon_id=user_coupon.id if user_coupon else None,
+                discount_amount=discount_amount if discount_amount else None,
             )
+
+            # 쿠폰 적용 시 최종 가격 계산
+            if user_coupon:
+                final_price = max(0, total_amount - discount_amount + delivery_fee)
+                order.final_price = final_price
+                order.save()
+
+                user_coupon.is_used = True
+                user_coupon.used_at = timezone.now()
+                user_coupon.save()
+
 
             # 주문 항목 저장
             for item_data in order_data:
@@ -625,9 +650,17 @@ def add_new_order(request):
                             )
                         else:
                             return Response({'error': '옵션 데이터가 잘못된 형식입니다.'},status=status.HTTP_400_BAD_REQUEST)
+                        
+            response_data = {
+                'message': '주문이 성공적으로 처리되었습니다.',
+                'order_id': order.id,
+                'final_price': order.final_price,
+                'discount_applied': user_coupon.coupon.discount_amount if user_coupon else 0,
+                'coupon_used': user_coupon_id if user_coupon else None
+            }
 
             # 성공적으로 주문을 처리한 후 응답
-            return Response({'message': '주문이 성공적으로 처리되었습니다.'}, status=status.HTTP_201_CREATED)
+            return Response(response_data, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         # 예외 처리 (예: 트랜잭션 실패)
@@ -692,7 +725,8 @@ def get_order_list(request, user_id):
                 "payment_method" : order.payment_method,
                 "payment_details" : order.payment_details,
                 "items" : order_items,
-                "review": order.review
+                "review": order.review,
+                "discount_amount": order.discount_amount
             })
 
         return Response(order_data)
