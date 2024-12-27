@@ -97,18 +97,13 @@ class Order(models.Model):
 
   # 쿠폰 필드 추가
   user_coupon = models.ForeignKey('UserCoupon', null=True, blank=True, on_delete=models.SET_NULL)
+  discount_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
   final_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-
-  def save(self, *args, **kwargs):
-    # 쿠폰 적용 계산
-    if self.user_coupon and not self.user_coupon.is_used:
-        self.final_price = max(0, self.total_price - self.user_coupon.coupon.discount_amount)
-    else:
-        self.final_price = self.total_price
-    super().save(*args, **kwargs)
 
   def __str__(self):
     return f"Order #{self.id} by {self.user.username}"
+  
+
   
 
 # 주문 항목 모델 (OrderItem)
@@ -200,6 +195,7 @@ class UserCoupon(models.Model):
   store = models.ForeignKey(Restaurant, on_delete=models.CASCADE, null=True)
   is_used = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
+  used_at= models.DateTimeField(null=True, blank=True)
 
   def __str__(self):
         return f"{self.user_profile.user.username} - {self.coupon.code} ({'사용됨' if self.is_used else '미사용'})"
