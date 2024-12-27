@@ -156,7 +156,7 @@ export default {
       return this.$store.getters.getUser;
     },
     couponCount() {
-      return this.allcouponstores.filter(coupon => coupon === this.store.id).length;
+      return this.allcouponstores.filter(coupon => coupon.store_id === this.store.id && coupon.is_used === false).length;
     }
   },
   mounted() {
@@ -206,13 +206,16 @@ export default {
           };
         }),
 
+        user_coupon_id: this.discount ? this.user.id : null,
+
         restaurant_id: this.store.id,
         paymentDetails: {
           cardNumber: this.paymentDetails.cardNumber,
           expiryDate: this.paymentDetails.expiryDate,
           cvv: this.paymentDetails.cvv
         },
-        totalAmount: Number(this.deliveryfee) + this.totalCartPrice - (this.showDiscount ? Number(this.discount) : 0)
+        totalAmount: this.totalCartPrice,
+        discount_amount : this.discount ? Number(this.discount) : 0
       }
       console.log('요청 데이터', orderData);
       console.log(this.store.id);
@@ -262,7 +265,7 @@ export default {
     async showStoreCoupon() {
       const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
 
-      this.allcouponstores = response.data.coupons.map(coupon => coupon.store_id); // store만 모아서 배열에 저장
+      this.allcouponstores = response.data.coupons; // store만 모아서 배열에 저장
       console.log(response.data.coupons);
       this.discount = response.data.coupons.find(coupon => coupon.store_id === this.store.id)?.discount_amount;
       console.log(this.discount || 0);
