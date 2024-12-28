@@ -9,7 +9,7 @@
           <p><strong>주문 상태</strong> : {{ getStatusMessage(orderitem.status) }}</p>
           <p><strong>주소</strong> : {{ orderitem.user_address }}</p>
           <p><strong>주문자 번호</strong> : {{ orderitem.user_phone }}</p>
-          <strong>주문된 메뉴</strong>
+          <strong>주문 메뉴</strong>
           <ul v-for="menu in orderitem.order_items" :key="menu.item">
             <li>{{ menu.item }} {{ menu.price }}원</li>
             <div v-if="menu.options && menu.options.length > 0">
@@ -19,7 +19,10 @@
               </li>
             </div>
           </ul>
-          <p><strong>결제된 금액: {{ Number(orderitem.total_price).toLocaleString() }}원</strong></p>
+          <p>총 금액 <strong>{{ Number(orderitem.total_price).toLocaleString() }}원</strong></p>
+          <p>배달비 + {{ orderitem.delivery_fee }}원</p>
+          <p v-if="orderitem.user_coupon_id">쿠폰 적용 - <span>{{ Number(orderitem.discount_amount).toLocaleString() }}원</span></p>
+          <p><strong>결제된 금액: {{ orderitem.user_coupon_id ? (Number(orderitem.total_price) + Number(orderitem.delivery_fee) - Number(orderitem.discount_amount)).toLocaleString() : Number(orderitem.total_price).toLocaleString() }}원</strong></p>
           <p><strong>결제 방식</strong> : {{ orderitem.payment_method }}</p>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'accept')">수락하기</button>
           <button v-if="orderitem.status === 'pending'" @click="handleOrder(orderitem.order_id, 'reject')">거절하기</button>
