@@ -842,6 +842,7 @@ def get_popular_menu(request):
 def get_new_order(request, store_id):
     try:
         orders = Order.objects.filter(restaurant_id=store_id)
+        store = Restaurant.objects.get(id=store_id)
 
         # 주문 항목과 옵션도 포함해서 데이터 가져오기
         order_data = []
@@ -877,7 +878,11 @@ def get_new_order(request, store_id):
                 'status' : order.status,
                 'total_price' : str(order.total_price),
                 'payment_method' : order.payment_method,
-                'order_items' : order_items
+                'order_items' : order_items,
+                'discount_amount': str(order.discount_amount) if order.discount_amount else "0.00",
+                'final_price' : order.final_price,
+                'user_coupon_id': order.user_coupon.id if order.user_coupon else None,
+                'delivery_fee' : store.delivery_fee
             })
 
         return Response({'orders' : order_data})
