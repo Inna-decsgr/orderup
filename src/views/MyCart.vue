@@ -267,8 +267,8 @@ export default {
 
       this.allcouponstores = response.data.coupons; // store만 모아서 배열에 저장
       console.log(response.data.coupons);
-      this.discount = response.data.coupons.find(coupon => coupon.store_id === this.store.id)?.discount_amount;
-      console.log(this.discount || 0);
+      this.discount = response.data.coupons.find(coupon => coupon.store_id === this.store.id && coupon.is_used == 'false')?.discount_amount;
+      console.log(this.discount || null);
     }
   }
 }
