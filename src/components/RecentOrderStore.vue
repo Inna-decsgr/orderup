@@ -50,12 +50,18 @@ export default {
       console.log(this.user.id)
       const response = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
       console.log(response.data);
-      this.stores = response.data.map(order => ({
-        restaurant: order.restaurant,
-        ordered_at: order.ordered_at
-      }))
-        .sort((a, b) => new Date(b.ordered_at) - new Date(a.ordered_at));
 
+      this.stores = Array.from(
+        new Map(
+          response.data.map(order => [
+            order.restaurant.id,
+            {
+              restaurant: order.restaurant,
+              ordered_at: order.ordered_at
+            }
+          ])
+        ).values()
+      ).sort((a, b) => new Date(b.ordered_at) - new Date(a.ordered_at));
       console.log('주문한 가게들', this.stores);
     },
     gotoStoreDetail(store) {
