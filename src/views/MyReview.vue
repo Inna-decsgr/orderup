@@ -3,6 +3,7 @@
   <button v-if="!isEditReview" @click="editReview">리뷰 수정하기</button>
   <div v-if="!isEditReview">
     <div v-for="review in reviews" :key="review.id">
+      <p><strong>{{ store.name }}</strong></p>
       <p><strong>{{ review.username }}</strong></p>
       <div class="star-rating">
         <div class="stars">
@@ -44,8 +45,8 @@ export default {
     user() {
       return this.$store.getters.getUser;
     },
-    storeid() {
-      return this.$route.query.storeid;
+    store() {
+      return this.$store.getters.getStore;
     }
   }, 
   mounted() {
@@ -56,7 +57,7 @@ export default {
       const response = await axios.get('http://localhost:8000/order/getmyreview/', {
         params: {
           userid: this.user.id,
-          storeid: this.storeid
+          storeid: this.store.id
         }
       });
       console.log(response.data);
