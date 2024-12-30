@@ -10,6 +10,7 @@
             </div>
             <div class="recent_store_info">
               <p><strong>{{ store.restaurant.name }}</strong></p>
+              <p v-if="store.count > 1">{{ store.count }}번 이상 주문했어요😊</p>
               <p>{{ store.restaurant.address }}</p>
               <p>⭐{{ store.restaurant.rating }}</p>
               <p class="store_description">{{ store.restaurant.description }}</p>
@@ -49,19 +50,29 @@ export default {
     async getOrderStore() {
       console.log(this.user.id)
       const response = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
-      console.log(response.data);
 
-      this.stores = Array.from(
-        new Map(
-          response.data.map(order => [
-            order.restaurant.id,
-            {
-              restaurant: order.restaurant,
-              ordered_at: order.ordered_at
-            }
-          ])
-        ).values()
-      ).sort((a, b) => new Date(b.ordered_at) - new Date(a.ordered_at));
+      const orders = Array.isArray(response.data) ? response.data : response.data.orders;
+
+      const storeMap = new Map();
+
+      orders.forEach(order => {
+        const restaurantId = order.restaurant.id;
+        if (!storeMap.has(restaurantId)) {
+          storeMap.set(restaurantId, {
+            restaurant: order.restaurant,
+            ordered_at: order.ordered_at,
+            count: 1,
+          });
+        } else {
+          const storeData = storeMap.get(restaurantId);
+          storeData.count += 1;
+          storeMap.set(restaurantId, storeData);
+        }
+      });
+
+      this.stores = Array.from(storeMap.values()).sort(
+        (a, b) => new Date(b.ordered_at) - new Date(a.ordered_at)
+      );
       console.log('주문한 가게들', this.stores);
     },
     gotoStoreDetail(store) {
