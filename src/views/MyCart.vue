@@ -8,7 +8,7 @@
       <button @click="gotoHome">+더 담으러 가기</button>
     </div>
     <div v-else>
-      <p><strong>{{ store.name }}</strong></p>
+      <p v-if="store"><strong>{{ store.name || store.store_name }}</strong></p>
       <div v-for="(item, index) in menucart" :key="index" class="menu-item">
         <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
         <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
@@ -36,8 +36,6 @@
         </p>
       </div>
 
-      <p>배달팁 : {{ this.deliveryfee }}원</p>
-
       <div>
         <label v-if="couponCount">
           <input type="checkbox" v-model="showDiscount" />
@@ -49,10 +47,11 @@
         <p>
           {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString()}}원
         </p>
+        <p>배달비 : {{ this.deliveryfee || store.delivery_fee }}원</p>
         <p v-if="showDiscount">
           - {{ Number(this.discount).toLocaleString() }}원
         </p>
-        <p>총 금액 : {{ (Number(this.deliveryfee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}</p>
+        <p>총 금액 : {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}원</p>
       </div>
     
       <!--주문 총 금액-->
