@@ -57,7 +57,7 @@ export default {
       const response = await axios.get('http://localhost:8000/order/getmyreview/', {
         params: {
           userid: this.user.id,
-          storeid: this.store.id
+          storeid: this.store.id || this.store.store_id
         }
       });
       console.log(response.data);

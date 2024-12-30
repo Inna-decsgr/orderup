@@ -169,11 +169,11 @@ export default {
       this.$router.push('/newreview');
       this.$store.commit('setOrder', order)
     },
-    
-    }
-  }gotoMyReview(store) {
+    gotoMyReview(store) {
       this.$router.push('/myreview');
       this.$store.commit('setStore', store)
+    }
+  }
 }
 </script>
 
