@@ -23,6 +23,7 @@
       <!--리뷰 리스트-->
       <div v-if="showReviews">
         <div v-for="review in userreviews" :key="review.id">
+          <button @click="gotoMyReview(review.store)">후기 보러가기</button>
           <p><strong>{{ review.store.store_name }}</strong></p>
           <div class="star-rating">
             <div class="stars">
@@ -104,6 +105,10 @@ export default {
     showAllReviews() {
       this.showReviews = true
       this.showallcoupons = false;
+    },
+    gotoMyReview(store) {
+      this.$router.push('/myreview');
+      this.$store.commit('setStore', store)
     }
   }
 }
