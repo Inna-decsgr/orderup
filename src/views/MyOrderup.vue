@@ -23,8 +23,8 @@
       <!--리뷰 리스트-->
       <div v-if="showReviews">
         <div v-for="review in userreviews" :key="review.id">
-          <button @click="gotoMyReview(review.store)">후기 보러가기</button>
           <p><strong>{{ review.store.store_name }}</strong></p>
+          <button @click="gotoMyReview(review.store)">후기 보러가기</button>
           <div class="star-rating">
             <div class="stars">
               <i
