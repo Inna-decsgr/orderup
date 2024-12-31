@@ -11,7 +11,7 @@
         <p v-if="!allcouponstores.includes(store.name)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
         <p>{{ store.address }}</p>
         <p>{{ store.phonenumber }}</p>
-        <p>{{ store.rating }}</p>
+        <p>⭐ {{ store.rating }}</p>
         <p>{{ store.description }}</p>
       </div>
     </div>
