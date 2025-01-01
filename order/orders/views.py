@@ -1340,19 +1340,28 @@ def get_all_user_reviews(request, user_id):
 def get_all_liked_stores(request):
     try:
         # 찜된 가게 모두 가져오기
-        likedstores = Like.objects.filter(is_active=True)
+        popular_stores = (
+            Like.objects.filter(is_active=True)
+            .values('store_id')
+            .annotate(like_count=Count('id'))
+            .filter(like_count__gte=2)
+            .order_by('-like_count')
+        )
 
         # 리뷰 정보 담을 리스트 생성
         liked_all_stores = []
-        for like in likedstores:
+        for store in popular_stores:
+            store_instance = Restaurant.objects.get(id=store['store_id'])
+
             liked_store_data = {
                 'store': {
-                    'id': like.store.id,
-                    'name': like.store.name, 
-                    'address': like.store.address,
-                    'rating' : like.store.rating,
-                    'delivery_fee' : like.store.delivery_fee,
-                    'image_url' : like.store.image_url
+                    'id': store_instance.id,
+                    'name': store_instance.name, 
+                    'address': store_instance.address,
+                    'rating' : store_instance.rating,
+                    'delivery_fee' : store_instance.delivery_fee,
+                    'image_url' : store_instance.image_url,
+                    'like_count': store['like_count']
                 }
             }
             liked_all_stores.append(liked_store_data)
