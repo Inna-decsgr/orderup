@@ -26,6 +26,7 @@
             <p class="liked_store_name"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
             <p class="liked_store_address">{{ store.store.address }}</p>
             <p class="liked_store_delivery">배달팁 : {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
+            <p class="liked_store_count">찜 갯수 : +{{ store.store.like_count }}</p>
           </div>
         </swiper-slide>
       </swiper>
@@ -170,7 +171,8 @@ export default {
   margin-bottom: 5px;
 }
 
-.liked_store_delivery {
+.liked_store_delivery,
+.liked_store_count {
   font-size: 14px;
   color: #333;
 }
