@@ -17,16 +17,18 @@
     </div>
     <div>
       <p><strong>찜 많은 가게를 추천해요</strong></p>
-      <div v-for="store in likedallstores" :key="store.id" class="liked_store_item">
-        <div class="liked_store_image">
-          <img :src="store.store.image_url" alt="가게 이미지">
-        </div>
-        <div class="liked_store_info">
-          <p class="liked_store_name"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
-          <p class="liked_store_address">{{ store.store.address }}</p>
-          <p class="liked_store_delivery">배달팁 : {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
-        </div>
-      </div>
+      <swiper :slidesPerView="3" spaceBetween="10">
+        <swiper-slide v-for="store in likedallstores" :key="store.id" class="liked_store_item">
+          <div class="liked_store_image">
+            <img :src="store.store.image_url" alt="가게 이미지">
+          </div>
+          <div class="liked_store_info">
+            <p class="liked_store_name"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
+            <p class="liked_store_address">{{ store.store.address }}</p>
+            <p class="liked_store_delivery">배달팁 : {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
+          </div>
+        </swiper-slide>
+      </swiper>
     </div>
   </div>
 </template>
@@ -34,6 +36,9 @@
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import 'swiper/css';
+
 
 export default {
   data() {
@@ -41,6 +46,10 @@ export default {
       userlikedstores: [],
       likedallstores: []
     }
+  },
+  components: {
+    Swiper,
+    SwiperSlide,
   },
   computed: {
     ...mapGetters(['getUser']),
