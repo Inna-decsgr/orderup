@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 from . import views
-from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes, get_store_coupon, get_all_coupons, get_all_user_reviews
+from .views import home, login_view, signup_view, update_user, get_user, delete_user, csrf_token_view, store_regis, my_store_view, update_store, delete_store, create_menu, store_menu_view, delete_menu, update_menu, get_all_stores, add_new_order, get_order_list, cancel_order, create_order_data, get_popular_menu, get_new_order, accept_order, reject_order, get_order_length, get_rider_info, delivering_order, completed_delivery, register_review, get_all_reviews, remove_reviews, get_my_review, edit_my_review, toggle_like, get_store_likes, get_store_coupon, get_all_coupons, get_all_user_reviews, get_all_liked_stores
 
 urlpatterns = [
     path('', home, name='home'), 
@@ -43,6 +43,7 @@ urlpatterns = [
     path('getcoupon/<int:user_id>/', get_store_coupon, name='get_store_coupon'), # 쿠폰 발급받기
     path('getallcoupons/<int:user_id>/', get_all_coupons, name='get_all_coupons'), # 사용자가 발급받은 모든 쿠폰들 가져오기
     path('getalluserreviews/<int:user_id>/', get_all_user_reviews, name='get_all_user_reviews'), # 사용자가 작성한 모든 리뷰 가져오기
+    path('getlikedallstores/', get_all_liked_stores, name='get_all_liked_stores'), # 찜된 모든 가게 정보 가져오기
 ]
 
 
