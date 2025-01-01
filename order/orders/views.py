@@ -1331,3 +1331,33 @@ def get_all_user_reviews(request, user_id):
     
     except User.DoesNotExist:
         return JsonResponse({'error': '사용자를 찾을 수 없습니다.'}, status=404)
+    
+
+
+
+# 찜된 모든 가게들 가져오기
+@api_view(['GET'])
+def get_all_liked_stores(request):
+    try:
+        # 찜된 가게 모두 가져오기
+        likedstores = Like.objects.filter(is_active=True)
+
+        # 리뷰 정보 담을 리스트 생성
+        liked_all_stores = []
+        for like in likedstores:
+            liked_store_data = {
+                'store': {
+                    'id': like.store.id,
+                    'name': like.store.name, 
+                    'address': like.store.address,
+                    'rating' : like.store.rating,
+                    'delivery_fee' : like.store.delivery_fee,
+                    'image_url' : like.store.image_url
+                }
+            }
+            liked_all_stores.append(liked_store_data)
+
+        return JsonResponse({'liked_stores': liked_all_stores}, safe=False)
+    
+    except Exception as e:
+        return JsonResponse({'error': 'str(e)'}, status=500)
