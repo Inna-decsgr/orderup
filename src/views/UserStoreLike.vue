@@ -17,7 +17,7 @@
     </div>
     <div>
       <p><strong>찜 많은 가게를 추천해요</strong></p>
-      <swiper :slidesPerView="3" spaceBetween="10">
+      <swiper slides-per-view="3" :space-between="10">
         <swiper-slide v-for="store in likedallstores" :key="store.id" class="liked_store_item">
           <div class="liked_store_image">
             <img :src="store.store.image_url" alt="가게 이미지">
