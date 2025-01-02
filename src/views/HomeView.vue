@@ -47,6 +47,9 @@
       <div v-if="!showfilteredstore">
         <OrderChart />
       </div>
+      <div>
+        <BottomBanner />
+      </div>
     </div>
   </div>
 </template>
@@ -58,6 +61,7 @@ import SearchBar from '../components/SearchBar.vue'
 import OrderChart from '../components/OrderChart.vue'
 import RecentOrderStore from '../components/RecentOrderStore.vue'
 import SaleBanner from '../components/SaleBanner.vue'
+import BottomBanner from '../components/BottomBanner.vue'
 
 
 export default {
@@ -66,7 +70,8 @@ export default {
     SearchBar,
     OrderChart,
     RecentOrderStore,
-    SaleBanner
+    SaleBanner,
+    BottomBanner
   },
   computed: {
     user() {
