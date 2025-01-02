@@ -41,6 +41,9 @@
       <div v-if="user && user.id">
         <RecentOrderStore />
       </div>
+      <div style="margin-top: 50px; margin-bottom: 50px;">
+        <SaleBanner />
+      </div>
       <div v-if="!showfilteredstore">
         <OrderChart />
       </div>
@@ -54,6 +57,7 @@ import FilteredStore from '../components/FilteredStore.vue'
 import SearchBar from '../components/SearchBar.vue'
 import OrderChart from '../components/OrderChart.vue'
 import RecentOrderStore from '../components/RecentOrderStore.vue'
+import SaleBanner from '../components/SaleBanner.vue'
 
 
 export default {
@@ -61,7 +65,8 @@ export default {
     FilteredStore,
     SearchBar,
     OrderChart,
-    RecentOrderStore
+    RecentOrderStore,
+    SaleBanner
   },
   computed: {
     user() {
