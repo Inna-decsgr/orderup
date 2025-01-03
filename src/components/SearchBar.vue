@@ -1,14 +1,14 @@
 <template>
-  <div>
-    <div class="input-group mb-3">
+  <div class="mt-3">
+    <div class="flex mb-3 justify-center w-full">
       <input 
         type="text" 
-        class="form-control" 
-        placeholder="검색어를 입력해주세요" 
+        class="border-1 rounded-l-lg w-full p-2" 
+        placeholder="찾는 메뉴가 뭐예요?" 
         v-model="keyword"
         @keyup.enter="goResultPage"
       />
-      <button class="btn btn-outline-secondary" type="button" @click="goResultPage" :disabled="!keyword.trim()">검색</button>
+      <button class="border-[1px] border-l-0 rounded-r-lg p-2 flex-shrink-0" @click="goResultPage" :disabled="!keyword.trim()">검색</button>
     </div>
   </div>
 </template>
