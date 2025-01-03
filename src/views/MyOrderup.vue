@@ -1,6 +1,12 @@
 <template>
-  마이 오더업 페이지
   <div>
+    <p><strong>마이오더업</strong></p>
+    <div>
+      <div>
+        <p @click="editmode"><strong>{{ this.user.username }} > </strong></p>
+        <p><i class="fa-solid fa-location-dot"></i>주소관리</p>
+      </div>
+    </div>
     <div>
       <button @click="showCoupon">쿠폰함</button>
       <button @click="showAllReviews">내가 쓴 리뷰</button>
@@ -109,6 +115,9 @@ export default {
     gotoMyReview(store) {
       this.$router.push('/myreview');
       this.$store.commit('setStore', store)
+    },
+    editmode() {
+      this.$router.push('/myorderup/editprofile');
     }
   }
 }
