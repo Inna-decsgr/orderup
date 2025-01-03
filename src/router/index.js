@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginPage from '../views/LoginPage.vue'
 import SignupPage from '../views/SignupPage.vue'
-import UserProfilePage from '../views/UserProfilePage.vue'
+import UserProfilePage from '../components/UserProfilePage.vue'
 import MyStore from '../views/MyStore.vue'
 import StoreRegistration from '../views/StoreRegistration.vue'
 import SearchResult from '../views/SearchResult.vue'
@@ -34,8 +34,8 @@ const routes = [
     component: SignupPage
   },
   {
-    path: '/userprofile',
-    name: 'userprofile',
+    path: '/myorderup/editprofile',
+    name: 'edituserprofile',
     component: UserProfilePage
   },
   {
