@@ -1,10 +1,21 @@
 <template>
   <div class="home">
-    <span v-if="user"><i class="fa fa-map-marker"></i>{{ this.user.address }}</span>
+    <div class="flex justify-between items-center">
+      <p v-if="user"><i class="fa fa-map-marker"></i> <strong>{{ this.user.address }}</strong></p>
+      <div class="flex items-center ml-auto">
+        <button type="button" class="btn btn-light text-xs" v-if="!isLoggedIn" @click="gotoLogin">로그인</button>
+        <button v-if="user" @click="gotoMyCart" class="mr-5">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <button v-if="user && user.is_owner" @click="gotoMyStore">
+          <i class="fa-solid fa-store"></i>
+        </button>
+      </div>
+    </div>
     <div>
       <SearchBar />
     </div>
-    <div v-if="!user || (user && !user.is_owner)">
+    <div>
       <div>
         <button class="category-btn" @click="categoryStore(categories[0])">
           <i class="fa-solid fa-burger"></i>
@@ -62,6 +73,8 @@ import OrderChart from '../components/OrderChart.vue'
 import RecentOrderStore from '../components/RecentOrderStore.vue'
 import SaleBanner from '../components/SaleBanner.vue'
 import BottomBanner from '../components/BottomBanner.vue'
+import { mapGetters } from 'vuex';
+
 
 
 export default {
@@ -74,6 +87,7 @@ export default {
     BottomBanner
   },
   computed: {
+    ...mapGetters(['isLoggedIn', 'getUser']),
     user() {
       return this.$store.getters.getUser;
     }
@@ -114,7 +128,16 @@ export default {
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
       this.filteredData = this.storeData.filter((store) => store.categories.some((category) => category === categoryid.name));
       this.showfilteredstore = true
-    }
+    },
+    gotoLogin() {
+      this.$router.push('/login');
+    },
+    gotoMyCart() {
+      this.$router.push('/mycart')
+    },
+    gotoMyStore() {
+      this.$router.push('/mystore');
+    },
   }
 }
 </script>
