@@ -1,5 +1,5 @@
 <template>
-  <div class="banner">
+  <div class="bg-gray-100 p-10 text-gray-600 pb-[110px]">
     <div>
       <p>사업자정보확인 | 이용약관 | 전자금융거래이용약관 | 개인정보처리방침 | 리뷰운영정책 | 데이터제공정책 | 소비자분쟁해결기준</p>
       <p><strong>(주)오더업</strong></p>
@@ -9,13 +9,13 @@
       전자금융분쟁처리 Tel 1500-2836(유료), 020-473-2903(무료)<br/>
       Fax 050-2020-0500</p>
     </div>
-    <div class="customer_center">
-      <div class="customer_box">
+    <div class="flex my-3">
+      <div class="border-[1px] border-r-0 border-gray-300 w-[48%] p-3">
         <p>고객센터(대표)<br/>
         1500-2836<br/>
         24시간 운영, 연중무휴</p>
       </div>
-      <div class="customer_box">
+      <div class="border-[1px] border-gray-300 w-[48%] p-3">
         <p>고객센터(배달)<br/>
         1500-0035<br/>
         오전 9:00 ~ 다음 날 오전 1:00</p>
@@ -28,17 +28,7 @@
 </template>
 
 <style>
-.banner {
-  background-color: rgb(236, 236, 236);
-  padding: 20px;
-  color: rgb(129, 129, 129);
-  font-weight: bold;
-}
 
-.customer_center {
-  display: flex;
-  justify-content: center; 
-}
 .customer_box {
   width: 48%;
   border: 1px solid #ccc;
