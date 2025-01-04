@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <div class="flex justify-between items-center">
+  <div>
+    <div class="flex justify-between items-center pt-3 px-3">
       <p v-if="user"><i class="fa fa-map-marker"></i> <strong>{{ this.user.address }}</strong></p>
       <div class="flex items-center ml-auto">
         <button type="button" class="btn btn-light text-xs" v-if="!isLoggedIn" @click="gotoLogin">로그인</button>
@@ -12,54 +12,63 @@
         </button>
       </div>
     </div>
-    <div>
+    <div class="px-3">
       <SearchBar />
     </div>
     <div>
-      <div>
-        <button class="category-btn" @click="categoryStore(categories[0])">
-          🍔
-          <p>패스트푸드</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[1])">
-          🍜
-          <p>중식</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[2])">
-          🌭
-          <p>분식</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[3])">
-          🍣
-          <p>일식</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[4])">
-          🧁
-          <p>카페·디저트</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[5])">
-          🍱
-          <p>아시안</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[6])">
-          🍝
-          <p>양식</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[7])">
-          🍕
-          <p>피자</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[8])">
-          🥩
-          <p>족발·보쌈</p>
-        </button>
-        <button class="category-btn" @click="categoryStore(categories[9])">
-          🍲
-          <p>찜·탕</p>
-        </button>
-      </div>
-      <div>
-        <FilteredStore :filteredstore="filteredData"/>
+      <div class="mt-4 py-4 rounded-t-md" style="box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.15);">
+        <div class="text-center w-[400px] h-[180px] mx-auto">
+          <div class="food_category">
+            <button class="category-btn" @click="gotofilteredStore(categories[0])">
+              <span>🍔</span>
+              <p>패스트푸드</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[1])">
+              <span>🍜</span>
+              <p>중식</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[2])">
+              <span>🌭</span><br/>
+              <p class="inline-block">분식</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[3])">
+              <span>🍣</span>
+              <p>일식</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[4])">
+              <span>🧁</span>
+              <p>카페·디저트</p>
+            </button>
+          </div>
+          <div class="food_category">
+            <button class="category-btn" @click="gotofilteredStore(categories[5])">
+              <span>🍱</span>
+              <p>아시안</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[6])">
+              <span>🍝</span>
+              <p>양식</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[7])">
+              <span>🍕</span>
+              <p>피자</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[8])">
+              <span>🥩</span>
+              <p>족발·보쌈</p>
+            </button>
+            <button class="category-btn" @click="gotofilteredStore(categories[9])">
+              <span>🍲</span>
+              <p>찜·탕</p>
+            </button>
+          </div>
+        </div>
+        <div class="flex">
+          <button class="font-bold text-[14px] mx-auto border-t-[1px] border-b-[1px] w-full mt-[30px] py-2" @click="gotofilteredStore">
+            음식배달에서 더보기
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
       <div v-if="user && user.id">
         <RecentOrderStore />
@@ -73,14 +82,11 @@
       <div>
         <BottomBanner />
       </div>
-      {{ this.storeData }}
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import FilteredStore from '../components/FilteredStore.vue'
 import SearchBar from '../components/SearchBar.vue'
 import OrderChart from '../components/OrderChart.vue'
 import RecentOrderStore from '../components/RecentOrderStore.vue'
@@ -92,7 +98,6 @@ import { mapGetters } from 'vuex';
 
 export default {
   components: {
-    FilteredStore,
     SearchBar,
     OrderChart,
     RecentOrderStore,
@@ -119,27 +124,10 @@ export default {
         { id: 9, name: '족발·보쌈' },
         { id: 10, name: '찜·탕'}
       ],
-      storeData: [],
-      filteredData: [],
       showfilteredstore:false
     }
   },
-  async created() {
-    this.getAllStores();
-  },
   methods: {
-    async getAllStores() {
-      try {
-        const response = await axios.get('http://localhost:8000/order/getallstores/');
-        this.storeData = response.data;
-      } catch (error) {
-        if (error.response) {
-          console.log("API error:", error.response.data); // 오류 메시지 출력
-        } else {
-          console.log("Error occurred:", error.message);
-        }
-      }
-    },
     categoryStore(categoryid) {
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
       this.filteredData = this.storeData.filter((store) => store.categories.some((category) => category === categoryid.name));
@@ -154,6 +142,48 @@ export default {
     gotoMyStore() {
       this.$router.push('/mystore');
     },
+    gotofilteredStore(categoryid) {
+      this.$router.push({
+        path: '/filteredstore',
+        query: {
+          category: categoryid.name
+        }
+      })
+    }
   }
 }
 </script>
+
+<style>
+.category-btn {
+  height: 90px;
+  width: 80px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.food_category span {
+  background: rgb(240, 239, 239);
+  border-radius: 25px;
+  font-size: 35px;
+  padding: 10px;
+  width: 70px;
+  height: 70px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+}
+
+.food_category p {
+  font-weight: bold;
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+.food_category:last-child {
+  margin-top: 15px;
+}
+
+
+</style>

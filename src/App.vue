@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="p-3">
+  <div id="app">
     <MainNavbar v-if="!isLoginPage" />
     <router-view/>
   </div>
