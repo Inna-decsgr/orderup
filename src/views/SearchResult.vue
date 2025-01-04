@@ -3,18 +3,18 @@
     검색 결과 페이지
     <p>'{{ keyword }}'(으)로 검색된 결과</p>
     <div v-if="filteredStore">
-      <FilteredStore :filteredstore="filteredStore"/>
+      <SearchFiltered :filteredstore="filteredStore"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import FilteredStore from '../components/FilteredStore.vue'
+import SearchFiltered from '../components/SearchFiltered.vue'
 
 export default {
   components: {
-    FilteredStore
+    SearchFiltered
   },
   data() {
     return {
