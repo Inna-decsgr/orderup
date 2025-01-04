@@ -4,11 +4,11 @@
       <p v-if="user"><i class="fa fa-map-marker"></i> <strong>{{ this.user.address }}</strong></p>
       <div class="flex items-center ml-auto">
         <button type="button" class="btn btn-light text-xs" v-if="!isLoggedIn" @click="gotoLogin">로그인</button>
-        <button v-if="user" @click="gotoMyCart" class="mr-5">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </button>
-        <button v-if="user && user.is_owner" @click="gotoMyStore">
+        <button v-if="user && user.is_owner" @click="gotoMyStore" class="mr-5">
           <i class="fa-solid fa-store"></i>
+        </button>
+        <button v-if="user" @click="gotoMyCart" class="mr-2">
+          <i class="fa-solid fa-cart-shopping"></i>
         </button>
       </div>
     </div>
@@ -18,32 +18,44 @@
     <div>
       <div>
         <button class="category-btn" @click="categoryStore(categories[0])">
-          <i class="fa-solid fa-burger"></i>
-          <p>Fast Food</p>
+          🍔
+          <p>패스트푸드</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[1])">
-          <i class="fa-solid fa-bowl-food"></i>
-          <p>Chinese</p>
+          🍜
+          <p>중식</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[2])">
-          <i class="fa-solid fa-hotdog"></i>
-          <p>Snack Food</p>
+          🌭
+          <p>분식</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[3])">
-          <i class="fa-solid fa-fish"></i>
-          <p>Japanese</p>
+          🍣
+          <p>일식</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[4])">
-          <i class="fa-solid fa-ice-cream"></i>
-          <p>Dessert</p>
+          🧁
+          <p>카페·디저트</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[5])">
-          <i class="fa-solid fa-bowl-rice"></i>
-          <p>Asian</p>
+          🍱
+          <p>아시안</p>
         </button>
         <button class="category-btn" @click="categoryStore(categories[6])">
-          <i class="fa-solid fa-shrimp"></i>
-          <p>Western Food</p>
+          🍝
+          <p>양식</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[7])">
+          🍕
+          <p>피자</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[8])">
+          🥩
+          <p>족발·보쌈</p>
+        </button>
+        <button class="category-btn" @click="categoryStore(categories[9])">
+          🍲
+          <p>찜·탕</p>
         </button>
       </div>
       <div>
@@ -61,6 +73,7 @@
       <div>
         <BottomBanner />
       </div>
+      {{ this.storeData }}
     </div>
   </div>
 </template>
@@ -95,13 +108,16 @@ export default {
   data() {
     return {
       categories: [
-        { id: "1", name: "Fast Food" },
-        { id: "2", name: "Chinese" },
-        { id: "3", name: "Snack Food" },
-        { id: "4", name: "Japanese" },
-        { id: "5", name: "Dessert" },
-        { id: "6", name: "Asian" },
-        { id: "7", name: "Western Food" },
+        { id: 1, name: '패스트푸드' },
+        { id: 2, name: '중식' },
+        { id: 3, name: '분식' },
+        { id: 4, name: '일식' },
+        { id: 5, name: '카페·디저트' },
+        { id: 6, name: '아시안' },
+        { id: 7, name: '양식' },
+        { id: 8, name: '피자' },
+        { id: 9, name: '족발·보쌈' },
+        { id: 10, name: '찜·탕'}
       ],
       storeData: [],
       filteredData: [],

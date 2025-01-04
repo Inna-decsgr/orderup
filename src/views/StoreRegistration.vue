@@ -67,13 +67,16 @@ export default {
         delivery_fee: ''
       },
       categories: [
-        { id: 1, text: 'Fast Food' },
-        { id: 2, text: 'Chinese' },
-        { id: 3, text: 'Snack Food' },
-        { id: 4, text: 'Japanese' },
-        { id: 5, text: 'Dessert' },
-        { id: 6, text: 'Asian' },
-        { id: 7, text: 'Western Food' },
+        { id: 1, text: '패스트푸드' },
+        { id: 2, text: '중식' },
+        { id: 3, text: '분식' },
+        { id: 4, text: '일식' },
+        { id: 5, text: '카페·디저트' },
+        { id: 6, text: '아시안' },
+        { id: 7, text: '양식' },
+        { id: 8, text: '피자' },
+        { id: 9, text: '족발·보쌈' },
+        { id: 10, text: '찜·탕'}
       ],
       selectedCategories: [],
     };
