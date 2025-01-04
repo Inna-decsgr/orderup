@@ -15,6 +15,7 @@ import ManageStore from '../views/ManageStore.vue'
 import MyReview from '../views/MyReview.vue'
 import UserStoreLike from '../views/UserStoreLike.vue'
 import MyOrderup from '../views/MyOrderup.vue'
+import FilteredStore from '../views/FilteredStore.vue'
 
 
 const routes = [
@@ -97,6 +98,11 @@ const routes = [
     path: '/myorderup',
     name: 'MyOrderup',
     component: MyOrderup
+  },
+  {
+    path: '/filteredstore',
+    name: 'FilteredStore',
+    component: FilteredStore
   },
 ]
 
