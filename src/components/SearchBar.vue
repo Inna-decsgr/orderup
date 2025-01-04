@@ -8,7 +8,9 @@
         v-model="keyword"
         @keyup.enter="goResultPage"
       />
-      <button class="border-[1px] border-l-0 rounded-r-lg p-2 flex-shrink-0" @click="goResultPage" :disabled="!keyword.trim()">검색</button>
+      <button class="border-[1px] border-l-0 rounded-r-lg px-3 flex-shrink-0" @click="goResultPage" :disabled="!keyword.trim()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
     </div>
   </div>
 </template>
