@@ -1,46 +1,31 @@
 <template>
-  <div>
+  <div class="p-3">
     <div>
-      <button class="category-btn" @click="categoryStore(categories[0])">
-        <span>🍔</span>
-        <p>패스트푸드</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[1])">
-        <span>🍜</span>
-        <p>중식</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[2])">
-        <span>🌭</span><br/>
-        <p class="inline-block">분식</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[3])">
-        <span>🍣</span>
-        <p>일식</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[4])">
-        <span>🧁</span>
-        <p>카페·디저트</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[5])">
-        <span>🍱</span>
-        <p>아시안</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[6])">
-        <span>🍝</span>
-        <p>양식</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[7])">
-        <span>🍕</span>
-        <p>피자</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[8])">
-        <span>🥩</span>
-        <p>족발·보쌈</p>
-      </button>
-      <button class="category-btn" @click="categoryStore(categories[9])">
-        <span>🍲</span>
-        <p>찜·탕</p>
-      </button>
+      <div class="flex justify-between items-center pb-3">
+        <div>
+          <button @click="goHome"><i class="fa-solid fa-arrow-left"></i></button>
+          <span class="ml-3"><strong>음식 배달 🍴</strong></span>
+        </div>
+        <button v-if="user" @click="gotoMyCart" class="mr-2">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+      </div>
+      <p class="font-bold text-sm">{{ user.address }}</p>
+      <div class="my-3">
+        <swiper slides-per-view="5" class="my-swiper">
+          <swiper-slide 
+            v-for="(category, index) in categories" 
+            :key="index" 
+            @click="categoryStore(category)" 
+            class="w-[80px] h-[70px] text-[13px] font-bold text-center border-b-2"
+          >
+            <button class="w-24 h-[70px]" :class="this.selectedcategory.name === category.name ? 'border-b-[3px] border-black' : 'border-transparent'">
+              <span class="text-3xl">{{ category.icon }}</span>
+              <p class="mt-1">{{ category.name }}</p>
+            </button>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
     <div v-if="filteredstore && filteredstore.length">
       <div v-for="store in filteredstore" :key="store.id" >
@@ -64,6 +49,7 @@
 import StoreLike from '../components/StoreLike.vue'
 import { mapGetters } from 'vuex';
 import axios from 'axios';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 
 export default {
   data() {
@@ -73,22 +59,26 @@ export default {
       storeData: [],
       filteredstore: [],
       categories: [
-        { id: 1, name: '패스트푸드' },
-        { id: 2, name: '중식' },
-        { id: 3, name: '분식' },
-        { id: 4, name: '일식' },
-        { id: 5, name: '카페·디저트' },
-        { id: 6, name: '아시안' },
-        { id: 7, name: '양식' },
-        { id: 8, name: '피자' },
-        { id: 9, name: '족발·보쌈' },
-        { id: 10, name: '찜·탕'}
+        { id: 0, name: '홈', icon: '🏠'},
+        { id: 1, name: '패스트푸드', icon: '🍔'},
+        { id: 2, name: '중식', icon: '🍜' },
+        { id: 3, name: '분식', icon: '🌭' },
+        { id: 4, name: '일식', icon: '🍣' },
+        { id: 5, name: '카페·디저트', icon: '🧁' },
+        { id: 6, name: '아시안', icon: '🍱' },
+        { id: 7, name: '양식', icon: '🍝' },
+        { id: 8, name: '피자', icon: '🍕' },
+        { id: 9, name: '족발·보쌈', icon: '🥩' },
+        { id: 10, name: '찜·탕', icon: '🍲'}
       ],
-      category: ''
+      category: '',
+      selectedcategory: {name: ''}
     }
   },
   components: {
-    StoreLike
+    StoreLike,
+    Swiper,
+    SwiperSlide
   },
   computed: {
     ...mapGetters(['getUser', 'getLikedStore']),
@@ -129,7 +119,12 @@ export default {
     },
     categoryStore(categoryid) {
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
-      if (this.storeData && categoryid) {
+      this.selectedcategory = categoryid;
+      console.log(this.selectedcategory);
+
+      if (categoryid.name === '홈') {
+        this.$router.push('/');
+      } else if(this.storeData && categoryid) {
         this.filteredstore = this.storeData.filter((store) => store.categories.some((category) => category === categoryid.name));
       }
     },
@@ -160,6 +155,9 @@ export default {
         console.error('Error fetching coupon:', error);
       }
     },
+    goHome() {
+      this.$router.push('/');
+    }
   }
 }
 </script>
