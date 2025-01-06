@@ -17,11 +17,11 @@
             v-for="(category, index) in categories" 
             :key="index" 
             @click="categoryStore(category)" 
-            class="w-[80px] h-[70px] text-[13px] font-bold text-center border-b-2"
+            class="w-[80px] h-[80px] text-[13px] font-bold text-center border-b-2"
           >
-            <button class="w-24 h-[70px]" :class="this.selectedcategory.name === category.name ? 'border-b-[3px] border-black' : 'border-transparent'">
+            <button class="w-24 h-[80px]" :class="this.selectedcategory.name === category.name ? 'border-b-[3px] border-black' : 'border-transparent'">
               <span class="text-3xl">{{ category.icon }}</span>
-              <p class="mt-1">{{ category.name }}</p>
+              <p class="mt-2">{{ category.name }}</p>
             </button>
           </swiper-slide>
         </swiper>
@@ -33,7 +33,7 @@
           <swiper-slide
             v-for="menu in store.menus" 
             :key="menu.id"
-            class="relative bg-red-100 mx-[1px]"
+            class="relative mx-[1px]"
           >
             <div class="absolute text-xs bg-gradient-to-b from-black/70 via-black/50 to-transparent p-[7px] text-white w-full rounded-t-md">
               <p>{{ menu.name }}</p>
@@ -43,7 +43,7 @@
           </swiper-slide>
         </swiper>
         <p v-if="!allcouponstores.includes(store.name)" class="font-bold text-xs text-violet-700 w-[110px] h-[18px] text-center my-[6px] border-1 border-violet-500 rounded-[4px]">첫 주문 할인 쿠폰</p>
-        <div class="flex items-center font-bold">
+        <div class="flex items-center font-bold mt-1">
           <h3 class="text-md">{{ store.name }}</h3>
           <p class="ml-1">⭐{{ store.rating }}</p>
         </div>
@@ -51,7 +51,7 @@
           <p class="text-[13px]">{{ store.address }}</p>
           <p class="text-[13px] ml-4">{{ store.phonenumber }}</p>
         </div>
-        <p class="text-xs mt-1">배달팁 💸 <span class="font-bold">{{ store.deliveryfee }}</span></p>
+        <p class="text-xs mt-1">배달팁 💸 <span class="font-bold">{{ store.deliveryfee }}원</span></p>
       </div>
     </div>
   </div>
