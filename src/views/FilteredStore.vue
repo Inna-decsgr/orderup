@@ -47,9 +47,6 @@
           <h3 class="text-md">{{ store.name }}</h3>
           <p class="ml-1">⭐{{ store.rating }}</p>
         </div>
-        <div v-if="user && user.id">
-          <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
-        </div>
         <div class="flex">
           <p class="text-[13px]">{{ store.address }}</p>
           <p class="text-[13px] ml-4">{{ store.phonenumber }}</p>
@@ -61,7 +58,6 @@
 </template>
 
 <script>
-import StoreLike from '../components/StoreLike.vue'
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/vue';
@@ -91,7 +87,6 @@ export default {
     }
   },
   components: {
-    StoreLike,
     Swiper,
     SwiperSlide
   },
