@@ -527,23 +527,13 @@ def update_menu(request, menu_id):
 @api_view(['GET'])
 def get_all_stores(request):
     # category 쿼리 파라미터 가져오기
-    category_name = request.query_params.get('category', None)
-
-    if category_name:
-        # 카테고리 이름으로 가게 필터링
-        stores = Restaurant.objects.filter(category__name=category_name)
-    
-    else:
-        # 음식점과 관련된 카테고리들 미리 가져오기(다대다 관계여서)
-        stores = Restaurant.objects.all().prefetch_related('categories')
-
-    if not stores.exists():
-        # 메뉴가 없을 경우 404 반환
-        return Response({"error": "No matching records found"}, status=status.HTTP_404_NOT_FOUND)
+    stores = Restaurant.objects.all()
     
     stores_data = []
 
     for store in stores:
+        menus = Menu.objects.filter(restaurant_id=store.id)
+
         stores_data.append({
             'id': store.id,
             'name': store.name,
@@ -554,7 +544,18 @@ def get_all_stores(request):
             'deliveryfee': store.delivery_fee,
             'operatinghours': store.operating_hours,
             'imageurl': store.image_url,
-            'categories': [category.name for category in store.categories.all()]  # 카테고리 리스트 추가
+            'categories': [category.name for category in store.categories.all()],  # 카테고리 리스트 추가
+
+            'menus': [
+                {
+                    'id': menu.id,
+                    'name': menu.name,
+                    'description': menu.description,
+                    'price': menu.price,
+                    'imageurl': menu.image_url
+                }
+                for menu in menus.all()
+            ]
         })
 
     return Response(stores_data, status=status.HTTP_200_OK)
