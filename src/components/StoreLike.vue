@@ -1,12 +1,11 @@
 <template>
-  가게 찜
   <button @click="toggleLike">
     <i :class="`fa-${isactive ? 'solid' : 'regular'} fa-heart`"></i>
   </button>
-  {{ this.isactive }}
+  <!--{{ this.isactive }}
   {{ storeid }}
   {{ user.id }}
-  {{ this.likedstore }}
+  {{ this.likedstore }}-->
 </template>
 
 <script>
