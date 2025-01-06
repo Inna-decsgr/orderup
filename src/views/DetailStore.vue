@@ -1,19 +1,37 @@
 <template>
   <div>
-    <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
-    <div v-if="menus.length > 0">
-      <div>
-        <button @click="showreview">리뷰 <span>{{ this.allreviews.length }}</span>개</button>
+    <img :src="this.selectedstore[0]?.imageurl" alt="가게 이미지" class="w-full h-[300px] object-cover ">
+    <div class="border-b-[1px] p-2 px-3">
+      <div class="flex justify-between items-center">
+        <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
         <div v-if="user && user.id">
           <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         </div>
       </div>
-      <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)">
-        <p>2000원 할인 쿠폰 발급 완료</p>
+      <div class="flex items-center font-bold text-sm mb-2">
+        <p>⭐{{ this.selectedstore[0]?.rating }}</p>
+        <button @click="showreview" v-if="this.allreviews.length > 0">
+          <span class="text-gray-400 mx-2">·</span>
+          <span>
+            리뷰 {{ this.allreviews.length }}</span>개
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
       </div>
-      <div v-else>
-        <button @click="getCoupon(2000)">첫 주문 2000원 할인 쿠폰 받기</button>
+      <div>
+        <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)" class="inline-block font-bold text-xs text-violet-700 p-[3px] text-center border-1 border-violet-500 rounded-[4px]">
+          <p>2000원 할인 쿠폰 발급 완료</p>
+        </div>
+        <div v-else class="inline-block font-bold text-xs text-violet-700 border-1 p-[3px] border-violet-500 rounded-[4px]">
+          <button @click="getCoupon(2000)" class="mt-0">
+            첫 주문 2000원 할인 쿠폰 받기
+            <i class="fa-solid fa-download"></i>
+          </button>
+        </div>
       </div>
+    </div>
+
+
+    <div v-if="menus.length > 0">
       <div v-if="storeReview && allreviews.length > 0">
         <AllReviews :cancel="closereview" :reviews="this.allreviews"/>
       </div>
@@ -88,7 +106,8 @@ export default {
       allreviews: [],
       allcoupons: [],
       allcouponstores: [],
-      likedstore: []
+      likedstore: [],
+      selectedstore: []
     }
   },
   components: {
@@ -114,6 +133,7 @@ export default {
     if (this.user && this.user.id) {
       this.getAllCoupons();
     }
+    this.getStoredata();
   },
   methods: {
     async getMenus(storeid) {
@@ -233,6 +253,13 @@ export default {
         console.error('Error fetching coupon:', error);
       }
     },
+    async getStoredata() {
+      const response = await axios.get("http://localhost:8000/order/getallstores/");
+      console.log('모든 가게들', response.data);
+
+      this.selectedstore = response.data.filter((store) => store.id === this.store.id);
+      console.log('현재 가게', this.selectedstore);
+    }
   }
 }
 </script>
