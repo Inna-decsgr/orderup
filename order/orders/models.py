@@ -66,7 +66,7 @@ class OptionItem(models.Model):
 
 # 메뉴 모델(Menu)
 class Menu(models.Model):
-  restaurant = models.ForeignKey('Restaurant', related_name="menu_items", on_delete=models.CASCADE)
+  restaurant = models.ForeignKey('Restaurant', related_name="menu_items", on_delete=models.CASCADE, null=True)
   name = models.CharField(max_length=100)
   description = models.TextField()
   price = models.DecimalField(max_digits=10, decimal_places=2)
