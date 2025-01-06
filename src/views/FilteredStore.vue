@@ -28,18 +28,33 @@
       </div>
     </div>
     <div v-if="filteredstore && filteredstore.length">
-      <div v-for="store in filteredstore" :key="store.id" >
-        <h3 @click="detailstore({id:store.id, name: store.name})" style="cursor:pointer">
-          {{ store.name }}
-        </h3>
+      <div v-for="store in filteredstore" :key="store.id" @click="detailstore({id:store.id, name: store.name})" class="cursor-pointer mb-4">
+        <swiper slides-per-view="3" class="my-swiper">
+          <swiper-slide
+            v-for="menu in store.menus" 
+            :key="menu.id"
+            class="relative bg-red-100 mx-[1px]"
+          >
+            <div class="absolute text-xs bg-gradient-to-b from-black/70 via-black/50 to-transparent p-[7px] text-white w-full rounded-t-md">
+              <p>{{ menu.name }}</p>
+              <p class="font-bold">{{ Number(menu.price).toLocaleString() }}원</p>
+            </div>
+            <img :src="menu.imageurl" :alt="menu.name + ' 이미지'" class="w-[150px] h-[150px]">
+          </swiper-slide>
+        </swiper>
+        <p v-if="!allcouponstores.includes(store.name)" class="font-bold text-xs text-violet-700 w-[110px] h-[18px] text-center my-[6px] border-1 border-violet-500 rounded-[4px]">첫 주문 할인 쿠폰</p>
+        <div class="flex items-center font-bold">
+          <h3 class="text-md">{{ store.name }}</h3>
+          <p class="ml-1">⭐{{ store.rating }}</p>
+        </div>
         <div v-if="user && user.id">
           <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         </div>
-        <p v-if="!allcouponstores.includes(store.name)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
-        <p>{{ store.address }}</p>
-        <p>{{ store.phonenumber }}</p>
-        <p>⭐ {{ store.rating }}</p>
-        <p>{{ store.description }}</p>
+        <div class="flex">
+          <p class="text-[13px]">{{ store.address }}</p>
+          <p class="text-[13px] ml-4">{{ store.phonenumber }}</p>
+        </div>
+        <p class="text-xs mt-1">배달팁 💸 <span class="font-bold">{{ store.deliveryfee }}</span></p>
       </div>
     </div>
   </div>
