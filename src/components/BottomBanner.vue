@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-100 p-10 text-gray-600 pb-[110px]">
+  <div class="bg-gray-100 p-10 text-gray-600">
     <div>
       <p>사업자정보확인 | 이용약관 | 전자금융거래이용약관 | 개인정보처리방침 | 리뷰운영정책 | 데이터제공정책 | 소비자분쟁해결기준</p>
       <p><strong>(주)오더업</strong></p>
