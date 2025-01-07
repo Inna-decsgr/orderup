@@ -1,14 +1,14 @@
 <template>
   <div class="p-2 px-3">
     <img :src="this.selectedstore[0]?.imageurl" alt="가게 이미지" class="w-full h-[300px] object-cover ">
-    <div class="border-b-[1px]">
+    <div class="border-b-[2px]">
       <div class="flex justify-between items-center">
         <p class="text-3xl mt-2"><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></p>
         <div v-if="user && user.id">
           <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         </div>
       </div>
-      <div class="flex items-center font-bold text-sm mb-2">
+      <div class="flex items-center font-bold text-sm">
         <p>⭐{{ this.selectedstore[0]?.rating }}</p>
         <button @click="showreview" v-if="this.allreviews.length > 0">
           <span class="text-gray-400 mx-2">·</span>
@@ -17,7 +17,7 @@
             <i class="fa-solid fa-chevron-right"></i>
           </button>
       </div>
-      <div>
+      <div class="my-2">
         <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)" class="inline-block font-bold text-xs text-violet-700 p-[3px] text-center border-1 border-violet-500 rounded-[4px]">
           <p>2000원 할인 쿠폰 발급 완료</p>
         </div>
@@ -28,42 +28,50 @@
           </button>
         </div>
       </div>
-    </div>
-    <div>
-      <p class="font-bold">
-      운영 시간
-      <span v-if="isoperatingHour(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
-        {{ selectedstore[0]?.operatinghours }}
-      </span>
-      <span v-else class="text-red-400 ml-3">
-        내일 오전 {{ (isoperatingHour(selectedstore[0]?.operatinghours)).nextStart }} 오픈
-      </span>
-    </p>
+      <div class="my-1 text-sm">
+        <p class="font-bold">
+          운영 시간
+          <span v-if="isoperatingHour(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
+            {{ selectedstore[0]?.operatinghours }}
+          </span>
+          <span v-else class="text-red-400 ml-3">
+            내일 오전 {{ (isoperatingHour(selectedstore[0]?.operatinghours)).nextStart }} 오픈
+          </span>
+        </p>
+      </div>
     </div>
 
-
-    <div v-if="menus.length > 0">
+    <div v-if="menus.length > 0" class="my-3">
       <div v-if="storeReview && allreviews.length > 0">
         <AllReviews :cancel="closereview" :reviews="this.allreviews"/>
       </div>
-      <p><strong>메뉴판</strong></p>
-      <div v-for="menu in menus" :key="menu.id">
-        <p>{{ menu.name }}</p>
-        <p>{{ menu.description }}</p>
-        <p>{{ menu.price.toLocaleString() }}원</p>
-        <img v-if="menu.image_url" :src="menu.image_url" alt="Menu Image" style="width: 400px; height: 300px;">
-        <!--옵션 그룹이 있을 경우 출력-->
-        <div v-if="menu.option_groups && menu.option_groups.length > 0">
-          <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
-            <p>{{ optionGroup.group_name }}</p>
-            <ul>
-              <li v-for="optionItem in optionGroup.items" :key="optionItem.name">
-                {{ optionItem.name }} - {{ optionItem.price }} 원
-              </li>
-            </ul>
+      <p class="text-xl"><strong>메뉴</strong></p>
+      <div v-for="menu in menus" :key="menu.id" class="border-b-[1px]">
+        <div class="flex justify-between py-3">
+          <div class="basis-3/4 py-2 px-1">
+            <p class="text-lg font-bold pb-2">{{ menu.name }}</p>
+            <p class="text-sm pb-2">{{ menu.description }}</p>
+            <p class="text-sm font-bold">{{ menu.price.toLocaleString() }}원</p>
+            <!--옵션 그룹이 있을 경우 출력-->
+            <div v-if="menu.option_groups && menu.option_groups.length > 0">
+              <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name" class="mt-3">
+                <p class="font-bold">추가 옵션</p>
+                <ul class="list-disc ml-5">
+                  <li v-for="optionItem in optionGroup.items" :key="optionItem.name">
+                    <p>{{ optionItem.name }} : <span class="font-bold">{{ optionItem.price.toLocaleString() }}원</span></p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <button @click="addCart(menu)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold">
+              장바구니 담기
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div>
+            <img v-if="menu.image_url" :src="menu.image_url" alt="Menu Image" class="w-[300px] h-[200px] rounded-md">
           </div>
         </div>
-        <button @click="addCart(menu)">{{ menu.price.toLocaleString() }}원 담기</button>
       </div>
     </div>
 
