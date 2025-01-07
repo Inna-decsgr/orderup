@@ -82,9 +82,8 @@
     <!-- 옵션 팝업 -->
     <div v-if="showPopup" class="popup">
       <div class="popup-content">
-        <h3>옵션 선택</h3>
-        <div v-for="(group, index) in optiongroups" :key="index">
-          <h4>{{ group.group_name }}</h4>
+        <p class="font-bold text-lg">추가 옵션 선택</p>
+        <div v-for="(group, index) in optiongroups" :key="index" class="mt-2">
           <div v-for="(item, i) in group.items" :key="i">
             <label>
               <input 
@@ -93,13 +92,15 @@
                 :name="group.group_name" 
                 @change="toggleOption(item)"
               />
-              {{ item.name }} (+{{ item.price }}원)
+              {{ item.name }} <span class="font-bold">(+{{ item.price }}원)</span>
             </label>
           </div>
-          <label><input type="checkbox"> {{ "선택 안함" }} (+0원)</label>
+          <label><input type="checkbox"> {{ "선택 안함" }} <span class="font-bold">(+0원)</span></label>
         </div>
-        <button @click="addToCartWithOptions">담기</button>
-        <button @click="closePopup">닫기</button>
+        <div class="mt-2">
+          <button @click="addToCartWithOptions" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold">담기</button>
+          <button @click="closePopup" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold ml-2">닫기</button>
+        </div>
       </div>
     </div>
   </div>
