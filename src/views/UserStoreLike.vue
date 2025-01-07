@@ -1,33 +1,43 @@
 <template>
   <div class="p-3 px-3">
     <p class="font-bold text-xl">찜</p>
-    <div class="bg-red-100">
-      <p class="font-bold">총 {{ this.userlikedstores.length }}개</p>
-      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" >
-        <div>
-          <img :src="store.image_url" alt="가게 이미지" style="width: 250px; height: 200px;">
+    <p class="font-bold text-sm my-2">배달·포장</p>
+    <div>
+      <p class="font-bold pt-2 text-sm">총 {{ this.userlikedstores.length }}개</p>
+      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="border-b flex justify-center items-center p-2 py-3">
+        <div class="basis-1/5">
+          <img :src="store.image_url" alt="가게 이미지" class="border w-[150px] h-[100px] rounded-lg object-cover">
         </div>
-        <div>
-          <p><strong>{{ store.store_name}}</strong></p>
-          <p>⭐ {{ store.rating }} ({{ store.review_count }})</p>
-          <p>{{ store.description }}</p>
-          <p>배달팁 {{ store.delivery_fee }}원</p>
+        <div class="basis-4/5 p-2 px-3">
+          <p class="text-[15px] font-bold pb-[3px]">{{ store.store_name}}</p> 
+          <div class="text-[14px]">
+            <span v-if="store.review_count > 1" class="font-bold">
+              ⭐ {{ store.rating }} ({{ store.review_count }}+)
+            </span>
+            <span class="line-clamp-1 ellipsis-h text-sm pb-[3px] text-[13px]">{{ store.description }}</span>
+          </div>
+          <p class="text-sm">
+            <span class="text-gray-600">배달팁</span> 
+            <span class="font-bold pl-2">{{ store.delivery_fee.toLocaleString() }}원</span>
+          </p>
         </div>
       </div>
     </div>
-    <div>
-      <p class="font-bold mb-[10px]">찜 많은 가게 추천해요</p>
+    <div class="pt-3 pb-1">
+      <p class="font-bold mb-[10px] text-sm">찜 많은 가게 추천해요</p>
       <swiper :space-between="20">
         <swiper-slide v-for="store in likedallstores" :key="store.id" class="flex items-center justify-start border rounded-[10px] p-[7px]">
           <div class="basis-1/5">
             <img :src="store.store.image_url" alt="가게 이미지" class="w-[80px] h-[80px] border rounded-[32px]">
           </div>
           <div>
-            <p class="text-[17px] mb-[5px] font-bold"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
+            <p class="mb-[5px] font-bold">{{ store.store.name }} 
+              <span class="text-sm">⭐ {{ store.store.rating }}</span>
+            </p>
             <p class="text-sm">{{ store.store.address }}</p>
             <div class="flex">
               <p class="text-[14px]"><span class="text-gray-500">배달팁 : </span> {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
-              <p class="text-[14px]"><span class="text-gray-500 pl-3">찜 갯수 : </span>+{{ store.store.like_count }}</p>
+              <p class="text-[14px] ml-3 font-semibold">찜 갯수 : +{{ store.store.like_count }}</p>
             </div>
           </div>
         </swiper-slide>
