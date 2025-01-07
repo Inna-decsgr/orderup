@@ -8,7 +8,8 @@ const store = createStore({
       menucart: [],
       store: [],
       order: [],
-      likedstore: []
+      likedstore: [],
+      category: ''
     };
   },
   mutations: {
@@ -40,6 +41,9 @@ const store = createStore({
     },
     removeStoreFromLiked(state, storeid) {
       state.likedstore = state.likedstore.filter(id => id !== storeid);
+    },
+    setCategory(state, category) {
+      state.category = category
     }
   },
   actions: {
@@ -68,6 +72,9 @@ const store = createStore({
     },
     getLikedStore(state) {
       return state.likedstore
+    },
+    getCategory(state) {
+      return state.category
     }
   },
   plugins: [createPersistedState()],
