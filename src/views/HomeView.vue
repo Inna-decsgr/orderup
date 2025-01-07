@@ -120,13 +120,9 @@ export default {
     gotoMyStore() {
       this.$router.push('/mystore');
     },
-    gotofilteredStore(categoryid) {
-      this.$router.push({
-        path: '/filteredstore',
-        query: {
-          category: categoryid.name
-        }
-      })
+    gotofilteredStore(category) {
+      this.$router.push('/filteredstore');
+      this.$store.commit('setCategory', category.name);
     }
   }
 }
