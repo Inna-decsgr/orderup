@@ -82,7 +82,6 @@ export default {
         { id: 9, name: '족발·보쌈', icon: '🥩' },
         { id: 10, name: '찜·탕', icon: '🍲'}
       ],
-      category: '',
       selectedcategory: {name: ''}
     }
   },
@@ -91,19 +90,22 @@ export default {
     SwiperSlide
   },
   computed: {
-    ...mapGetters(['getUser', 'getLikedStore']),
+    ...mapGetters(['getUser', 'getLikedStore', 'getCategory']),
     user() {
       return this.getUser;
     },
+    category() {
+      return this.getCategory;
+    }
   },
   mounted() {
     this.getAllStores();
-    this.category = this.$route.query.category;
     if (this.user && this.user.id) {
       this.getStoreLike();
       this.getAllCoupons();
     }
     this.likedstore = this.getLikedStore;
+    console.log('vuex 카테고리', this.category);
   },
   methods: {
     async getAllStores() {
@@ -130,7 +132,9 @@ export default {
     categoryStore(categoryid) {
       // 카테고리 ID에 맞는 가게 데이터 필터링하기
       this.selectedcategory = categoryid;
+      console.log('카테고리 아이디', categoryid);
       console.log(this.selectedcategory);
+      this.$store.commit('setCategory', categoryid.name)
 
       if (categoryid.name === '홈') {
         this.$router.push('/');
