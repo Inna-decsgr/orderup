@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="p-2 px-3">
     <img :src="this.selectedstore[0]?.imageurl" alt="가게 이미지" class="w-full h-[300px] object-cover ">
-    <div class="border-b-[1px] p-2 px-3">
+    <div class="border-b-[1px]">
       <div class="flex justify-between items-center">
-        <h5><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></h5>
+        <p class="text-3xl mt-2"><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></p>
         <div v-if="user && user.id">
           <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         </div>
@@ -28,6 +28,17 @@
           </button>
         </div>
       </div>
+    </div>
+    <div>
+      <p class="font-bold">
+      운영 시간
+      <span v-if="isoperatingHour(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
+        {{ selectedstore[0]?.operatinghours }}
+      </span>
+      <span v-else class="text-red-400 ml-3">
+        내일 오전 {{ (isoperatingHour(selectedstore[0]?.operatinghours)).nextStart }} 오픈
+      </span>
+    </p>
     </div>
 
 
@@ -259,6 +270,35 @@ export default {
 
       this.selectedstore = response.data.filter((store) => store.id === this.store.id);
       console.log('현재 가게', this.selectedstore);
+    },
+    isoperatingHour(storeoperating) {
+      if (!storeoperating) return {isOperting: false, nextStart: null};
+
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+
+      // 전달받은 운영 시간 분리
+      const [start, end] = storeoperating.split(" - ");
+
+      // 문자열을 시간으로 변환하기 11:00 -> { hour: 11, minute: 0 }
+      const [startHour, startMinute] = start.split(":").map(Number);
+      const [endHour, endMinute] = end.split(":").map(Number);
+
+      // 현재 시간이 운영시간 이후인지 확인하기
+      const isAfterOperating = currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute);
+
+      // 현재 시간이 종료 시간 이전인지 확인하기
+      const isBeforeOperating = currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
+
+      const isOperating = isAfterOperating && isBeforeOperating;
+
+      return {
+        isOperating,
+        nextStart: !isOperating ? null : `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`
+      }
+      
     }
   }
 }
