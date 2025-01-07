@@ -1,32 +1,34 @@
 <template>
-  <div>
-    <div>
-      <p><strong>찜한 가게</strong></p>
-      <p>총 {{ this.userlikedstores.length }}개</p>
-      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="store_item">
-        <div class="store_image">
+  <div class="p-3 px-3">
+    <p class="font-bold text-xl">찜</p>
+    <div class="bg-red-100">
+      <p class="font-bold">총 {{ this.userlikedstores.length }}개</p>
+      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" >
+        <div>
           <img :src="store.image_url" alt="가게 이미지" style="width: 250px; height: 200px;">
         </div>
-        <div class="store_info">
+        <div>
           <p><strong>{{ store.store_name}}</strong></p>
           <p>⭐ {{ store.rating }} ({{ store.review_count }})</p>
-          <p class="store_description">{{ store.description }}</p>
+          <p>{{ store.description }}</p>
           <p>배달팁 {{ store.delivery_fee }}원</p>
         </div>
       </div>
     </div>
     <div>
-      <p><strong>찜 많은 가게를 추천해요</strong></p>
-      <swiper slides-per-view="3" :space-between="10">
-        <swiper-slide v-for="store in likedallstores" :key="store.id" class="liked_store_item">
-          <div class="liked_store_image">
-            <img :src="store.store.image_url" alt="가게 이미지">
+      <p class="font-bold mb-[10px]">찜 많은 가게 추천해요</p>
+      <swiper :space-between="20">
+        <swiper-slide v-for="store in likedallstores" :key="store.id" class="flex items-center justify-start border rounded-[10px] p-[7px]">
+          <div class="basis-1/5">
+            <img :src="store.store.image_url" alt="가게 이미지" class="w-[80px] h-[80px] border rounded-[32px]">
           </div>
-          <div class="liked_store_info">
-            <p class="liked_store_name"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
-            <p class="liked_store_address">{{ store.store.address }}</p>
-            <p class="liked_store_delivery">배달팁 : {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
-            <p class="liked_store_count">찜 갯수 : +{{ store.store.like_count }}</p>
+          <div>
+            <p class="text-[17px] mb-[5px] font-bold"><strong>{{ store.store.name }}</strong> <span>⭐ {{ store.store.rating }}</span></p>
+            <p class="text-sm">{{ store.store.address }}</p>
+            <div class="flex">
+              <p class="text-[14px]"><span class="text-gray-500">배달팁 : </span> {{ Number(store.store.delivery_fee).toLocaleString() }}원</p>
+              <p class="text-[14px]"><span class="text-gray-500 pl-3">찜 갯수 : </span>+{{ store.store.like_count }}</p>
+            </div>
           </div>
         </swiper-slide>
       </swiper>
@@ -145,35 +147,5 @@ export default {
   white-space: normal;
 }
 
-.liked_store_item {
-  display: flex; 
-  align-items: center; 
-  margin-bottom: 20px;
-  border-bottom: 1px solid #ddd; 
-  padding-bottom: 10px;
-}
 
-.liked_store_image img {
-  width: 100px;
-  height: 100px;
-  border-radius: 8px; 
-  object-fit: cover;
-  margin-right: 15px; 
-}
-
-.liked_store_info {
-  flex: 1;
-}
-
-.liked_store_name {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.liked_store_delivery,
-.liked_store_count {
-  font-size: 14px;
-  color: #333;
-}
 </style>
