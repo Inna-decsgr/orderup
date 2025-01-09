@@ -9,11 +9,12 @@
           <img :src="store.image_url" alt="가게 이미지" class="border w-[150px] h-[100px] rounded-lg object-cover">
         </div>
         <div class="basis-4/5 p-2 px-3">
-          <p class="text-[15px] font-bold pb-[3px]">{{ store.store_name}}</p> 
+          <p class="text-[15px] font-bold">{{ store.store_name}}</p> 
           <div class="text-[14px]">
-            <span v-if="store.review_count > 1" class="font-bold">
-              ⭐ {{ store.rating }} ({{ store.review_count }}+)
-            </span>
+            <p class="font-bold">
+              ⭐ {{ store.rating }} 
+              <span v-if="store.review_count > 1" >({{ store.review_count }}+)</span>
+            </p>
             <span class="line-clamp-1 ellipsis-h text-sm pb-[3px] text-[13px]">{{ store.description }}</span>
           </div>
           <p class="text-sm">
@@ -51,6 +52,7 @@ import axios from 'axios';
 import { mapGetters } from 'vuex';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
+import { isOperatingHour } from '../utils/isoperatinghours.js';
 
 
 export default {
@@ -92,70 +94,11 @@ export default {
       const response = await axios.get(`http://localhost:8000/order/getlikedallstores/`);
       console.log('찜된 모든 가게들', response.data.liked_stores);
       this.likedallstores = response.data.liked_stores
-    }
+    },
+    isoperatinghours(hour) {
+      return isOperatingHour(hour);
+    },
   }
 }
 </script>
 
-<style>
-.store_item {
-  display: flex;
-  align-items: flex-start; /* 이미지와 텍스트 상단 정렬 */
-  border: 1px solid #ddd; /* 테두리 추가 */
-  border-radius: 8px; /* 모서리 둥글게 */
-  margin: 10px 0; /* 아이템 간격 */
-  padding: 10px;
-  background-color: #f9f9f9; /* 배경색 */
-  transition: box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.store_item:hover {
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 */
-}
-
-/* 이미지 영역 */
-.store_image img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover; 
-  border-radius: 8px;
-  margin-right: 20px; /* 이미지와 텍스트 간 간격 */
-}
-
-
-.store_info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.store_info p {
-  margin: 5px 0; 
-}
-
-.store_info strong {
-  font-size: 18px; 
-  color: #333;
-}
-
-.store_info p:nth-child(2) {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-.store_info p:last-child {
-  color: #777; 
-}
-
-.store_description {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-}
-
-
-</style>
