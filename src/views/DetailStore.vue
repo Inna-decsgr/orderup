@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 px-3">
-    <img :src="this.selectedstore[0]?.imageurl" alt="가게 이미지" class="w-full h-[300px] object-cover ">
+    <img :src="this.selectedstore[0]?.imageurl || store.image_url" alt="가게 이미지" class="w-full h-[300px] object-cover ">
     <div class="border-b-[2px]">
       <div class="flex justify-between items-center">
         <p class="text-3xl mt-2"><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></p>
@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="flex items-center font-bold text-sm my-2">
-        <p>⭐{{ this.selectedstore[0]?.rating }}</p>
+        <p>⭐{{ this.selectedstore[0]?.rating || store.rating}}</p>
         <button @click="showreview" v-if="this.allreviews.length > 0" class="">
           <span class="text-gray-400 mx-2">·</span>
           <span>
@@ -31,11 +31,11 @@
       <div class="my-1 text-sm">
         <p class="font-bold">
           운영 시간
-          <span v-if="isoperatinghours(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
-            {{ selectedstore[0]?.operatinghours }}
+          <span v-if="isoperatinghours(selectedstore[0]?.operatinghours).isOperating || store.operatinghours" class="ml-3">
+            {{ selectedstore[0]?.operatinghours || store.operatinghours}}
           </span>
           <span v-else class="text-red-400 ml-3">
-            내일 오전 {{ (isoperatinghours(selectedstore[0]?.operatinghours)).nextStart }} 오픈
+            내일 오전 {{ (isoperatinghours(selectedstore[0]?.operatinghours)).nextStart || (store.operatinghours.split(' - ')[0])}} 오픈
           </span>
         </p>
       </div>
