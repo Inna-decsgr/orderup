@@ -1200,6 +1200,7 @@ def get_store_likes(request, user_id):
                 'image_url' : like.store.image_url,
                 'created_at' : like.created_at,
                 'is_active' : like.is_active,
+                'operatinghours' : like.store.operating_hours
             }
             for like in likes
         ]
