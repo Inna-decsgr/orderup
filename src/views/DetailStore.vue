@@ -8,14 +8,14 @@
           <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
         </div>
       </div>
-      <div class="flex items-center font-bold text-sm">
+      <div class="flex items-center font-bold text-sm my-2">
         <p>⭐{{ this.selectedstore[0]?.rating }}</p>
-        <button @click="showreview" v-if="this.allreviews.length > 0">
+        <button @click="showreview" v-if="this.allreviews.length > 0" class="">
           <span class="text-gray-400 mx-2">·</span>
           <span>
             리뷰 {{ this.allreviews.length }}</span>개
             <i class="fa-solid fa-chevron-right"></i>
-          </button>
+        </button>
       </div>
       <div class="my-2">
         <div v-if="allcouponstores.includes(this.store.name) || (this.store?.store_name) || allcouponstores.includes(this.store?.restaurant?.name)" class="inline-block font-bold text-xs text-violet-700 p-[3px] text-center border-1 border-violet-500 rounded-[4px]">
@@ -31,11 +31,11 @@
       <div class="my-1 text-sm">
         <p class="font-bold">
           운영 시간
-          <span v-if="isoperatingHour(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
+          <span v-if="isoperatinghours(selectedstore[0]?.operatinghours).isOperating" class="ml-3">
             {{ selectedstore[0]?.operatinghours }}
           </span>
           <span v-else class="text-red-400 ml-3">
-            내일 오전 {{ (isoperatingHour(selectedstore[0]?.operatinghours)).nextStart }} 오픈
+            내일 오전 {{ (isoperatinghours(selectedstore[0]?.operatinghours)).nextStart }} 오픈
           </span>
         </p>
       </div>
@@ -63,7 +63,7 @@
                 </ul>
               </div>
             </div>
-            <button @click="addCart(menu)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold">
+            <button @click="addCart(menu)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold my-3">
               장바구니 담기
               <i class="fa-solid fa-plus"></i>
             </button>
@@ -76,13 +76,18 @@
     </div>
 
     <div v-if="menucart.length > 0">
-      <button @click="gotoMyCart(this.menucart)">{{ totalPrice }}원 - 주문하기 {{ this.menucart.length }}</button>
+      <button @click="gotoMyCart(this.menucart)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-sm font-bold my-3">{{ totalPrice }}원 - 주문하기 {{ this.menucart.length }}</button>
     </div>
 
     <!-- 옵션 팝업 -->
-    <div v-if="showPopup" class="popup">
-      <div class="popup-content">
-        <p class="font-bold text-lg">추가 옵션 선택</p>
+    <div v-if="showPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-4 rounded-lg w-4/5 max-w-md">
+        <div class="flex justify-between">
+          <p class="font-bold">추가 옵션 선택</p>
+          <button @click="closePopup" class="px-[5px] py-[3px] rounded-[4px] text-xs font-bold ml-2">
+            <i class="fa-solid fa-x"></i>
+          </button>
+        </div>
         <div v-for="(group, index) in optiongroups" :key="index" class="mt-2">
           <div v-for="(item, i) in group.items" :key="i">
             <label>
@@ -92,14 +97,13 @@
                 :name="group.group_name" 
                 @change="toggleOption(item)"
               />
-              {{ item.name }} <span class="font-bold">(+{{ item.price }}원)</span>
+              <span class="text-sm ml-2">{{ item.name }} <span class="font-bold">(+{{ item.price }}원)</span></span>
             </label>
           </div>
-          <label><input type="checkbox"> {{ "선택 안함" }} <span class="font-bold">(+0원)</span></label>
+          <label class="text-sm"><input type="checkbox"> {{ "선택 안함" }} <span class="font-bold">(+0원)</span></label>
         </div>
         <div class="mt-2">
-          <button @click="addToCartWithOptions" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold">담기</button>
-          <button @click="closePopup" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold ml-2">닫기</button>
+          <button @click="addToCartWithOptions" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold mt-2">담기</button>
         </div>
       </div>
     </div>
@@ -112,6 +116,7 @@ import axios from 'axios';
 import AllReviews from '../components/AllReviews.vue'
 import StoreLike from '../components/StoreLike.vue'
 import { mapGetters } from 'vuex';
+import { isOperatingHour } from '../utils/isoperatinghours.js';
 
 export default {
   data() {
@@ -280,61 +285,9 @@ export default {
       this.selectedstore = response.data.filter((store) => store.id === this.store.id);
       console.log('현재 가게', this.selectedstore);
     },
-    isoperatingHour(storeoperating) {
-      if (!storeoperating) return {isOperting: false, nextStart: null};
-
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-
-
-      // 전달받은 운영 시간 분리
-      const [start, end] = storeoperating.split(" - ");
-
-      // 문자열을 시간으로 변환하기 11:00 -> { hour: 11, minute: 0 }
-      const [startHour, startMinute] = start.split(":").map(Number);
-      const [endHour, endMinute] = end.split(":").map(Number);
-
-      // 현재 시간이 운영시간 이후인지 확인하기
-      const isAfterOperating = currentHour > startHour || (currentHour === startHour && currentMinute >= startMinute);
-
-      // 현재 시간이 종료 시간 이전인지 확인하기
-      const isBeforeOperating = currentHour < endHour || (currentHour === endHour && currentMinute <= endMinute)
-
-      const isOperating = isAfterOperating && isBeforeOperating;
-
-      return {
-        isOperating,
-        nextStart: !isOperating ? null : `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`
-      }
-      
-    }
+    isoperatinghours(hour) {
+      return isOperatingHour(hour);
+    },
   }
 }
 </script>
-
-<style scoped>
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 500px;
-}
-
-button {
-  margin-top: 10px;
-}
-</style>
