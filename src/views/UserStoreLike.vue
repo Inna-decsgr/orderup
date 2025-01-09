@@ -5,8 +5,11 @@
     <div>
       <p class="font-bold pt-2 text-sm">총 {{ this.userlikedstores.length }}개</p>
       <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="border-b flex justify-center items-center p-2 py-3">
-        <div class="basis-1/5">
+        <div class="basis-1/5 relative">
           <img :src="store.image_url" alt="가게 이미지" class="border w-[150px] h-[100px] rounded-lg object-cover">
+          <div v-if="!isoperatinghours(store.operatinghours).isOperating" class="absolute top-0 left-0 w-full h-full rounded-lg object-cover bg-black opacity-80 flex justify-center items-center">
+            <span class="text-white">준비중</span>
+          </div>
         </div>
         <div class="basis-4/5 p-2 px-3">
           <p class="text-[15px] font-bold">{{ store.store_name}}</p> 
