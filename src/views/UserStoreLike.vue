@@ -1,10 +1,12 @@
 <template>
-  <div class="p-3 px-3">
-    <p class="font-bold text-xl">찜</p>
-    <p class="font-bold text-sm my-2">배달·포장</p>
-    <div>
-      <p class="font-bold pt-2 text-sm">총 {{ this.userlikedstores.length }}개</p>
-      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="border-b flex justify-center items-center p-2 py-3">
+  <div class="bg-gray-100">
+    <div class="bg-white p-3">
+      <p class="font-bold text-xl">찜</p>
+      <p class="font-bold mt-3">배달·포장</p>
+    </div>
+    <div class="bg-white my-3 p-3">
+      <p class="font-bold text-sm">총 {{ this.userlikedstores.length }}개</p>
+      <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="border-b flex justify-center items-center p-2 py-3 cursor-pointer">
         <div class="basis-1/5 relative">
           <img :src="store.image_url" alt="가게 이미지" class="border w-[150px] h-[100px] rounded-lg object-cover">
           <div v-if="!isoperatinghours(store.operatinghours).isOperating" class="absolute top-0 left-0 w-full h-full rounded-lg object-cover bg-black opacity-80 flex justify-center items-center">
@@ -27,10 +29,10 @@
         </div>
       </div>
     </div>
-    <div class="pt-3 pb-1">
+    <div class="bg-white p-3">
       <p class="font-bold mb-[10px] text-sm">찜 많은 가게 추천해요</p>
       <swiper :space-between="20">
-        <swiper-slide v-for="store in likedallstores" :key="store.id" class="flex items-center justify-start border rounded-[10px] p-[7px]">
+        <swiper-slide v-for="store in likedallstores" :key="store.id" class="flex items-center justify-start border rounded-[10px] p-[7px] cursor-pointer">
           <div class="basis-1/5">
             <img :src="store.store.image_url" alt="가게 이미지" class="w-[80px] h-[80px] border rounded-[32px]">
           </div>
