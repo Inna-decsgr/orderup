@@ -2,8 +2,8 @@
   <div>
     <swiper>
       <swiper-slide v-for="image in Bannerimages" :key="image.id">
-        <img :src="image.ref" :alt="`세일 배너 이미지 ${image.id}`" class="banner_image"/>
-        <p class="banner_index">{{ image.id + " / " + Bannerimages.length }}</p>
+        <img :src="image.ref" :alt="`세일 배너 이미지 ${image.id}`" class="relative"/>
+        <p class="absolute bottom-3 right-4 text-white text-xs bg-black bg-opacity-50 px-4 py-[1px] border border-gray-100 rounded-xl">{{ image.id + " / " + Bannerimages.length }}</p>
       </swiper-slide>
     </swiper>
   </div>
@@ -31,23 +31,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.banner_image {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 0 auto;
-}
-
-
-.banner_index {
-  position: absolute;
-  bottom: 10px; /* 아래쪽에 위치 */
-  right: 180px;  /* 오른쪽에 위치 */
-  color: white; /* 글자 색 */
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: 5px 15px;
-  border-radius: 5px; /* 모서리 둥글게 */
-}
-</style>
