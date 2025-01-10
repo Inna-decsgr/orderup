@@ -78,7 +78,7 @@ export default {
     },
     gotoStoreDetail(store) {
       this.$router.push('/detailstore');
-      this.$store.commit('setStore', store);
+      this.$store.commit('setStore', store.restaurant);
       console.log(store.restaurant.id);
     }
   }
