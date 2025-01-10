@@ -35,7 +35,7 @@
             {{ selectedstore[0]?.operatinghours || store.operatinghours}}
           </span>
           <span v-else class="text-red-400 ml-3">
-            내일 오전 {{ (isoperatinghours(selectedstore[0]?.operatinghours)).nextStart || (store.operatinghours.split(' - ')[0])}} 오픈
+            내일 오전 {{ (isoperatinghours(selectedstore[0]?.operatinghours)).nextStart}} 오픈
           </span>
         </p>
       </div>
