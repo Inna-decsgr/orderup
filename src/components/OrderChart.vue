@@ -1,7 +1,6 @@
 <template>
-  <div style="margin-top: 20px;">
-    <h5 style="text-align: center;"><strong>이런 메뉴는 어때요?</strong></h5>
-    <p style="text-align: center;"><strong>많이 주문된 메뉴들</strong></p>
+  <div class="my-5">
+    <h5 class="text-center font-bold">이런 메뉴는 어때요?</h5>
     <div>
       <canvas id="myChart"></canvas>
     </div>
@@ -85,6 +84,6 @@ export default {
 <style>
 canvas {
   max-width: 800px;
-  margin: 10px auto;
+  margin: 20px auto;
 }
 </style>
