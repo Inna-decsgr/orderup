@@ -1,19 +1,20 @@
 <template>
-  <div v-if="stores.length > 0">
-    <p style="text-align: center; margin-top: 30px;"><strong>최근에 주문한 가게들</strong></p>
-    <swiper slides-per-view="3" :space-between="10">
-      <swiper-slide v-for="store in stores" :key="store.id" class="recent_store_item">
-        <div class="p-4" @click="gotoStoreDetail(store)">
-          <div class="recent_store_content">
-            <div class="recent_store_image">
-              <img :src="store.restaurant.image_url" alt="가게 이미지">
+  <div v-if="stores.length > 0" class="px-3">
+    <p class="font-bold mb-3">최근에 주문한 가게들</p>
+    <swiper slides-per-view="auto" :space-between="10">
+      <swiper-slide v-for="store in stores" :key="store.id" class="flex w-[200px] h-[240px]">
+        <div @click="gotoStoreDetail(store)" class="w-full object-cover">
+          <div>
+            <div>
+              <img :src="store.restaurant.image_url" alt="가게 이미지" class="w-full h-[160px] border rounded-md">
             </div>
-            <div class="recent_store_info">
-              <p><strong>{{ store.restaurant.name }}</strong></p>
-              <p v-if="store.count > 1">{{ store.count }}번 이상 주문했어요😊</p>
-              <p>{{ store.restaurant.address }}</p>
-              <p>⭐{{ store.restaurant.rating }}</p>
-              <p class="store_description">{{ store.restaurant.description }}</p>
+            <div class="p-2 text-xs">
+              <p class="font-bold pb-1">
+                <span class="font-bold">{{ store.restaurant.name }}</span>
+                <span> ⭐{{ store.restaurant.rating }}</span>
+              </p>
+              <p v-if="store.count > 1" class="font-bold my-[2px]">{{ store.count }}번 이상 주문했어요😊</p>
+              <p>배달팁 {{ store.restaurant.deliveryfee.toLocaleString() }}원</p>
             </div>
           </div>
         </div>
@@ -83,41 +84,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.recent_store_item {
-  display: flex;
-  align-items: center;
-}
-
-.recent_store_content {
-  display: flex;
-  align-items: center;
-}
-
-.recent_store_image {
-  flex-shrink: 0; /* 이미지가 줄어들지 않게 설정 */
-  margin-right: 15px; 
-}
-
-.recent_store_image img {
-  width: 250px; /* 이미지 크기 */
-  height: 200px;
-  object-fit: cover; /* 이미지 비율 유지 */
-}
-
-.recent_store_info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.recent_store_description {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
-}
-</style>
