@@ -75,6 +75,9 @@ const store = createStore({
     },
     getCategory(state) {
       return state.category
+    },
+    getMenuCart(state) {
+      return state.menucart
     }
   },
   plugins: [createPersistedState()],
