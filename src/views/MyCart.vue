@@ -1,60 +1,83 @@
 <template>
   <div class="p-2 px-3">
     <p class="font-bold text-center text-xl">장바구니</p>
-    <p v-if="couponCount">사용 가능한 쿠폰이 {{couponCount}}개 있습니다.</p>
     <div v-if="menucart.length === 0">
       <p>장바구니가 텅 비었어요</p>
       <button @click="gotoHome">+더 담으러 가기</button>
     </div>
     <div v-else>
-      <div class="flex items-center" @click="gotoStoreDetail">
+      <div class="flex items-center cursor-pointer py-2" @click="gotoStoreDetail">
         <img :src="selectedstore[0]?.imageurl" alt="가게 이미지" class="w-[30px] h-[30px] rounded-lg" />
-        <p v-if="store" class="font-bold pl-2">
+        <p v-if="store" class="font-bold px-2">
           {{ store.name || store.store_name }}
         </p>
+        <i class="fa-solid fa-chevron-right"></i>
       </div>
-      <div v-for="(item, index) in menucart" :key="index" class="menu-item">
-        <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
-        <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
+      <div v-for="(item, index) in menucart" :key="index" class="border rounded-md p-3 flex items-center justify-between mb-2">
+        <div>
+          <p class="font-bold">{{ item.menu ? item.menu.name : item.name}}</p>
+          <p class="text-gray-500">가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
 
-        <!--옵션 그룹이 있는 경우 옵션 출력-->
-        <div v-if="item.options && Object.keys(item.options).length > 0">
-          <ul>
-            <li v-for="([name, price], index) in Object.entries(item.options)" :key="index">
-              {{ name }} (+{{ price.toLocaleString() }}원)
-            </li>
-          </ul>
-        </div>
-
-        <p v-if="item.menu && item.options" class="font-bold">
-          {{ 
-            (item.menu 
-            ? ( 
-              item.menu.price + (item.menu.option_groups ? item.menu.option_groups.reduce((acc, group) => {return acc + group.items.reduce((groupAcc, option) => { return groupAcc + (item.options && item.options[option.name] ? item.options[option.name] : 0);
-              }, 0);
-            }, 0)
-            : 0)) : item.price).toLocaleString()
-          }}원
-        </p>
-        <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
-      </div>
-      <p>결제금액을 확인해주세요</p>
-      <div class="border">
-        <div>  
-          <div>
-            <label v-if="couponCount">
-              <input type="checkbox" v-model="showDiscount" />
-              {{this.discount}}원 쿠폰 적용하기
-            </label>
+          <!--옵션 그룹이 있는 경우 옵션 출력-->
+          <div v-if="item.options && Object.keys(item.options).length > 0">
+            <ul class="text-gray-500">
+              <li v-for="([name, price], index) in Object.entries(item.options)" :key="index">
+                {{ name }} (+{{ price.toLocaleString() }}원)
+              </li>
+            </ul>
           </div>
-          <p>총 금액  {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice)).toLocaleString()}}원</p>
-          <p>메뉴 금액 {{ Number(this.totalCartPrice).toLocaleString()}}원</p>
-          <p>배달비 {{ this.deliveryfee.toLocaleString() }}원</p>
-          <p v-if="this.showDiscount">쿠폰 적용 - {{ Number(this.discount) }}</p>
-          <p>결제예정금액 {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}원</p>
-        </div>
 
-        <button @click="openPopup">주문하기</button>
+          <p v-if="item.menu && item.options" class="font-bold my-2">
+            {{ 
+              (item.menu 
+              ? ( 
+                item.menu.price + (item.menu.option_groups ? item.menu.option_groups.reduce((acc, group) => {return acc + group.items.reduce((groupAcc, option) => { return groupAcc + (item.options && item.options[option.name] ? item.options[option.name] : 0);
+                }, 0);
+              }, 0)
+              : 0)) : item.price).toLocaleString()
+            }}원
+          </p>
+        </div>
+        <div class="pr-5">
+          <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      
+      <div class="pt-3">
+        <p class="font-bold pb-2">결제금액을 확인해주세요</p>
+        <div class="border rounded-md p-3">
+          <div>  
+            <div class="flex items-center space-x-2">
+              <label v-if="couponCount" class="flex items-center space-x-2">
+                <p v-if="couponCount" class="bg-violet-50 border-1 border-violet-200 py-1 px-2 text-xs font-bold text-violet-500 rounded-md mb-1">사용 가능한 쿠폰이 {{couponCount}}개 있습니다.</p>
+                <input type="checkbox" v-model="showDiscount"/>
+                <span class="text-xs">{{this.discount}}원 쿠폰 적용하기</span>
+              </label>
+            </div>
+            <div class="flex justify-between font-bold">
+              <p class="text-sm mt-2">총 금액</p>
+              <p> {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice)).toLocaleString()}}원</p>
+            </div>
+            <div class="flex justify-between text-xs text-gray-400 font-bold mt-2">
+              <p>메뉴 금액</p>
+              <p>{{ Number(this.totalCartPrice).toLocaleString()}}원</p>
+            </div>
+            <div class="flex justify-between border-b text-xs text-gray-400 font-bold mt-2 pb-2">
+              <p>배달비</p>
+              <p>{{ this.deliveryfee.toLocaleString() }}원</p>
+            </div>
+            <div v-if="this.showDiscount" class="flex justify-between text-xs text-gray-400 font-bold mt-2">
+              <p>쿠폰 적용</p>
+              <p>- {{ Number(this.discount).toLocaleString() }}원</p>
+            </div>
+            <div class="flex justify-between text-sm pt-2 font-bold">
+              <p>결제예정금액</p>
+              <p>{{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}원</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs my-2 text-gray-400 font-bold">(주)오더업은 통신판매중개자이며, 통신판매의 당사자가 아닙니다. 따라서 (주)오더업은 상품, 거래정보 및 거래에 대하여 책임을 지지 않습니다.</p>
+        <button @click="openPopup" class="bg-violet-400 w-full p-2 text-white font-bold my-3 rounded-sm">주문하기</button>
       </div>
 
 
@@ -285,34 +308,3 @@ export default {
   }
 }
 </script>
-
-
-<style>
-ul {
-  list-style: none;
-  padding-left: 0 !important;
-  margin: 0;
-}
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 500px;
-}
-
-</style>
