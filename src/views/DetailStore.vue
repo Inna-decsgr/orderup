@@ -74,11 +74,21 @@
         </div>
       </div>
 
-      <div v-if="!isSameStore">
-        <p>장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.</p>
-        <p>선택하신 메뉴를 장바구니에 담을 경우 이전에 담은 메뉴가 삭제됩니다.</p>
-        <button>취소</button>
-        <button @click="addCart(addmenu)">담기</button>
+      <div v-if="addtocart" class="transition-opacity duration-500 absolute bg-black text-white text-sm rounded-md shadow-lg py-2 px-3 transform -translate-x-1/2 -translate-y-1/2 top-1/3 left-1/2" :class="{'opacity-0': !addtocart}">
+        <p>장바구니에 메뉴를 추가했습니다.</p>
+      </div>
+
+      <div v-if="!isSameStore" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="absolute bg-white w-[300px] h-[181px] rounded-sm shadow-lg transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <div class="pt-4 px-4">
+            <p class="font-bold text-center mb-3 text-sm">장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.</p>
+            <p class="text-xs text-gray-400 text-center pb-4">선택하신 메뉴를 장바구니에 담을 경우 이전에 담은 메뉴가 삭제됩니다.</p>
+          </div>
+          <div class="w-full flex h-[45px] border-t">
+            <button @click="closeMessage" class="basis-1/2 border-r">취소</button>
+            <button @click="addCart(addmenu)" class="basis-1/2">담기</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -141,7 +151,8 @@ export default {
       likedstore: [],
       selectedstore: [],
       isSameStore: true,
-      addmenu: []
+      addmenu: [],
+      addtocart: false
     }
   },
   components: {
@@ -179,12 +190,13 @@ export default {
       this.menus = response.data
     },
     addCart(menu) {
+      this.isSameStore = true;
       if (this.user && this.user.id) {
         if (menu.option_groups && menu.option_groups.length > 0) {
           // 만약 메뉴에 옵션이 있을 경우 옵션 팝업 열기
           this.openPopup(menu.option_groups, menu)
         } else { // 옵션이 없는 메뉴라면 바로 장바구니에 추가
-          alert('장바구니에 메뉴가 추가되었습니다.');
+          this.showAddToCartMessage();
           this.menucart.push({
             ...menu, 
             'storeid': this.store.id, 'storename': this.store.name
@@ -215,7 +227,7 @@ export default {
         price: this.calculateTotalPrice()  // 선택된 메뉴의 가격에 만약 옵션이 추가된 경우 옵션 가격까지 더한 값을 price에 저장
       };
       this.menucart.push(cartItem);
-      alert('장바구니에 메뉴가 추가되었습니다.');
+      this.showAddToCartMessage();
       this.closePopup();
       this.$store.commit('setMenucart', this.menucart);
       console.log('옵션 추가된 메뉴', this.menucart);
@@ -313,6 +325,15 @@ export default {
       } else {
         this.addCart(menu);
       }
+    },
+    closeMessage() {
+      this.isSameStore = true
+    },
+    showAddToCartMessage() {
+      this.addtocart = true;
+      setTimeout(() => {
+        this.addtocart = false; 
+      }, 3000); 
     }
   }
 }
