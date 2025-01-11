@@ -1,30 +1,32 @@
 <template>
-  <div>
-    <h5>장바구니</h5>
-    <button @click="clearcart">장바구니 비우기</button>
+  <div class="p-2 px-3">
+    <p class="font-bold text-center text-xl">장바구니</p>
     <p v-if="couponCount">사용 가능한 쿠폰이 {{couponCount}}개 있습니다.</p>
     <div v-if="menucart.length === 0">
       <p>장바구니가 텅 비었어요</p>
       <button @click="gotoHome">+더 담으러 가기</button>
     </div>
     <div v-else>
-      <p v-if="store"><strong>{{ store.name || store.store_name }}</strong></p>
+      <div class="flex items-center" @click="gotoStoreDetail">
+        <img :src="selectedstore[0]?.imageurl" alt="가게 이미지" class="w-[30px] h-[30px] rounded-lg" />
+        <p v-if="store" class="font-bold pl-2">
+          {{ store.name || store.store_name }}
+        </p>
+      </div>
       <div v-for="(item, index) in menucart" :key="index" class="menu-item">
         <strong>{{ item.menu ? item.menu.name : item.name}}</strong>
         <p>가격: {{ item.menu ? item.menu.price.toLocaleString() : item.price.toLocaleString() }}원</p>
 
         <!--옵션 그룹이 있는 경우 옵션 출력-->
-        <div v-if="item.menu && Array.isArray(item.menu.option_groups) && item.menu.option_groups.length > 0">
+        <div v-if="item.options && Object.keys(item.options).length > 0">
           <ul>
-            <span v-for="(group, groupIndex) in item.menu.option_groups" :key="groupIndex">
-              <p v-for="(option, optionIndex) in group.items" :key="optionIndex">
-                {{ option.name }} (+{{ option.price.toLocaleString() }}원)
-              </p>
-            </span>
+            <li v-for="([name, price], index) in Object.entries(item.options)" :key="index">
+              {{ name }} (+{{ price.toLocaleString() }}원)
+            </li>
           </ul>
         </div>
 
-        <p v-if="item.menu && item.menu.option_groups">
+        <p v-if="item.menu && item.options" class="font-bold">
           {{ 
             (item.menu 
             ? ( 
@@ -34,29 +36,26 @@
             : 0)) : item.price).toLocaleString()
           }}원
         </p>
+        <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
       </div>
+      <p>결제금액을 확인해주세요</p>
+      <div class="border">
+        <div>  
+          <div>
+            <label v-if="couponCount">
+              <input type="checkbox" v-model="showDiscount" />
+              {{this.discount}}원 쿠폰 적용하기
+            </label>
+          </div>
+          <p>총 금액  {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice)).toLocaleString()}}원</p>
+          <p>메뉴 금액 {{ Number(this.totalCartPrice).toLocaleString()}}원</p>
+          <p>배달비 {{ this.deliveryfee.toLocaleString() }}원</p>
+          <p v-if="this.showDiscount">쿠폰 적용 - {{ Number(this.discount) }}</p>
+          <p>결제예정금액 {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}원</p>
+        </div>
 
-      <div>
-        <label v-if="couponCount">
-          <input type="checkbox" v-model="showDiscount" />
-          {{this.discount}}원 쿠폰 적용하기
-        </label>
+        <button @click="openPopup">주문하기</button>
       </div>
-
-      <div>
-        <p>
-          {{ (Number(this.deliveryfee) + Number(this.totalCartPrice)).toLocaleString()}}원
-        </p>
-        <p>배달비 : {{ this.deliveryfee || store.delivery_fee }}원</p>
-        <p v-if="showDiscount">
-          - {{ Number(this.discount).toLocaleString() }}원
-        </p>
-        <p>총 금액 : {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}}원</p>
-      </div>
-    
-      <!--주문 총 금액-->
-      <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
-      <button @click="openPopup">주문하기</button>
 
 
       <div v-if="showPopup" class="popup">
@@ -121,12 +120,13 @@ export default {
       deliveryfee: '',
       allcouponstores: [],
       discount: '',
-      showDiscount: false
+      showDiscount: false,
+      selectedstore: []
     }
   },
   computed: {
     menucart() {
-      return this.$store.state.menucart;
+      return this.$store.getters.getMenuCart;
     },
     totalCartPrice() {
       return this.menucart.reduce((total, item) => {
@@ -156,11 +156,13 @@ export default {
     },
     couponCount() {
       return this.allcouponstores.filter(coupon => coupon.store_id === this.store.id && coupon.is_used === false).length;
-    }
+    },
   },
   mounted() {
     this.getDeliveryfee(this.store.id);
     this.showStoreCoupon();
+    this.getStoredata();
+    console.log('MyCart에서 불러온 menucart', this.menucart);
   },
   methods: {
     async handlePayment() {
@@ -266,8 +268,19 @@ export default {
 
       this.allcouponstores = response.data.coupons; // store만 모아서 배열에 저장
       console.log(response.data.coupons);
-      this.discount = response.data.coupons.find(coupon => coupon.store_id === this.store.id && coupon.is_used == 'false')?.discount_amount;
-      console.log(this.discount || null);
+      console.log('가게 아이디',this.store.id);
+      this.discount = response.data.coupons.find(coupon => Number(coupon.store_id) === Number(this.store.id) && coupon.is_used === false)?.discount_amount;
+      console.log('할인 금액', this.discount);
+    },
+    async getStoredata() {
+      const response = await axios.get("http://localhost:8000/order/getallstores/");
+      console.log('모든 가게들', response.data);
+
+      this.selectedstore = response.data.filter((store) => store.id === this.store.id);
+      console.log('현재 가게', this.selectedstore);
+    },
+    gotoStoreDetail() {
+      this.$router.push('/detailstore')
     }
   }
 }
