@@ -81,45 +81,53 @@
       </div>
 
 
-      <div v-if="showPopup" class="popup">
-        <div class="popup-content">
-          <button @click="closePopup">닫기</button>
+      <div v-if="showPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div class="absolute bg-white w-[350px] h-[350px] rounded-md p-4 shadow-lg transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <div class="flex justify-between items-center pb-3">
+            <p class="font-bold text-lg">결제 정보 입력</p>
+            <button @click="closePopup">
+              <i class="fa-solid fa-x"></i>
+            </button>
+          </div>
           <form @submit.prevent="handlePayment">
-            <h3>결제 정보 입력</h3>
-            <div>
-              <label for="cardNumber">카드 번호</label>
+            <div class="mb-2 text-sm">
+              <label for="cardNumber" class="font-bold w-[80px] text-center">카드 번호</label>
               <input 
                 type="text" 
                 id="cardNumber" 
                 v-model="paymentDetails.cardNumber"
                 placeholder="카드 번호"
                 required
+                class="border ml-4 rounded-sm p-1"
               />
             </div>
-            <div>
-              <label for="cardNumber">유효 기간</label>
+            <div class="mb-2 text-sm">
+              <label for="cardNumber" class="font-bold w-[80px] text-center">유효 기간</label>
               <input 
                 type="text" 
                 id="expiryDate" 
                 v-model="paymentDetails.expiryDate"
                 placeholder="MM/YY"
                 required
+                class="border ml-4 rounded-sm p-1"
               />
             </div>
-            <div>
-              <label for="cardNumber">CVV</label>
+            <div class="mb-4 text-sm border-b pb-4">
+              <label for="cardNumber" class="font-bold w-[80px] text-center">CVV</label>
               <input 
                 type="text" 
                 id="cvv" 
                 v-model="paymentDetails.cvv"
                 placeholder="CVV"
                 required
+                class="border ml-4 rounded-sm p-1"
               />
             </div>
-            <div>
-              <p>총 금액: {{ (Number(this.deliveryfee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}} 원</p>
+            <div class="flex justify-between items-center font-bold">
+              <p>총 결제금액</p>
+              <p>{{ (Number(this.deliveryfee) + Number(this.totalCartPrice) - (this.showDiscount ? Number(this.discount) : 0)).toLocaleString()}} 원</p>
             </div>
-            <button type="submit">결제하기</button>
+            <button type="submit" class="bg-violet-400 w-full p-1 text-white font-bold my-3 rounded-sm">결제하기</button>
           </form>
         </div>
       </div>
