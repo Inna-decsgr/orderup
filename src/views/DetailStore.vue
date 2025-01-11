@@ -54,7 +54,7 @@
             <p class="text-sm font-bold">{{ menu.price.toLocaleString() }}원</p>
             <!--옵션 그룹이 있을 경우 출력-->
             <div v-if="menu.option_groups && menu.option_groups.length > 0">
-              <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name" class="mt-3">
+              <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name" class="mt-3 text-sm">
                 <p class="font-bold">추가 옵션</p>
                 <ul class="list-disc ml-5">
                   <li v-for="optionItem in optionGroup.items" :key="optionItem.name">
@@ -63,7 +63,7 @@
                 </ul>
               </div>
             </div>
-            <button @click="addCart(menu)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold my-3">
+            <button @click="showMessage(menu)" class="border-1 px-[5px] py-[3px] border-violet-500 rounded-[4px] text-violet-700 text-xs font-bold my-3">
               장바구니 담기
               <i class="fa-solid fa-plus"></i>
             </button>
@@ -72,6 +72,13 @@
             <img v-if="menu.image_url" :src="menu.image_url" alt="Menu Image" class="w-[300px] h-[200px] rounded-md">
           </div>
         </div>
+      </div>
+
+      <div v-if="!isSameStore">
+        <p>장바구니에는 같은 가게의 메뉴만 담을 수 있습니다.</p>
+        <p>선택하신 메뉴를 장바구니에 담을 경우 이전에 담은 메뉴가 삭제됩니다.</p>
+        <button>취소</button>
+        <button @click="addCart(addmenu)">담기</button>
       </div>
     </div>
 
@@ -132,7 +139,9 @@ export default {
       allcoupons: [],
       allcouponstores: [],
       likedstore: [],
-      selectedstore: []
+      selectedstore: [],
+      isSameStore: true,
+      addmenu: []
     }
   },
   components: {
@@ -148,7 +157,11 @@ export default {
       return this.$store.getters.getUser;
     },
     totalPrice() {
+      console.log('현재 menucart:', this.menucart); // 로그 추가
       return this.menucart.reduce((total, menu) => total + menu.price, 0).toLocaleString();
+    },
+    menu() {
+      return this.$store.getters.getMenuCart
     }
   },
   mounted() {
@@ -172,7 +185,12 @@ export default {
           this.openPopup(menu.option_groups, menu)
         } else { // 옵션이 없는 메뉴라면 바로 장바구니에 추가
           alert('장바구니에 메뉴가 추가되었습니다.');
-          this.menucart.push({ ...menu })
+          this.menucart.push({
+            ...menu, 
+            'storeid': this.store.id, 'storename': this.store.name
+          })
+          this.$store.commit('setMenucart', this.menucart);
+
           console.log('단일 메뉴', this.menucart);
         }
       } else {
@@ -199,6 +217,7 @@ export default {
       this.menucart.push(cartItem);
       alert('장바구니에 메뉴가 추가되었습니다.');
       this.closePopup();
+      this.$store.commit('setMenucart', this.menucart);
       console.log('옵션 추가된 메뉴', this.menucart);
     },
     toggleOption(item) {
@@ -223,15 +242,11 @@ export default {
     },
     gotoMyCart(menucart) {
       this.$store.commit('setMenucart', menucart);
+      console.log('gotoMyCart의 메뉴', menucart);
 
       console.log(this.store);
       if (this.store) {
-        this.$router.push({
-          path: '/mycart',
-          query: {
-          store: JSON.stringify(this.store)  // store를 문자열로 변환하여 넘겨줍니다.
-          }
-        });
+        this.$router.push('/mycart');
       }
     },
     async AllReviews() {
@@ -288,6 +303,17 @@ export default {
     isoperatinghours(hour) {
       return isOperatingHour(hour);
     },
+    showMessage(menu) {
+      console.log(menu.price);
+      console.log('현재 메뉴가 있는지', this.menu[0].storeid);
+      console.log('현재 가게', this.store.id);
+      if (this.menu[0]?.storeid !== this.store.id) {
+        this.isSameStore = false;
+        this.addmenu = menu
+      } else {
+        this.addCart(menu);
+      }
+    }
   }
 }
 </script>
