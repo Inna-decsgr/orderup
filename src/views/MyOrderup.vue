@@ -1,20 +1,36 @@
 <template>
-  <div>
-    <p><strong>마이오더업</strong></p>
+  <div class="p-3">
+    <p class="font-bold">마이오더업</p>
     <div>
-      <div>
-        <p @click="editmode"><strong>{{ this.user.username }} > </strong></p>
-        <p><i class="fa-solid fa-location-dot"></i>주소관리</p>
+      <div class="flex items-center py-3">
+        <div>
+          <img src="/media/Profile/userprofile.png" alt="사용자 프로필 이미지" />
+        </div>
+        <div>
+          <p @click="editmode" class="font-bold cursor-pointer">
+            {{ this.user.username }}
+            <span class="text-gray-400"><i class="fa-solid fa-chevron-right"></i></span>
+          </p>
+          <button @click="showAllReviews" class="text-sm font-bold">
+            <i class="fa-regular fa-comment"></i>
+            리뷰관리
+          </button>
+        </div>
+      </div>
+      <div class="pb-3">
+        <img src="/media/Banner/Sale Banner4.png" alt="배너 이미지" class="rounded-lg w-full h-[160px]"/>
       </div>
     </div>
     <div>
-      <button @click="showCoupon">쿠폰함</button>
-      <button @click="showAllReviews">내가 쓴 리뷰</button>
     </div>
-    <div>
-      <!--쿠폰함-->
+    <div class="border rounded-lg text-center p-3">
+      <div @click="showCoupon" class="cursor-pointer">
+        <img src="/media/Coupon/sale coupon.png" alt="세일 쿠폰 이미지" class="w-[100px] h-[50px] mx-auto"/>
+        <p class="font-bold pt-2 text-lg">{{ allcoupons.length }}장</p>
+        <button class="font-bold">쿠폰함</button>
+      </div>
       <div v-if="showallcoupons">
-        <p>보유쿠폰 {{ allcoupons.length }}장</p>
+        <p>보유쿠폰</p>
         <div v-for="coupon in allcoupons" :key="coupon.created_at">
           <div style="border: 1px solid black; margin-top: 10px;">
             <p>{{ coupon.store }} - {{ coupon.discount_amount }}원</p>
