@@ -5,14 +5,22 @@
       <img src="/media/Banner/coupon banner.png" alt="쿠폰할인팩 배너" class="rounded-xl w-full h-[150px]"/>
     </div>
     <div>
-      <p>보유쿠폰 {{ allcoupons.length }}장</p>
+      <p class="font-bold mt-4">보유쿠폰 {{ allcoupons.length }}장</p>
       <div v-for="coupon in allcoupons" :key="coupon.created_at">
-        <div style="border: 1px solid black; margin-top: 10px;">
-          <p>{{ Number(coupon.discount_amount).toLocaleString() }}원</p>
-          <p>{{ coupon.store }} 신규고객쿠폰</p>
-          <p>첫 주문 시 사용 가능</p>
-          <p>사용기간: {{ formattedDate(coupon.expired_date) }}</p>
-          <button @click="goStoreDetailPage({id:coupon.store_id, name:coupon.store})">가게 바로가기</button>
+        <div class="border my-3 rounded-xl shadow-md">
+          <div class="py-3 px-4">
+            <p class="text-3xl font-bold text-orange-400">{{ Number(coupon.discount_amount).toLocaleString() }}원</p>
+            <div class="flex text-xs pt-1">
+              <p class="mr-2 bg-[#41bfda] p-1 rounded-md text-white">가게배달</p>
+              <p class="bg-[#b47614] p-1 rounded-md text-white">첫주문</p>
+            </div>
+            <p class="font-bold pt-3">{{ coupon.store }} 신규고객쿠폰</p>
+            <p class="text-gray-400 text-xs pt-[4px] pb-[2px]">첫 주문 시 사용 가능</p>
+            <p class="text-gray-400 text-xs">사용기간: {{ formattedDate(coupon.expired_date) }}</p>
+          </div>
+          <div class="py-[13px] text-center border-t">
+            <button @click="goStoreDetailPage({id:coupon.store_id, name:coupon.store})" class="font-semibold">가게 바로가기</button>
+          </div>
         </div>
       </div>
     </div>
