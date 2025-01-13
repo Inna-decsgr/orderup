@@ -11,7 +11,7 @@
             {{ this.user.username }}
             <span class="text-gray-400"><i class="fa-solid fa-chevron-right"></i></span>
           </p>
-          <button class="text-sm font-bold">
+          <button @click="gotoAllMyReviews" class="text-sm font-bold">
             <i class="fa-regular fa-comment"></i>
             리뷰관리
           </button>
@@ -24,7 +24,7 @@
     <div>
     </div>
     <div class="border rounded-lg text-center py-4 px-10 flex justify-between ">
-      <div class="cursor-pointer">
+      <div @click="gotoMyCoupons" class="cursor-pointer">
         <img src="/media/Coupon/sale coupon.png" alt="세일 쿠폰 이미지" class="w-[70px] h-[40px] mx-auto"/>
         <p class="font-bold pt-2">{{ allcoupons.length }}장</p>
         <button class="text-sm">쿠폰함</button>
@@ -106,6 +106,12 @@ export default {
       } catch (error) {
         console.error('Error fetching coupon:', error);
       }
+    },
+    gotoAllMyReviews() {
+      this.$router.push('/allmyreviews')
+    },
+    gotoMyCoupons() {
+      this.$router.push('/allmycoupons')
     }
   }
 }
