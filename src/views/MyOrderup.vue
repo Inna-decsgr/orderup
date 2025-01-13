@@ -7,7 +7,7 @@
           <img src="/media/Profile/userprofile.png" alt="사용자 프로필 이미지" />
         </div>
         <div>
-          <p @click="editmode" class="font-bold cursor-pointer">
+          <p @click="profileEditmode" class="font-bold cursor-pointer">
             {{ this.user.username }}
             <span class="text-gray-400"><i class="fa-solid fa-chevron-right"></i></span>
           </p>
@@ -73,15 +73,11 @@
 
 <script>
 import axios from 'axios';
-import { formatDate } from '../utils/dateutils';
 
 export default {
   data() {
     return {
-      allcoupons: [],
-      showallcoupons: false,
-      showReviews: false,
-      userreviews: []
+      allcoupons: []
     }
   },
   computed: {
@@ -93,9 +89,6 @@ export default {
     this.getAllCoupons();
   }, 
   methods: {
-    formattedDate(date) {
-      return formatDate(date);
-    },
     async getAllCoupons() { // 발급받은 모든 쿠폰 가져오기
       try {
         const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
@@ -112,6 +105,9 @@ export default {
     },
     gotoMyCoupons() {
       this.$router.push('/allmycoupons')
+    },
+    profileEditmode() {
+      this.$router.push('/myorderup/editprofile');
     }
   }
 }
