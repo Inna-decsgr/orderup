@@ -16,6 +16,8 @@ import MyReview from '../views/MyReview.vue'
 import UserStoreLike from '../views/UserStoreLike.vue'
 import MyOrderup from '../views/MyOrderup.vue'
 import FilteredStore from '../views/FilteredStore.vue'
+import AllMyReviews from '../views/AllMyReviews.vue'
+import AllMyCoupons from '../views/AllMyCoupons.vue'
 
 
 const routes = [
@@ -103,6 +105,16 @@ const routes = [
     path: '/filteredstore',
     name: 'FilteredStore',
     component: FilteredStore
+  },
+  {
+    path: '/allmyreviews',
+    name: 'AllMyReviews',
+    component: AllMyReviews
+  },
+  {
+    path: '/allmycoupons',
+    name: 'AllMyCoupons',
+    component: AllMyCoupons
   },
 ]
 
