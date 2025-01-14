@@ -10,7 +10,7 @@
       </button>
     </div>
     <div v-else>
-      <div class="flex items-center cursor-pointer py-2" @click="gotoStoreDetail">
+      <div class="flex items-center cursor-pointer py-2" @click="gotoStoreDetail(store)">
         <img :src="selectedstore[0]?.imageurl" alt="가게 이미지" class="w-[30px] h-[30px] rounded-lg" />
         <p v-if="store" class="font-bold px-2">
           {{ store.name || store.store_name }}
@@ -314,8 +314,9 @@ export default {
       this.selectedstore = response.data.filter((store) => store.id === this.store.id);
       console.log('현재 가게', this.selectedstore);
     },
-    gotoStoreDetail() {
-      this.$router.push('/detailstore')
+    gotoStoreDetail(store) {
+      this.$router.push('/detailstore');
+      this.$store.commit('setStore', store);
     }
   }
 }
