@@ -319,7 +319,7 @@ export default {
       console.log(menu.price);
       console.log('현재 메뉴가 있는지', this.menu[0]?.storeid);
       console.log('현재 가게', this.store.id);
-      if (this.menu[0]?.storeid !== this.store.id) {
+      if (this.menu[0]?.storeid !== undefined && this.menu[0]?.storeid !== this.store.id) {
         this.isSameStore = false;
         this.addmenu = menu
       } else {
