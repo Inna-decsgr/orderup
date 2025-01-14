@@ -5,7 +5,7 @@
       <div class="flex justify-between items-center">
         <p class="text-3xl mt-2"><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></p>
         <div v-if="user && user.id">
-          <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+          <StoreLike />
         </div>
       </div>
       <div class="flex items-center font-bold text-sm my-2">
@@ -317,7 +317,7 @@ export default {
     },
     showMessage(menu) {
       console.log(menu.price);
-      console.log('현재 메뉴가 있는지', this.menu[0].storeid);
+      console.log('현재 메뉴가 있는지', this.menu[0]?.storeid);
       console.log('현재 가게', this.store.id);
       if (this.menu[0]?.storeid !== this.store.id) {
         this.isSameStore = false;
