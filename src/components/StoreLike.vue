@@ -3,37 +3,35 @@
     <i :class="`fa-${isactive ? 'solid' : 'regular'} fa-heart`"></i>
   </button>
   <!--{{ this.isactive }}
-  {{ storeid }}
+  {{ store.id || store.store_id }}
   {{ user.id }}
   {{ this.likedstore }}-->
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      isactive: Array.isArray(this.likedstore) && this.likedstore.includes(this.storeid) ? true : false
-    }
-  },
-  props: {
-    storeid: {
-      type: Number,
-      required: true
-    },
-    likedstore: {
-      type: Array,
-      required: true,
-      default: () => []
+      isactive: false
     }
   },
   computed: {
-    ...mapGetters(['getUser']),
     user() {
-      return this.getUser;
+      return this.$store.getters.getUser;
     },
+    store() {
+      return this.$store.getters.getStore;
+    },
+    likedstore() {
+      return this.$store.getters.getLikedStore;
+    }
+  }, 
+  mounted() {
+    if (Array.isArray(this.likedstore) && this.likedstore.includes(this.store.id || this.store.store_id)) {
+      this.isactive = true;
+    }
   },
   methods: {
     async toggleLike() {
@@ -41,16 +39,16 @@ export default {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
 
-        const response = await axios.post(`http://localhost:8000/order/changelike/${this.user.id}/`, { storeid: this.storeid }, {
+        const response = await axios.post(`http://localhost:8000/order/changelike/${this.user.id}/`, { storeid: this.store.id || this.store.store_id }, {
           headers: {
             'X-CSRFToken': csrfToken,
           }
         });
 
         if (response.data.is_active) {
-          this.$store.commit('addStoreToLiked', this.storeid);
+          this.$store.commit('addStoreToLiked', this.store.id || this.store.store_id);
         } else {
-          this.$store.commit('removeStoreFromLiked', this.storeid);
+          this.$store.commit('removeStoreFromLiked', this.store.id || this.store.store_id);
         }
 
         // isactive 상태 업데이트 (하트 아이콘을 위한 상태)
@@ -58,7 +56,7 @@ export default {
       } catch (error) {
         console.error("Error toggling like:", error);
       }
-    }
+    },
   }
 }
 </script>
