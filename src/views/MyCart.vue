@@ -1,9 +1,13 @@
 <template>
   <div class="p-2 px-3">
     <p class="font-bold text-center text-xl">장바구니</p>
-    <div v-if="menucart.length === 0">
-      <p>장바구니가 텅 비었어요</p>
-      <button @click="gotoHome">+더 담으러 가기</button>
+    <div v-if="menucart.length === 0" class="flex flex-col justify-center items-center absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <img src="/media/images/cart dog.png" alt="장바구니 이미지" class="w-[150px]" />
+      <p class="font-bold pt-4 pb-3">장바구니가 텅 비었어요</p>
+      <button @click="gotoHome" class="border py-1 px-2 rounded-3xl">
+        <i class="fa-solid fa-plus text-gray-500"></i>
+        <span class="text-sm font-bold"> 더 담으러 가기</span>
+      </button>
     </div>
     <div v-else>
       <div class="flex items-center cursor-pointer py-2" @click="gotoStoreDetail">
