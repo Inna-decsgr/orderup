@@ -43,7 +43,7 @@
           </p>
         </div>
         <div class="pr-5">
-          <button @click="removemenu"><i class="fa-solid fa-trash"></i></button>
+          <button @click="removemenu(item.id)"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>
       
@@ -279,8 +279,9 @@ export default {
     gotoHome() {
       this.$router.push('/');
     },
-    removemenu() {
-      this.$store.commit('clearMenucart');
+    removemenu(itemid) {
+      console.log('장바구니에서 삭제할 메뉴 아이디', itemid);
+      this.$store.commit('removeMenuItem', itemid);
     },
     async getDeliveryfee(storeid) {
       const stores = await axios.get('http://localhost:8000/order/getallstores/');
