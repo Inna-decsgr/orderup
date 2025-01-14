@@ -44,6 +44,9 @@ const store = createStore({
     },
     setCategory(state, category) {
       state.category = category
+    },
+    removeMenuItem(state, id) {
+      state.menucart = state.menucart.filter((item) => item.id !== id)
     }
   },
   actions: {
