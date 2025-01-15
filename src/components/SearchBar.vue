@@ -4,7 +4,7 @@
       <input 
         type="text" 
         class="border-1 rounded-l-lg w-full p-2" 
-        placeholder="찾는 메뉴가 뭐예요?" 
+        placeholder="먹고 싶은 메뉴나 가게를 찾아보세요" 
         v-model="keyword"
         @keyup.enter="goResultPage"
       />

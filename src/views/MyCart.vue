@@ -296,9 +296,6 @@ export default {
         console.error('Store or delivery fee not found');
       }
     },
-    clearcart() {
-      this.$store.commit('clearMenucart');
-    },
     async showStoreCoupon() {
       const response = await axios.get(`http://localhost:8000/order/getallcoupons/${this.user.id}/`)
 
