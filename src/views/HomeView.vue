@@ -18,26 +18,26 @@
     <div>
       <div class="mt-4 py-4 rounded-t-md" style="box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.15);">
         <div class="text-center w-[400px] h-[180px] mx-auto">
-          <div class="food_category">
+          <div>
             <button 
               v-for="category in categories.slice(0, 5)" 
               :key="category.id" 
-              class="category-btn" 
+              class="w-[80px] h-[90px]" 
               @click="gotofilteredStore(category)"
             >
-              <span>{{ category.icon }}</span>
-              <p>{{ category.name }}</p>
+              <span class="bg-[rgb(240,239,239)] text-4xl p-[10px] w-[70px] h-[70px] inline-flex justify-center items-center rounded-3xl">{{ category.icon }}</span>
+              <p class="font-bold mt-[3px] text-xs">{{ category.name }}</p>
             </button>
           </div>
-          <div class="food_category">
+          <div class="mt-[15px]">
             <button
               v-for="category in categories.slice(5, 10)"
               :key="category.id"
-              class="category-btn"
+              class="w-[80px] h-[90px]"
               @click="gotofilteredStore(category)"
             >
-              <span>{{ category.icon }}</span>
-              <p>{{ category.name }}</p>
+              <span class="bg-[rgb(240,239,239)] text-4xl p-[10px] w-[70px] h-[70px] inline-flex justify-center items-center rounded-3xl">{{ category.icon }}</span>
+              <p class="font-bold mt-[3px] text-xs">{{ category.name }}</p>
             </button>
           </div>
         </div>
@@ -51,7 +51,7 @@
       <div v-if="user && user.id">
         <RecentOrderStore />
       </div>
-      <div style="margin-top: 50px; margin-bottom: 50px;">
+      <div class="my-3">
         <SaleBanner />
       </div>
       <div v-if="!showfilteredstore">
@@ -127,37 +127,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.category-btn {
-  height: 90px;
-  width: 80px;
-  font-size: 11px;
-  text-align: center;
-}
-
-.food_category span {
-  background: rgb(240, 239, 239);
-  border-radius: 25px;
-  font-size: 35px;
-  padding: 10px;
-  width: 70px;
-  height: 70px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  line-height: 1;
-}
-
-.food_category p {
-  font-weight: bold;
-  margin-top: 3px;
-  font-size: 11px;
-}
-
-.food_category:last-child {
-  margin-top: 15px;
-}
-
-
-</style>
