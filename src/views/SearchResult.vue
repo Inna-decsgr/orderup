@@ -1,14 +1,18 @@
 <template>
-  <div>
-    <div>
+  <div class="p-3">
+    <div class="flex items-center">
       <button @click="gotoHome"><i class="fa-solid fa-arrow-left"></i></button>
-      <input 
-        type="text" 
-        v-model="keyword"
-        @keyup.enter="searchstores"
-        class="border ml-3 pl-2 font-bold"
-      >
+      <div class="relative flex items-center w-[100%] max-w-[400px]">
+        <i class="fa-solid fa-x absolute right-[150px] text-[8px] bg-gray-400 text-white flex items-center justify-center w-4 h-4 rounded-full cursor-pointer" @click="removekeyword"></i>
+        <input 
+          type="text" 
+          v-model="keyword"
+          @keyup.enter="searchstores"
+          class="border-b ml-3 font-bold outline-none py-[8px] pr-[8px] pl-[32px]"
+        >
+      </div>
     </div>
+    <p class="font-bold mt-3">배달</p>
     <div v-if="filteredStore">
       <SearchFiltered :filteredstore="filteredStore"/>
     </div>
@@ -67,6 +71,9 @@ export default {
       this.filteredStore = this.storeData.filter((store) => {
         return store.name && store.name.includes(keyword);
       })
+    },
+    removekeyword() {
+      this.keyword = null
     }
   }
 }
