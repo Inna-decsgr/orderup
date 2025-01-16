@@ -1,25 +1,26 @@
 <template>
   <div>
     <div v-if="filteredstore && filteredstore.length">
-      <div v-for="store in filteredstore" :key="store.id" >
-        <h3 @click="detailstore({id:store.id, name: store.name})" style="cursor:pointer">
-          {{ store.name }}
-        </h3>
-        <div v-if="user && user.id">
-          <StoreLike :storeid="store.id" :likedstore="this.likedstore || []" />
+      <div v-for="store in filteredstore" :key="store.id" @click="detailstore({id:store.id, name: store.name})" class="flex items-center cursor-pointer border-b py-3">
+        <img :src="store.imageurl" alt="가게 이미지" class="w-[65px] h-[65px] mr-2 rounded-md">
+        <div>
+          <p class="font-bold flex items-center">
+            <span class="text-sm pr-2">{{ store.name }}</span>
+            <span v-if="!allcouponstores.includes(store.name)" class="text-violet-500 text-xs bg-violet-100 inline-block py-[2px] px-[5px] rounded-sm">첫 주문 할인 쿠폰</span>
+          </p>
+          <p class="font-bold text-xs">
+            <span>⭐ {{ store.rating }}</span>
+            <span v-if="store.reviews.length > 0"> (+{{ store.reviews.length }})</span>
+          </p>
+          <p class="line-clamp-1 text-xs text-gray-500 py-[2px]">{{ store.description }}</p>
+          <p class="text-xs"><span class="text-gray-500">배달팁</span> <span class="font-bold">{{ Number(store.deliveryfee).toLocaleString() }}원</span></p>
         </div>
-        <p v-if="!allcouponstores.includes(store.name)" style="font-weight: bold; color: blueviolet;">첫 주문 할인 쿠폰</p>
-        <p>{{ store.address }}</p>
-        <p>{{ store.phonenumber }}</p>
-        <p>⭐ {{ store.rating }}</p>
-        <p>{{ store.description }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import StoreLike from '../components/StoreLike.vue'
 import { mapGetters } from 'vuex';
 import axios from 'axios';
 
@@ -37,9 +38,6 @@ export default {
       type: Array,
       required: true
     },
-  },
-  components: {
-    StoreLike
   },
   computed: {
     ...mapGetters(['getUser', 'getLikedStore']),
