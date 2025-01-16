@@ -1372,3 +1372,40 @@ def get_all_liked_stores(request):
     
     except Exception as e:
         return JsonResponse({'error': 'str(e)'}, status=500)
+
+
+
+# 검색 키워드를 포함하고 있는 메뉴의 가게 정보 반환
+@api_view(['GET'])
+def get_all_menus(request, keyword): 
+    if not keyword:
+        return Response({"error": "Keyword is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # 메뉴 이름에 keyword가 포함된 메뉴 필터링
+    menus = Menu.objects.filter(name__icontains=keyword)
+
+    # 필터링된 메뉴의 가게 정보 포함
+    menu_data = [
+        {
+            'menu_id': menu.id,
+            'menu_name': menu.name,
+            'menu_description': menu.description,
+            'menu_price': menu.price,
+            'menu_imageurl': menu.image_url,
+            'restaurant': {
+                'id': menu.restaurant.id,
+                'name': menu.restaurant.name,
+                'address': menu.restaurant.address,
+                'phonenumber': menu.restaurant.phone_number,
+                'rating': menu.restaurant.rating,
+                'description': menu.restaurant.description,
+                'deliveryfee': menu.restaurant.delivery_fee,
+                'operatinghours': menu.restaurant.operating_hours,
+                'imageurl': menu.restaurant.image_url,
+                'categories': [category.name for category in menu.restaurant.categories.all()],
+            }
+        }
+        for menu in menus
+    ]
+
+    return Response(menu_data, status=status.HTTP_200_OK)
