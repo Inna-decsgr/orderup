@@ -1403,6 +1403,16 @@ def get_all_menus(request, keyword):
                 'operatinghours': menu.restaurant.operating_hours,
                 'imageurl': menu.restaurant.image_url,
                 'categories': [category.name for category in menu.restaurant.categories.all()],
+                'reviews': [
+                    {
+                        'user': review.user.username,
+                        'rating': review.rating,
+                        'date': review.date,
+                        'content': review.content,
+                        'image_url': review.image_url
+                    }
+                    for review in menu.restaurant.reviews.all()
+                ],
             }
         }
         for menu in menus
