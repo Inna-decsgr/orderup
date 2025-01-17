@@ -12,7 +12,7 @@
         >
       </div>
     </div>
-    <p class="font-bold mt-3">배달</p>
+    <p v-if="filteredStore.length > 0" class="font-bold mt-3">배달</p>
     <div v-if="filteredStore">
       <SearchFiltered :filteredstore="filteredStore"/>
     </div>
