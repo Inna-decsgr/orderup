@@ -9,7 +9,8 @@ const store = createStore({
       store: [],
       order: [],
       likedstore: [],
-      category: ''
+      category: '',
+      searchKeywords: []
     };
   },
   mutations: {
@@ -47,7 +48,10 @@ const store = createStore({
     },
     removeMenuItem(state, id) {
       state.menucart = state.menucart.filter((item) => item.id !== id)
-    }
+    },
+    setSearchKeyword(state, keyword) {
+      state.searchKeywords.push(keyword);
+    },
   },
   actions: {
     login({ commit }, user) {
@@ -81,6 +85,9 @@ const store = createStore({
     },
     getMenuCart(state) {
       return state.menucart
+    },
+    getSearchKeywords(state) {
+      return state.searchKeywords
     }
   },
   plugins: [createPersistedState()],
