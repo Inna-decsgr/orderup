@@ -3,16 +3,19 @@
     <div class="flex items-center">
       <button @click="gotoHome"><i class="fa-solid fa-arrow-left"></i></button>
       <div class="relative flex items-center w-[100%] max-w-[400px]">
-        <i class="fa-solid fa-x absolute right-[150px] text-[8px] bg-gray-400 text-white flex items-center justify-center w-4 h-4 rounded-full cursor-pointer" @click="removekeyword"></i>
+        <i class="fa-solid fa-x absolute right-3 text-[8px] bg-gray-400 text-white flex items-center justify-center w-4 h-4 rounded-full cursor-pointer" @click="removekeyword"></i>
         <input 
           type="text" 
           v-model="keyword"
           @keyup.enter="filterResults"
-          class="border-b ml-3 font-bold outline-none py-[8px] pr-[8px] pl-[32px]"
+          class="border-b ml-3 font-bold outline-none py-[8px] pr-[8px] pl-[32px] w-full"
         >
       </div>
     </div>
-    <p v-if="filteredStore.length > 0" class="font-bold mt-3">배달</p>
+    <div v-if="keyword">
+      <SearchKeywords />
+    </div>
+    <p v-if="filteredStore.length > 0" class="font-bold mt-4">배달</p>
     <div v-if="filteredStore">
       <SearchFiltered :filteredstore="filteredStore"/>
     </div>
@@ -22,10 +25,13 @@
 <script>
 import axios from 'axios';
 import SearchFiltered from '../components/SearchFiltered.vue'
+import SearchKeywords from '../components/SearchKeywords.vue'
+
 
 export default {
   components: {
-    SearchFiltered
+    SearchFiltered,
+    SearchKeywords
   },
   data() {
     return {
@@ -45,6 +51,7 @@ export default {
           alert('검색어를 입력하세요.');
           return;
         }
+        
         // 가게 이름에 검색 키워드가 포함된 결과 가져오기
         const storeResponse = await axios.get("http://localhost:8000/order/getallstores/");
         const stores = storeResponse.data.filter((store) => store.name.includes(this.keyword))
