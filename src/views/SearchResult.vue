@@ -7,7 +7,7 @@
         <input 
           type="text" 
           v-model="keyword"
-          @keyup.enter="searchstores"
+          @keyup.enter="filterResults"
           class="border-b ml-3 font-bold outline-none py-[8px] pr-[8px] pl-[32px]"
         >
       </div>
@@ -36,41 +36,46 @@ export default {
     }
   },
   mounted() {
-    this.getStoreMenus();
+    this.filterResults();
   },
   methods: {
-    async getStoreMenus() {
+    async filterResults() {
       try {
         if (!this.keyword.trim()) {
           alert('검색어를 입력하세요.');
           return;
         }
+        // 가게 이름에 검색 키워드가 포함된 결과 가져오기
+        const storeResponse = await axios.get("http://localhost:8000/order/getallstores/");
+        const stores = storeResponse.data.filter((store) => store.name.includes(this.keyword))
+        console.log('가게 이름에 포함된 결과', stores);
 
-        const response = await axios.get(`http://localhost:8000/order/getallmenus/${this.keyword}/`);
-        const restaurants = response.data.map(menu => menu.restaurant);
+        // 메뉴 이름에 검색 키워드가 포함된 결과 가져오기
+        const menuResponse = await axios.get(`http://localhost:8000/order/getallmenus/${this.keyword}/`);
+        const restaurants = menuResponse.data.map(menu => menu.restaurant);
         // 가게 아이디를 기준으로 중복된 가게는 제외하고 필터링
         const uniqueRestaurants = restaurants.filter(
           (restaurant, index, self) =>
             index === self.findIndex(r => r.id === restaurant.id)
         );
 
-        console.log('중복 제거된 레스토랑', uniqueRestaurants);
-        this.filteredStore = uniqueRestaurants;
+        console.log('메뉴 이름에 포함된 결과 (중복 제거)', uniqueRestaurants);
+
+        // 두 결과 합치기 (중복 제거)
+        const combinedResults = [...stores, ...uniqueRestaurants].filter(
+          (store, index, self) => 
+            index === self.findIndex((s) => s.id === store.id)
+        )
+
+        console.log('최종 검색 결과', combinedResults);
+        this.filteredStore = combinedResults;
       } catch (error) {
         console.error('메뉴 데이터를 가져오는 중 에러 발생:', error);
         return [];
       }
     },
-    async searchstores() {
-      await this.getStoreMenus();
-    },
     gotoHome() {
       this.$router.push('/')
-    },
-    filterStores(keyword) {
-      this.filteredStore = this.storeData.filter((store) => {
-        return store.name && store.name.includes(keyword);
-      })
     },
     removekeyword() {
       this.keyword = null
