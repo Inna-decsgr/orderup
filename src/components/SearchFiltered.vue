@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="filteredstore && filteredstore.length">
+    <div v-if="filteredstore && filteredstore.length > 0">
       <div v-for="store in filteredstore" :key="store.id" @click="detailstore({id:store.id, name: store.name})" class="flex items-center cursor-pointer border-b py-3">
         <img :src="store.imageurl" alt="가게 이미지" class="w-[65px] h-[65px] mr-2 rounded-md">
         <div>
@@ -16,6 +16,9 @@
           <p class="text-xs"><span class="text-gray-500">배달팁</span> <span class="font-bold">{{ Number(store.deliveryfee).toLocaleString() }}원</span></p>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <p class="font-bold text-gray-500 text-center mt-10">검색어와 일치하는 결과가 없어요</p>
     </div>
   </div>
 </template>
