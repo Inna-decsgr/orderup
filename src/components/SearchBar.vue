@@ -25,6 +25,8 @@ export default {
   },
   methods: {
     async goResultPage() {
+      // 검색 기록에 저장하기
+      this.$store.commit('setSearchKeyword', this.keyword);
       this.$router.push({
         path: '/searchresult',
         query: {
