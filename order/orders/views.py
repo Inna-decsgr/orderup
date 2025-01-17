@@ -545,6 +545,17 @@ def get_all_stores(request):
             'operatinghours': store.operating_hours,
             'imageurl': store.image_url,
             'categories': [category.name for category in store.categories.all()],  # 카테고리 리스트 추가
+            'reviews': [
+                {
+                    'id': review.id,
+                    'user': review.user.username,  # 유저 이름 추가
+                    'rating': review.rating,
+                    'content': review.content,
+                    'date': review.date,
+                    'imageurl': review.image_url,
+                }
+                for review in store.reviews.all()  # Menu와 리뷰 연결된 경우
+            ],
 
             'menus': [
                 {
@@ -552,7 +563,7 @@ def get_all_stores(request):
                     'name': menu.name,
                     'description': menu.description,
                     'price': menu.price,
-                    'imageurl': menu.image_url
+                    'imageurl': menu.image_url,
                 }
                 for menu in menus.all()
             ]
