@@ -1,53 +1,57 @@
 <template>
-  <div>
-    <h2>프로필 수정</h2>
-    <div v-if="user">
-      <form @submit.prevent="updateUser" class="form-label">
-        <label for="username">사용자 이름</label>
+  <div class="p-3">
+    <div class="flex justify-between">
+      <p class="text-lg font-bold mx-auto pl-16">프로필 수정</p>
+      <div>
+        <button type="submit" class="py-1 px-2 mr-2 rounded-md text-sm bg-gray-50 font-bold hover:bg-gray-100">저장</button>
+        <button @click="handleCancel" class="py-1 px-2 rounded-md text-sm bg-gray-50 font-bold hover:bg-gray-100">취소</button>
+      </div>
+    </div>
+    <div v-if="user" class="p-2">
+      <form @submit.prevent="updateUser" class="text-sm">
+        <label for="username" class="form-label font-bold ml-1">이름</label>
         <input 
           type="text" 
           id="username" 
           v-model="form.username"
-          class="form-control"
+          class="form-control mb-2 text-sm"
           required 
         />
-        <label for="email" class="form-label">이메일</label>
-        <input 
+        <label for="email" class="form-label font-bold ml-1">대표 이메일</label>
+        <input  
           type="email" 
           id="email" 
           v-model="form.email" 
-          class="form-control"
+          class="form-control mb-2 text-sm"
           required 
         />
-        <label for="phonenumber" class="form-label">전화번호</label>
+        <label for="phonenumber" class="form-label font-bold ml-1">전화번호</label>
         <input 
           type="tel" 
           id="tel" 
           v-model="form.phone_number" 
-          class="form-control"
+          class="form-control mb-2 text-sm"
           required 
         />
-        <label for="address" class="form-label">주소</label>
+        <label for="address" class="form-label font-bold ml-1">주소</label>
         <input 
           type="text" 
           id="address" 
           v-model="form.address" 
-          class="form-control"
+          class="form-control mb-2 text-sm"
           required 
         />
-        <label for="is_owner" class="form-label" v-if="form.is_owner">사업자로 등록됨</label>
+        <label for="is_owner" class="form-label font-bold ml-1" v-if="form.is_owner">사업자로 등록됨</label>
 
         <div v-if="form.is_owner">
-          <label for="business_registration_number" class="form-label">사업자 등록 번호</label>
+          <label for="business_registration_number" class="form-label font-bold ml-1">사업자 등록 번호</label>
           <input 
             type="text" 
             id="business_registration_number" 
             v-model="form.business_registration_number" 
-            class="form-control"
+            class="form-control mb-2  text-sm"
           />
         </div>
-        <button type="submit">저장</button>
-        <button @click="handleCancel">취소</button>
       </form>
     </div>
     <div v-else>
