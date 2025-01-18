@@ -49,7 +49,7 @@ const store = createStore({
     removeMenuItem(state, id) {
       state.menucart = state.menucart.filter((item) => item.id !== id)
     },
-    setSearchKeyword(state, keyword) {
+    setSearchKeyword(state, keyword) {  // 최근 검색 기록에 해당 키워드 추가
       // 중복 키워드를 방지
       if (state.searchKeywords.includes(keyword)) {
         state.searchKeywords = state.searchKeywords.filter(k => k !== keyword);
@@ -63,6 +63,9 @@ const store = createStore({
         state.searchKeywords.pop(); // 배열 맨 마지막 요소 제거
       }
     },
+    removekeyword(state, keyword) {  // 최근 검색 기록에서 해당 키워드 삭제
+      state.searchKeywords = state.searchKeywords.filter(k => k !== keyword);
+    }
   },
   actions: {
     login({ commit }, user) {
