@@ -50,7 +50,18 @@ const store = createStore({
       state.menucart = state.menucart.filter((item) => item.id !== id)
     },
     setSearchKeyword(state, keyword) {
-      state.searchKeywords.push(keyword);
+      // 중복 키워드를 방지
+      if (state.searchKeywords.includes(keyword)) {
+        state.searchKeywords = state.searchKeywords.filter(k => k !== keyword);
+      }
+
+      // 새로운 검색 키워드 맨 앞에 추가하기
+      state.searchKeywords.unshift(keyword);
+
+      // 최대 5개로 제한
+      if (state.searchKeywords.length > 5) {
+        state.searchKeywords.pop(); // 배열 맨 마지막 요소 제거
+      }
     },
   },
   actions: {
