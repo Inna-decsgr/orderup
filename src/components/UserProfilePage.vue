@@ -1,20 +1,45 @@
 <template>
   <div v-if="user && !isEditing">
-    <div>
+    <div class="p-3">
       <div style="display: flex; justify-content: space-between; align-items: center;" class="px-100">
         <button @click="goBack">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <h5><strong>내 정보 수정</strong></h5>
-        <button class="btn btn-light" @click="editMode">수정</button>
+        <p class="font-bold text-lg">내 정보 수정</p>
+        <button class="text-sm bg-gray-100 py-1 px-2 rounded-md font-bold hover:bg-gray-200" @click="editMode">수정</button>
       </div>
-      <div class="card" style="width: 25rem; margin-top: 20px; margin-bottom: 20px;">
+      <div class="card mt-4 text-sm">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><p><strong>이름</strong> {{ this.user.username }}</p></li>
-          <li class="list-group-item"><p><strong>대표 이메일</strong> {{ this.user.email }}</p></li>
-          <li class="list-group-item"><p><strong>휴대폰 번호</strong> {{ this.user.phone_number }}</p></li>
-          <li class="list-group-item"><p><strong>주소</strong> {{ this.user.address }}</p></li>
-          <li v-if="user.is_owner" class="list-group-item"><p><strong>사업자등록번호</strong> {{ this.user.business_registration_number }}</p></li>
+          <li class="list-group-item">
+            <div class="flex">
+              <p class="font-bold block w-[110px]">이름</p>
+              <p class=" text-gray-600">{{ this.user.username }}</p>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="flex">
+              <p class="font-bold block w-[110px]">대표 이메일</p>
+              <p class="text-gray-600">{{ this.user.email }}</p>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="flex">
+              <p class="font-bold block w-[110px]">휴대폰 번호</p>
+              <p class="text-gray-600">{{ this.user.phone_number }}</p>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="flex">
+              <p class="font-bold block w-[110px]">주소</p>
+              <p class="text-gray-600">{{ this.user.address }}</p>
+            </div>
+          </li>
+          <li v-if="user.is_owner" class="list-group-item">
+            <div class="flex">
+              <p class="font-bold block  w-[110px]">사업자등록번호</p>
+              <p class="text-gray-600">{{ this.user.business_registration_number }}</p>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
@@ -22,8 +47,10 @@
   <div v-else>
     <EditProfile :user="user" :cancel="handleCancel"/>
   </div>
-  <button type="button" class="btn" style="color: rgb(143, 139, 139);" @click="logout">로그아웃</button> | 
-  <button type="button" class="btn" @click="confirmDelete" style="color: rgb(143, 139, 139);">회원탈퇴</button>
+  <div class="text-center pt-3">
+    <button type="button" class="text-sm font-bold pr-3" style="color: rgb(143, 139, 139);" @click="logout">로그아웃</button> | 
+    <button type="button" class="text-sm font-bold pl-3" @click="confirmDelete" style="color: rgb(143, 139, 139);">회원탈퇴</button>
+  </div>
     
 </template>
 
