@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <p class="text-lg font-bold mx-auto pl-16">프로필 수정</p>
       <div>
-        <button type="submit" class="py-1 px-2 mr-2 rounded-md text-sm bg-gray-50 font-bold hover:bg-gray-100">저장</button>
+        <button type="submit" class="py-1 px-2 mr-2 rounded-md text-sm bg-gray-50 font-bold hover:bg-gray-100" @click="updateUser">저장</button>
         <button @click="handleCancel" class="py-1 px-2 rounded-md text-sm bg-gray-50 font-bold hover:bg-gray-100">취소</button>
       </div>
     </div>

@@ -6,7 +6,7 @@
           <i class="fa-solid fa-arrow-left"></i>
         </button>
         <p class="font-bold text-lg">내 정보 수정</p>
-        <button class="text-sm bg-gray-100 py-1 px-2 rounded-md font-bold hover:bg-gray-200" @click="editMode">수정</button>
+        <button class="text-sm bg-gray-50 py-1 px-2 rounded-md font-bold hover:bg-gray-50" @click="editMode">수정</button>
       </div>
       <div class="card mt-4 text-sm">
         <ul class="list-group list-group-flush">
