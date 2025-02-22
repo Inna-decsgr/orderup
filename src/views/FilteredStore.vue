@@ -39,7 +39,7 @@
               <p>{{ menu.name }}</p>
               <p class="font-bold">{{ Number(menu.price).toLocaleString() }}원</p>
             </div>
-            <img :src="menu.imageurl" :alt="menu.name + ' 이미지'" class="w-[150px] h-[150px]">
+            <img :src="menu.imageurl" :alt="menu.name + ' 이미지'" class="w-[250px] h-[150px] object-cover">
           </swiper-slide>
         </swiper>
         <p v-if="!allcouponstores.includes(store.name)" class="font-bold text-xs text-violet-700 w-[110px] h-[18px] text-center my-[6px] border-1 border-violet-500 rounded-[4px]">첫 주문 할인 쿠폰</p>
