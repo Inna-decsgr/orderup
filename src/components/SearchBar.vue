@@ -3,7 +3,7 @@
     <div class="flex mb-3 justify-center w-full">
       <input 
         type="text" 
-        class="border-1 rounded-l-lg w-full p-2" 
+        class="border-1 rounded-l-lg w-full p-2 outline-none" 
         placeholder="먹고 싶은 메뉴나 가게를 찾아보세요" 
         v-model="keyword"
         @keyup.enter="goResultPage"
