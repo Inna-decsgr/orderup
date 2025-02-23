@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div v-if="addtocart" class="transition-opacity duration-500 absolute bg-black text-white text-sm rounded-md shadow-lg py-2 px-3 transform -translate-x-1/2 -translate-y-1/2 top-1/3 left-1/2" :class="{'opacity-0': !addtocart}">
+      <div v-if="addtocart" class="transition-opacity duration-500 fixed bg-black text-white text-sm rounded-md shadow-lg py-2 px-3 transform -translate-x-1/2 -translate-y-1/2 top-1/3 left-1/2" :class="{'opacity-0': !addtocart}">
         <p>장바구니에 메뉴를 추가했습니다.</p>
       </div>
 
