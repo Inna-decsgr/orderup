@@ -5,7 +5,8 @@
       <p class="font-bold mt-3">배달·포장</p>
     </div>
     <div class="bg-white my-3 p-3">
-      <p class="font-bold text-sm">총 {{ this.userlikedstores.length }}개</p>
+      <p v-if="this.userlikedstores.length > 0" class="font-bold text-sm">총 {{ this.userlikedstores.length }}개</p>
+      <p v-if="this.userlikedstores.length === 0" class="font-bold text-sm">찜한 가게가 없습니다.</p>
       <div v-for="store in this.userlikedstores" :key="store.id" @click="gotoStoreDetail(store)" class="border-b flex justify-center items-center p-2 py-3 cursor-pointer">
         <div class="basis-1/5 relative">
           <img :src="store.image_url" alt="가게 이미지" class="border w-[150px] h-[100px] rounded-lg object-cover">
