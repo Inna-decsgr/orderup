@@ -1,11 +1,19 @@
 <template>
   <div>
-    <div v-if="orderlist.length > 0">
-      <h3><strong>주문 내역</strong></h3>
-      <div v-for="order in orderlist" :key="order.order_id">
+    <div class="p-3">
+      <div class="flex items-center">
+        <i class="fa-solid fa-arrow-left pr-4 cursor-pointer" @click="gotohome"></i>
+        <p class="font-bold text-xl">주문 내역</p>
+      </div>
+      <p class="font-bold mt-3 pl-8">배달·포장</p>
+    </div>
+    <div v-if="orderlist.length > 0" class="px-3">
+      <div v-for="order in orderlist" :key="order.order_id" class="mb-3">
         <div>
-          <p>{{ getStatusMessage(order.status) }}</p>
-          <button v-if="order.review === false && order.status === 'delivered'" @click="gotoReview(order)">후기 작성하기</button>
+          <div class="flex justify-between items-center pt-1 pb-2">
+            <p class="font-bold text-sm text-violet-700">{{ getStatusMessage(order.status) }}</p>
+            <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)" class="font-bold text-sm border-1 border-violet-700 py-1 px-2 rounded-md text-violet-700">주문 취소</button>
+          </div>
           <div v-if="order.review === true">
             <p>후기 작성완료</p>
             <button @click="gotoMyReview(order.restaurant)">후기 보러가기</button>
@@ -18,7 +26,6 @@
           <div v-if="showDelivering[order.order_id]" class="popup">
             <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
-          <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)">주문 취소</button>
           <h5><strong>{{ order.restaurant.name }}</strong></h5>
           <div v-for="item in order.items" :key="item.order_item_id">
             <p>{{ item.menu.name }} {{ item.quantity }}개</p>
@@ -51,13 +58,18 @@
             </p>
             <p>결제방법 {{ order.payment_method }}</p>
           </div>
+          <button v-if="order.review === false && order.status === 'delivered'" @click="gotoReview(order)">후기 작성하기</button>
         </div>
         <hr />
       </div>
     </div>
-    <div v-else>
-      <p>주문 내역이 없습니다.</p>
-      <button @click="gotoHome">주문하러 가기</button>
+    <div v-else class="text-center pt-[100px] px-[60px]">
+      <p class="font-bold">주문 내역이 없어요.</p>
+      <p class="text-gray-500 text-sm pt-2">비회원 주문내역은 30일동안 확인 가능합니다. 오더업 회원 탈퇴하시면 비회원 주문내역을 확인할 수 있습니다.</p>
+      <button @click="gotofilteredStore" class="bg-violet-400 w-[200px] p-2 text-white text-sm font-bold my-5 rounded-md">주문하러 가기</button>
+    </div>
+    <div class="py-3 px-12">
+      <p class="font-bold">재주문 많은 가게를 추천해요</p>
     </div>
   </div>
 </template>
@@ -101,17 +113,17 @@ export default {
     getStatusMessage(status) {
       switch (status) {
         case 'pending':
-          return '주문이 완료되었습니다.';
+          return '주문이 완료되었어요';
         case 'accepted':
-          return '주문이 수락되었습니다.';
+          return '주문이 수락되었어요';
         case 'delivering':
-          return '배달원이 음식을 픽업하고 배달중입니다💨';
+          return '배달원이 음식을 픽업하고 배달중이에요💨';
         case 'delivered':
-          return '배달이 완료되었어요.';
+          return '배달이 완료되었어요';
         case 'canceled':
-          return '주문이 취소되었습니다.';
+          return '주문이 취소되었어요';
         case 'rejected':
-          return '주문이 거절되었습니다.';
+          return '주문이 거절되었어요';
         default:
           return '상태 정보 없음';
       }
@@ -141,8 +153,9 @@ export default {
         this.getOrderList();
       }
     },
-    gotoHome() {
-      this.$router.push('/')
+    gotofilteredStore(category) {
+      this.$router.push('/filteredstore');
+      this.$store.commit('setCategory', category.name);
     },
     showLocation(orderid) {
       this.showDelivering[orderid] = true 
@@ -172,6 +185,9 @@ export default {
     gotoMyReview(store) {
       this.$router.push('/myreview');
       this.$store.commit('setStore', store)
+    },
+    gotohome() {
+      this.$router.push('/')
     }
   }
 }
