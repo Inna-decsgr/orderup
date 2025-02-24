@@ -18,6 +18,7 @@ import MyOrderup from '../views/MyOrderup.vue'
 import FilteredStore from '../views/FilteredStore.vue'
 import AllMyReviews from '../views/AllMyReviews.vue'
 import AllMyCoupons from '../views/AllMyCoupons.vue'
+import AllMyStores from '../views/AllMyStores.vue'
 
 
 const routes = [
@@ -44,12 +45,29 @@ const routes = [
   {
     path: '/mystore',
     name: 'mystore',
-    component: MyStore
-  },
-  {
-    path: '/registrationstore',
-    name: 'registrationstore',
-    component: StoreRegistration
+    component: MyStore,
+    children: [
+      {
+        path: 'allmystores',
+        name: 'allmystores',
+        component: AllMyStores
+      },
+      {
+        path: '/registrationstore',
+        name: 'registrationstore',
+        component: StoreRegistration
+      },
+      {
+        path: '/allmyreviews',
+        name: 'AllMyReviews',
+        component: AllMyReviews
+      },
+        {
+        path: '/manageStore',
+        name: 'ManageStore',
+        component: ManageStore
+      },
+    ]
   },
   {
     path: '/searchresult',
@@ -82,11 +100,6 @@ const routes = [
     component: RegisterReview
   },
   {
-    path: '/manageStore',
-    name: 'ManageStore',
-    component: ManageStore
-  },
-  {
     path: '/myreview',
     name: 'MyReview',
     component: MyReview
@@ -105,11 +118,6 @@ const routes = [
     path: '/filteredstore',
     name: 'FilteredStore',
     component: FilteredStore
-  },
-  {
-    path: '/allmyreviews',
-    name: 'AllMyReviews',
-    component: AllMyReviews
   },
   {
     path: '/allmycoupons',
