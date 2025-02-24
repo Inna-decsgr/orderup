@@ -1,77 +1,99 @@
 <template>
   <div>
-    <h2>가게 수정</h2>
+    <div class="flex justify-between items-center pb-4">
+      <p class="font-bold">가게 정보 수정</p>
+      <div>
+        <button @click="updateStore" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm mr-2">수정 완료</button>
+        <button @click="handleCancel" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm">취소</button>
+      </div>
+    </div>
     <div>
-      <button @click="updateStore">수정</button>
-      <button @click="handleCancel">취소</button>
-      <form @submit.prevent="updateStore">
-        <label for="storename">가게 이름</label>
-        <input 
-          type="text"
-          id="storename"
-          v-model="form.name"
-          class="form-control"
-          required
-        >
-        <label for="storenumber">가게 전화번호</label>
-        <input 
-          type="text"
-          id="storenumber"
-          v-model="form.phone_number"
-          class="form-control"
-          required
-        >
-        <label for="storedescription">가게 설명</label>
-        <input 
-          type="text"
-          id="storedescription"
-          v-model="form.description"
-          class="form-control"
-          required
-        >
-        <div>
-          <label for="storeimage">가게 이미지</label>
+      <form @submit.prevent="updateStore" class="text-sm">
+        <div class="mb-2">
+          <label for="storename" class="font-bold pb-1">상호명</label><br/>
+          <input 
+            type="text"
+            id="storename"
+            v-model="form.name"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storenumber" class="font-bold pb-1">전화번호</label>
+          <input 
+            type="text"
+            id="storenumber"
+            v-model="form.phone_number"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storedescription" class="font-bold pb-1">설명</label>
+          <input 
+            type="text"
+            id="storedescription"
+            v-model="form.description"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storeimage" class="font-bold pb-1">대표 이미지</label><br/>
           <input
             type="file"
             id="storeimage"
             @change="handleImageUpload"
+            class="hidden"
           />
+          <label for="storeimage" class="cursor-pointer inline-block py-1 px-2 bg-gray-200 rounded-full">
+            <i class="fa-solid fa-camera"></i>
+          </label>
           <div v-if="imagePreview">
-            <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+            <img :src="imagePreview" alt="이미지 미리보기" class="w-[300px] h-[200px] mt-2">
           </div>
         </div>
-        <label for="storeaddress">가게 주소</label>
-        <input 
-          type="text"
-          id="storeaddress"
-          v-model="form.address"
-          class="form-control"
-          required
-        >
-        <label for="storehours">가게 운영시간</label>
-        <input 
-          type="text"
-          id="storehours"
-          v-model="form.operating_hours"
-          class="form-control"
-          required
-        >
-        <label for="storerating">가게 평점</label>
-        <input 
-          type="text"
-          id="storerating"
-          v-model="form.rating"
-          class="form-control"
-          required
-        >
-        <label for="storedeliveryfee">배달료</label>
-        <input 
-          type="text"
-          id="storedeliveryfee"
-          v-model="form.delivery_fee"
-          class="form-control"
-          required
-        >
+        <div class="mb-2">
+          <label for="storeaddress" class="font-bold pb-1">주소</label>
+          <input 
+            type="text"
+            id="storeaddress"
+            v-model="form.address"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storehours" class="font-bold pb-1">운영시간</label>
+          <input 
+            type="text"
+            id="storehours"
+            v-model="form.operating_hours"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storerating" class="font-bold pb-1">평점</label>
+          <input 
+            type="text"
+            id="storerating"
+            v-model="form.rating"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
+        <div class="mb-2">
+          <label for="storedeliveryfee" class="font-bold pb-1">배달료</label>
+          <input 
+            type="text"
+            id="storedeliveryfee"
+            v-model="form.delivery_fee"
+            class="border py-1 px-2 block w-[400px] rounded-md"
+            required
+          >
+        </div>
       </form>
     </div>
   </div>
