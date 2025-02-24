@@ -3,9 +3,15 @@
     <p class="font-bold text-lg my-3">가게 관리하기</p>
     <div class="flex justify-between items-center">
       <p><strong>{{ store.name }}</strong></p>
-      <button @click="confirmDelete(store.id)" class="bg-violet-500 py-1 px-2 text-white rounded-md text-sm">가게 등록 삭제</button>
+      <button @click="confirmDelete(store.id)" class="bg-violet-500 py-1 px-2 text-white rounded-md text-sm">운영 종료</button>
     </div>
-    <div class="text-sm my-4">
+    <div v-if="deletestore" class="border p-3 text-center w-[400px] mx-auto rounded-sm">
+      <p class="font-bold">정말로 가게 운영을 종료하시겠습니까?</p>
+      <p class="font-bold">종료하시면 가게가 폐점 처리됩니다.</p>
+      <button @click="deleteStore(store.id)" class="mt-3 bg-violet-500 text-white text-sm py-1 px-2 rounded-md mr-2">확인</button>
+      <button @click="cancelstore" class="bg-violet-500 text-white text-sm py-1 px-2 rounded-md">취소</button>
+    </div>
+    <div v-if="!deletestore" class="text-sm my-4">
       <button @click="editMode" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : editmode}">가게 정보 수정</button>
       <button @click="gotoMenu({id: store.id, name: store.name})" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showmenu}">메뉴 관리</button>
       <button @click="gotoReview" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showreview}">리뷰 관리</button>
@@ -51,7 +57,8 @@ export default {
       showmenu: false,
       showorder: false,
       showreview: false,
-      ordercount: {}
+      ordercount: {},
+      deletestore: false
     };
   },
   mounted() {
@@ -77,11 +84,8 @@ export default {
       this.showmenu = false;
       this.showorder = false;
     },
-    confirmDelete(storeid) {
-      const isConfirmed = confirm('정말로 가게를 삭제하시겠습니까?');
-      if (isConfirmed) {
-        this.deleteStore(storeid); 
-      }
+    confirmDelete() {
+      this.deletestore = true;
     },
     async getOrderLength() {
       try {
@@ -131,6 +135,9 @@ export default {
       if (activeComponent !== 'review') {
         this.showreview = false;
       }
+    },
+    cancelstore() {
+      this.deletestore = false;
     }
   }
 }
