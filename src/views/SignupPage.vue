@@ -1,100 +1,107 @@
 <template>
-  <div>
-    <p>회원가입 페이지</p>
-    <p>회원가입</p>
-    <form @submit.prevent="registerUser">
+  <div class="flex flex-col items-center justify-center h-screen">
+    <p class="font-bold text-3xl pb-3">Orderup</p>
+    <div class="border p-5 rounded-md">
       <div>
-        <label for="nameInput" class="form-label">이름</label>
-        <input 
-          type="text" 
-          class="form-control"
-          v-model="name"
-          id="nameInput" 
-          placeholder="이름을 입력해주세요" 
-          required
-        >
+        <p class="text-xl pb-4">딱 이것만 체크하면 가입완료!</p>
       </div>
-      <div>
-        <label for="signupinput" class="form-label">아이디</label>
-        <input 
-          type="email" 
-          class="form-control"
-          v-model="signupid"
-          id="signupinput" 
-          placeholder="email@email.com" 
-          required
-        >
-      </div>
-      <div>
-        <label for="passwordinput2" class="col-form-label">비밀번호</label>
-        <input 
-          type="password" 
-          id="passwordinput2" 
-          class="form-control" 
-          v-model="signupPassword"
-          aria-describedby="passwordHelpInline" 
-          placeholder="비밀번호" 
-          required
-        >
-      </div>
-      <div>
-        <label for="confirmPassword" class="col-form-label">비밀번호 확인</label>
-        <input 
-          type="password" 
-          id="confirmPassword" 
-          class="form-control" 
-          v-model="confirmPassword" 
-          aria-describedby="passwordHelpInline" 
-          placeholder="비밀번호를 한 번 더 입력해주세요" 
-          required
-        >
-        <span v-if="passwordMismatch" style="color: red">
-          비밀번호가 일치하지 않습니다
-        </span>
-      </div>
-      <div>
-        <label for="phoneNumber" class="col-form-label">휴대전화</label>
-        <input 
-          type="tel" 
-          id="phoneNumber" 
-          class="form-control" 
-          v-model="phoneNumber" 
-          placeholder="휴대전화" 
-          required
-        >
-      </div>
-      <div>
-        <label for="address" class="col-form-label">주소</label>
-        <input 
-          type="text" 
-          id="address" 
-          class="form-control" 
-          v-model="address" 
-          placeholder="주소를 입력해주세요" 
-          required
-        >
-      </div>
-      <div>
-        <input type="checkbox" id="is_owner" v-model="isOwner">
-        <label for="is_owner" class="col-form-label"><span style="font-weight: bold;">사업자</span>일 경우 체크</label>
-
-        <div v-if="isOwner">
-          <label for="reg_number" class="col-form-label">사업자등록번호</label>
+      <form @submit.prevent="registerUser" class="w-[400px]">
+        <div class="pb-3">
+          <label for="nameInput" class="form-label font-bold text-sm">이름</label>
           <input 
             type="text" 
-            id="reg_number" 
-            class="form-control" 
-            v-model="reg_number" 
-            placeholder="사업자등록번호를 입력하세요" 
+            class="form-control text-sm placeholder-gray-400"
+            v-model="name"
+            id="nameInput" 
+            placeholder="이름을 입력해주세요." 
             required
           >
         </div>
-      </div>
+        <div class="pb-3">
+          <label for="signupinput" class="form-label font-bold text-sm">아이디</label>
+          <input 
+            type="email" 
+            class="form-control text-sm placeholder-gray-400"
+            v-model="signupid"
+            id="signupinput" 
+            placeholder="이메일을 입력해주세요." 
+            required
+          >
+        </div>
+        <div class="pb-3">
+          <label for="passwordinput2" class="col-form-label font-bold text-sm">비밀번호</label>
+          <input 
+            type="password" 
+            id="passwordinput2" 
+            class="form-control mb-1 text-sm placeholder-gray-400" 
+            v-model="signupPassword"
+            aria-describedby="passwordHelpInline" 
+            placeholder="비밀번호를 입력해 주세요.(8자리 이상)" 
+            required
+          >
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            class="form-control text-sm placeholder-gray-400" 
+            v-model="confirmPassword" 
+            aria-describedby="passwordHelpInline" 
+            placeholder="비밀번호를 한번 더 입력해주세요." 
+            required
+          >
+          <span v-if="passwordMismatch" style="color: red">
+            비밀번호가 일치하지 않습니다
+          </span>
+        </div>
+        <div class="pb-3">
+          <label for="phoneNumber" class="col-form-label font-bold text-sm">휴대전화</label>
+          <input 
+            type="tel" 
+            id="phoneNumber" 
+            class="form-control text-sm placeholder-gray-400" 
+            v-model="phoneNumber" 
+            placeholder="전화번호를 입력해주세요." 
+            required
+          >
+        </div>
+        <div class="pb-3">
+          <label for="address" class="col-form-label font-bold text-sm">주소</label>
+          <input 
+            type="text" 
+            id="address" 
+            class="form-control text-sm placeholder-gray-400" 
+            v-model="address" 
+            placeholder="주소를 입력해주세요." 
+            required
+          >
+        </div>
+        <div>
+          <input type="checkbox" id="is_owner" v-model="isOwner">
+          <label for="is_owner" class="col-form-label text-sm pl-2 pb-3">사업자일 경우 체크</label>
 
-      <button type="submit">회원가입</button>
-      <p>이미 계정이 있으신가요?</p>
-      <button @click="gotoLogin">로그인</button>
-    </form>
+          <div v-if="isOwner" class="pb-3">
+            <label for="reg_number" class="col-form-label font-bold text-sm">사업자등록번호</label>
+            <input 
+              type="text" 
+              id="reg_number" 
+              class="form-control text-sm placeholder-gray-400" 
+              v-model="reg_number" 
+              placeholder="사업자등록번호를 입력해 주세요." 
+              required
+            >
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-violet-500 p-2 mt-3 mb-[50px] rounded-md font-bold text-white">버튼만 누르면 가입완료!</button>
+        <div class="flex justify-between text-sm">
+          <p class="border-b-[1px] pb-2 border-violet-500">이미 계정이 있으신가요?</p>
+          <button @click="gotoLogin" class="border py-[6px] px-3 rounded-md bg-violet-500 text-white font-bold">로그인</button>
+        </div>
+      </form>
+    </div>
+    <div class="text-xs text-gray-500 py-[70px] text-center">
+      <p>이용약관 | 개인정보처리방침 | 책임의 한계와 법적고지 | 회원정보 고객센터 </p>
+      <p><span class="text-lg font-bold">Orderup</span> <span class="text-xs text-gray-500">Copyright Orderup Corp. All Rights Reserved.</span></p>
+    </div>
   </div>
 </template>
 
