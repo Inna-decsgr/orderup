@@ -1,24 +1,30 @@
 <template>
   <div>
-    <p>가게 관리하기</p>
-    <p><strong>{{ store.name }}</strong></p>
-    <button @click="editMode">가게 정보 수정</button>
-    <button @click="confirmDelete(store.id)">가게 삭제</button>
-    <button @click="gotoMenu({id: store.id, name: store.name})">메뉴 관리</button>
-    <button @click="gotoReview">리뷰 관리</button>
-    <button @click="showNewOrder">주문 관리</button>
-    <span v-if="ordercount[store.id] !== undefined">{{ ordercount[store.id] }}</span>
+    <p class="font-bold text-lg my-3">가게 관리하기</p>
+    <div class="flex justify-between items-center">
+      <p><strong>{{ store.name }}</strong></p>
+      <button @click="confirmDelete(store.id)" class="bg-violet-500 py-1 px-2 text-white rounded-md text-sm">가게 등록 삭제</button>
+    </div>
+    <div class="text-sm my-4">
+      <button @click="editMode" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : editmode}">가게 정보 수정</button>
+      <button @click="gotoMenu({id: store.id, name: store.name})" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showmenu}">메뉴 관리</button>
+      <button @click="gotoReview" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showreview}">리뷰 관리</button>
+      <div class="inline-block">
+        <button @click="showNewOrder" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showorder}">주문 관리</button>
+        <span v-if="ordercount[store.id] !== undefined && ordercount[store.id]" class="pl-2">{{ ordercount[store.id] }}</span>
+      </div>
+    </div>
     <div v-if="editmode">
       <EditStore :store="store" :cancel="handleCancel" />
     </div>
     <div v-if="showmenu">
       <MyMenu :store="store" :cancel="handleCancel" />
     </div>
-    <div v-if="showorder">
-      <ManageOrder :storeid="store.id" :cancel="handleCancel" />
-    </div>
     <div v-if="showreview">
       <ManageReview :storeid="store.id"/>
+    </div>
+    <div v-if="showorder">
+      <ManageOrder :storeid="store.id" :cancel="handleCancel" />
     </div>
   </div>
 </template>
