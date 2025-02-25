@@ -20,9 +20,18 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Restaurant
-        fields = ['name', 'address', 'phone_number', 'rating', 'owner', 'categories', 'operating_hours', 'description', 'image_url', 'delivery_fee']
+        fields = ['id', 'name', 'address', 'phone_number', 'rating', 'owner', 'categories',
+        'operating_hours', 'description', 'image_url', 'delivery_fee']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image:  
+            return request.build_absolute_uri(obj.image.url)  # `image.url` 자동 반환
+        return obj.image_url  # 기존 URL이 있다면 그대로 반환
 
 
 class OptionSerializer(serializers.ModelSerializer):
