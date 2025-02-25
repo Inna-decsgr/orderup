@@ -32,8 +32,8 @@ class Restaurant(models.Model):
   categories = models.ManyToManyField(Category, related_name='restaurants')
   operating_hours = models.CharField(max_length=100, null=False)
   description = models.TextField()
-  image = models.ImageField(upload_to='images/', default='default_image.png')  # 실제 이미지 파일 저장
-  image_url = models.URLField(null=False)  # 이미지 URL 저장
+  image = models.ImageField(upload_to='images/', default='images/default_image.png', null=True, blank=True)  # 실제 이미지 파일 저장
+  image_url = models.URLField(null=False, blank=True)  # 이미지 URL 저장
   delivery_fee = models.DecimalField(max_digits=7, decimal_places=2)
   menus = models.ManyToManyField('Menu', related_name='restaurants', blank=True)
   liked_users = models.ManyToManyField(User, through='Like', related_name='liked_restaurants')
