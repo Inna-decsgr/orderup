@@ -213,36 +213,48 @@ def store_regis(request):
         address = request.data.get('address')
         phone_number = request.data.get('phone_number', None)
         rating = request.data.get('rating')
-        owner = request.data.get('owner')  # owner는 User의 ID 또는 객체일 것으로 예상됨
-        categories = request.data.get('categories', [])
+        owner = request.data.get('owner')
         operating_hours = request.data.get('operating_hours', None)
         description = request.data.get('description')
-        image_url = request.data.get('image_url', None)
-        delivery_fee = request.data.get('deliveryfee', 500.0)
+        delivery_fee = request.data.get('delivery_fee', 500.0)
+        image_file = request.FILES.get('image', None)
+        image_url = request.data.get('image_url', None)  # ✅ 기존 URL 값도 받아오기
+
+        # ✅ categories를 JSON 문자열에서 리스트로 변환
+        categories = request.data.get('categories', "[]")
+        try:
+            category_ids = json.loads(categories)
+            if not isinstance(category_ids, list):
+                raise ValueError("categories 필드는 리스트여야 합니다.")
+        except json.JSONDecodeError:
+            return Response({'error': 'Invalid JSON format for categories'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         print("Received image_url:", phone_number)
         # 새로운 Restaurant 객체 생성
-        restaurant_data = {
-            'name': name,
-            'address': address,
-            'phone_number': phone_number,
-            'rating': rating,
-            'owner': owner,
-            'operating_hours': operating_hours,
-            'description': description,
-            'image_url': image_url,
-            'delivery_fee': delivery_fee,
-            'categories': categories 
-        }
+        restaurant = Restaurant(
+            name=name,
+            address=address,
+            phone_number=phone_number,
+            rating=rating,
+            owner_id=owner,
+            operating_hours=operating_hours,
+            description=description,
+            delivery_fee=delivery_fee,
+            image_url=image_url  # ✅ 기존 URL 저장
+        )
 
-        serializer = RestaurantSerializer(data=restaurant_data)
+        # ✅ 이미지 파일이 있을 경우 업로드 및 URL 저장
+        if image_file:
+            restaurant.image = image_file
+            restaurant.image_url = f"{request.build_absolute_uri(restaurant.image.url)}"  # ✅ 이미지 URL 저장
 
-        if serializer.is_valid():
-            restaurant = serializer.save()  # Restaurant 객체 저장
-            restaurant.categories.set(categories)  # ManyToMany 관계 설정
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        restaurant.save()
+        restaurant.categories.set(category_ids)
+
+        serializer = RestaurantSerializer(restaurant, context={'request': request})  
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
 
