@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'blur-background': registersuccess }">
     <div class="flex justify-between items-center py-2">
       <div class="text-lg font-bold py-3">
         <p>오더업 입점에 필요한</p>
@@ -103,7 +103,7 @@
         </div>
       </div>
       <div>
-        <label for="restaurantDescription" class="font-bold text-center mb-2">상단에 표시할 가게 설명을 작성해주세요</label>
+        <label for="restaurantDescription" class="font-bold text-center mb-2 mr-2">상단에 표시할 가게 설명을 작성해주세요</label>
         <input 
           type="text" 
           v-model="restaurant.description" 
@@ -125,7 +125,21 @@
       <button type="submit" @click="registrationstore" class="w-full bg-violet-500 p-2 rounded-md mb-[50px] font-bold text-white mt-5">입점 신청하기</button>
     </form>
   </div>
-  
+  <div v-if="registersuccess" class="text-center py-5 px-[30px] border w-[450px] rounded-md transition-opacity duration-500 fixed bg-black text-white text-sm shadow-lg transform -translate-x-1/2 -translate-y-1/2 top-1/3 left-1/2">
+    <i class="fa-solid fa-circle-check text-green-500 text-5xl mb-3"></i>
+    <p class="text-2xl font-bold mb-4">입점 신청 완료</p>
+    <div class="font-bold text-[15px] my-3">
+      <p>입력한 정보는 검토 후 승인되며,</p>
+      <p>승인 후 오더업 앱에 노출돼요.</p>
+    </div>
+    <div class="text-[12px] mb-5 text-gray-300">
+      <p>광고 시작일은 승인 진행상황에 따라 선택한 시작희망일과</p>
+      <p>다를 수 있으며, 승인된 정보는 셀프서비스를 통해</p>
+      <p>언제든지 변경할 수 있어요.</p>
+    </div>
+
+    <button @click="gotomyStore" class="font-bold border-b border-gray-300 pb-[1px] text-gray-300">오더업사장님광장 메인으로</button>
+  </div>
 </template>
 
 <script>
@@ -161,6 +175,7 @@ export default {
       selectedCategories: [],
       imageFile: null,
       imagePreview: null,
+      registersuccess: false
     };
   },
   computed: {
@@ -168,6 +183,16 @@ export default {
     user() {
       return this.getUser;
     },
+  },
+  watch: {
+    registersuccess(value) {
+      console.log('registersuccess', this.registersuccess);
+      if (value) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    }
   },
   methods: {
     async registrationstore() {
@@ -203,8 +228,7 @@ export default {
           }
         });
         console.log(response.data);
-        alert('가게 등록이 성공적으로 완료되었습니다.');
-        this.$router.push('/');
+        this.registersuccess = true;
       } catch (error) {
         if (error.response) {
           console.log("API error:", error.response.data); // 오류 메시지 출력
@@ -227,7 +251,18 @@ export default {
     },
     gotomyStore() {
       this.$router.push('/mystore');
+      console.log('registersuccess', this.registersuccess);
+      this.registersuccess = false;
     }
   },
 };
 </script>
+
+
+<style>
+.blur-background {
+  filter: blur(2px) !important;
+  pointer-events: none;
+  transition: filter 0.3s ease-in-out;
+}
+</style>
