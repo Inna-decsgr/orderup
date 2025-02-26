@@ -107,8 +107,7 @@ export default {
         }
       });
       console.log(response.data);
-      alert('가게가 성공적으로 삭제되었습니다.');
-      this.getMyStore();
+      this.$router.push('/mystore');
     },
     gotoMenu() {
       this.showmenu = true;

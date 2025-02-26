@@ -43,7 +43,7 @@ export default {
       route: useRoute(),
       menus: [
         { id: 1, name: '전체현황', icon: '<i class="fa-solid fa-calendar"></i>', click: this.goallmystores },
-        { id: 2, name: '가게등록', icon: '<i class="fa-solid fa-store"></i>', click: this.gotoRegistrationStore},
+        { id: 2, name: '가게입점', icon: '<i class="fa-solid fa-store"></i>', click: this.gotoRegistrationStore},
         { id: 3, name: '리뷰관리', icon: '<i class="fa-solid fa-comment"></i>', click: this.goallmyreviews },
         { id: 4, name: '공지·한마디', icon: '<i class="fa-solid fa-pencil"></i>' },
         { id: 5, name: '메뉴관리', icon: '<i class="fa-solid fa-rectangle-list"></i>' },
