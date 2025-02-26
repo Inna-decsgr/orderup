@@ -49,7 +49,10 @@
         </div>
         <div class="flex">
           <p class="text-[13px]">{{ store.address }}</p>
-          <p class="text-[13px] ml-4">{{ store.phonenumber }}</p>
+          <p class="text-[13px] ml-4">
+            <i class="fa-solid fa-phone pr-1"></i>
+            {{ store.phonenumber }}
+          </p>
         </div>
         <p class="text-xs mt-1">배달팁 💸 <span class="font-bold">{{ store.deliveryfee }}원</span></p>
       </div>
