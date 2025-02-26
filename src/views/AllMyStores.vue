@@ -11,7 +11,7 @@
             </div>
             <span class="font-bold">* 상호 대표 이미지</span>
             <div class="my-2">
-              <img :src="store.image_url" alt="가게 이미지" class="w-[200px] h-[150px] rounded-md">
+              <img :src="imageSrc(store.image_url)" alt="가게 이미지" class="w-[200px] h-[150px] rounded-md">
             </div>
             <p><span class="font-bold">소유주</span> {{ store.owner }}</p>
             <p><span class="font-bold">상호명</span> {{ store.name }}</p>
@@ -19,7 +19,7 @@
             <p class="font-bold">대표 설명</p>
             <p>{{ store.description }}</p>
             <p><span class="font-bold">주소</span> {{ store.address }}</p>
-            <p><span class="font-bold">카테고리</span> {{ store.categories[0] }}</p>
+            <p><span class="font-bold">분류</span> {{ store.categories[0] }}</p>
             <p><span class="font-bold">운영시간</span> {{ store.operating_hours }}</p>
             <p><span class="font-bold">평점</span> {{ store.rating }}</p>
             <p><span class="font-bold">배달료</span> {{ store.delivery_fee }}원</p>
@@ -79,6 +79,26 @@ export default {
       this.$router.push('/manageStore');
       this.$store.commit('setStore', store);
     },
+    imageSrc(imageurl) {
+      try {
+        // URL 디코딩 (한글 파일명 깨짐 방지)
+        imageurl = decodeURIComponent(imageurl);
+      } catch (e) {
+        console.error("URL 디코딩 실패:", e);
+      }
+      // 공백을 `_`로 변환 (Django에서 저장된 파일명과 맞추기)
+      imageurl = imageurl.replace(/ /g, "_");
+      // `http://` 또는 `https://`로 시작하면 그대로 사용
+      if (imageurl.startsWith("http://") || imageurl.startsWith("https://")) {
+        // 만약 "http://localhost:8000/media/"로 시작하면 "/images/" 추가
+        if (imageurl.startsWith("http://localhost:8000/media/")) {
+          return imageurl.replace("/media/", "/media/images/");
+        }
+        return imageurl; // 기존 URL 유지
+      }
+      // 상대 경로라면 `http://localhost:8000`을 붙여서 반환
+      return `http://localhost:8000${imageurl}`;
+    }
   }
 }
 </script>
