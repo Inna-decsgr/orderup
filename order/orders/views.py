@@ -270,6 +270,7 @@ def my_store_view(request, user_id):
         restaurant_data = []
         for restaurant in restaurants:
             categories = restaurant.categories.all()  # 해당 가게에 연결된 모든 카테고리 쿼리셋을 가져옴
+            reviews = restaurant.reviews.count()
             category_names = [category.name for category in categories]  # 카테고리 이름 목록
             
             # owner의 username 가져오기
@@ -286,7 +287,8 @@ def my_store_view(request, user_id):
                 'phone_number': restaurant.phone_number,
                 'operating_hours': restaurant.operating_hours,
                 'rating': restaurant.rating,
-                'delivery_fee': restaurant.delivery_fee
+                'delivery_fee': restaurant.delivery_fee,
+                'reviews': reviews
             })
         
         # 직렬화된 데이터를 JSON으로 응답
