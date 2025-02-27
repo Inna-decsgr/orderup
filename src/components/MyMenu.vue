@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="relative">
-      <div class="flex items-center">
+      <div v-if="!this.NewForm" class="flex items-center">
         <p class="font-bold text-sm">단품 메뉴</p>
         <button @click="ShowForm" class="absolute right-0 bg-blue-500 text-white p-2 rounded-sm ml-auto text-xs hover:bg-blue-600">메뉴 추가</button>
       </div>
