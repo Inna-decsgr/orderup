@@ -38,16 +38,15 @@
       </div>
       <div>
         <label for="menuimage" class="font-bold mr-2 text-sm w-[100px] text-center">가게 이미지</label>
-        <button>
-          <i class="fa-solid fa-camera text-xl text-gray-600 bg-gray-100 py-1 px-2 rounded-full"></i> 
-        </button>
         <input 
           type="file" 
           id="menuimage" 
           @change="handleImageUpload" 
           class="hidden"
-          required
         >
+        <label for="menuimage" class="cursor-pointer inline-block py-1 px-2 bg-gray-200 rounded-full">
+          <i class="fa-solid fa-camera"></i>
+        </label>
         <div v-if="imagePreview">
           <img :src="imagePreview" alt="이미지 미리보기" class="w-[300px] h-[200px] rounded-sm mx-auto mt-3">
         </div>
