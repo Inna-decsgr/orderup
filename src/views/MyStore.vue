@@ -3,7 +3,7 @@
     <div class="mb-2">
       <div>
         <div class="flex justify-between items-center">
-          <p class="text-xl font-bold cursor-pointer pb-2" @click="gomystores">오더업 사장님광장</p>
+          <p class="text-xl font-bold cursor-pointer pb-2" @click="gomystores">오더업<i class="fa-solid fa-store"></i>사장님광장</p>
         </div>
         <p class="text-[15px]">
           <span class="font-bold">{{ user.username }}</span>님
