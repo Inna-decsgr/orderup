@@ -1,10 +1,9 @@
 <template>
   <div>
     <div class="flex justify-between items-center pb-4">
-      <p class="font-bold">가게 정보 수정</p>
+      <p class="font-bold">기본 정보 수정</p>
       <div>
-        <button @click="updateStore" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm mr-2">수정 완료</button>
-        <button @click="handleCancel" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm">취소</button>
+        <button @click="updateStore" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm">완료</button>
       </div>
     </div>
     <div>
@@ -31,13 +30,12 @@
         </div>
         <div class="mb-2">
           <label for="storedescription" class="font-bold pb-1">설명</label>
-          <input 
-            type="text"
+          <textarea
             id="storedescription"
             v-model="form.description"
-            class="border py-1 px-2 block w-[400px] rounded-md"
+            class="border py-1 px-2 block w-[400px] h-[100px] rounded-md outline-none"
             required
-          >
+          ></textarea>
         </div>
         <div class="mb-2">
           <label for="storeimage" class="font-bold pb-1">대표 이미지</label><br/>
@@ -122,9 +120,6 @@ export default {
     }
   },
   methods: {
-    handleCancel() {
-      this.cancel();
-    },
     handleImageUpload(event) {
       console.log(event.target.files);
       const file = event.target.files[0];
@@ -168,8 +163,7 @@ export default {
           }
         })
         console.log('가게 정보 수정 성공', response.data);
-        alert('정보 수정이 성공적으로 완료되었습니다.')
-        this.$router.push('/mystore');
+        this.$router.push('/mystore/allmystores');
         this.cancel();
       } catch (error) {
         console.error('가게 정보 수정 실패', error);
