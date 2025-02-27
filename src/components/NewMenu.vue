@@ -1,47 +1,96 @@
 <template>
-  <div style="background-color: aliceblue;">
-    새 메뉴 등록
+  <div class=" border p-2 rounded-sm">
+    <div class="flex justify-between items-center mb-3">
+      <p class="font-bold pl-4">메뉴 추가</p>
+      <div>
+        <button @click="submitForm" class="bg-gray-100 py-1 px-2 text-sm rounded-sm mr-2 hover:bg-gray-200">완료</button>
+        <button @click="handleCancel" class="bg-gray-100 py-1 px-2 text-sm rounded-sm hover:bg-gray-200">취소</button>
+      </div>
+    </div>
     <form @submit.prevent="submitForm">
-      <div>
-        <label for="menuName">메뉴명</label>
-        <input type="text" v-model="menu.name" required>
+      <div class="pb-2">
+        <label for="menuName" class="font-bold mr-2 text-sm w-[100px] text-center">메뉴명</label>
+        <input 
+          type="text" 
+          v-model="menu.name" 
+          class="border rounded-sm outline-none w-[250px]"
+          required
+        >
+      </div>
+      <div class="flex items-center pb-2">
+        <label for="menuDescription" class="font-bold mr-2 text-sm w-[100px] text-center">설명</label>
+        <textarea 
+          v-model="menu.description" 
+          id="menuDescription" 
+          class="border rounded-sm outline-none w-[300px] h-[80px]"
+          required
+        ></textarea>
+      </div>
+      <div class="pb-2">
+        <label for="menuPrice" class="font-bold mr-2 text-sm w-[100px] text-center">가격</label>
+        <input 
+          type="number" 
+          v-model="menu.price" 
+          id="menuPrice"
+          class="border rounded-sm outline-none w-[300px] pl-2"
+          required
+          >
       </div>
       <div>
-        <label for="menuDescription">설명</label>
-        <input type="text" v-model="menu.description" id="menuDescription" required>
-      </div>
-      <div>
-        <label for="menuPrice">가격</label>
-        <input type="number" v-model="menu.price" id="menuPrice" required>
-      </div>
-      <div>
-        <label for="menuimage">가게 이미지</label>
+        <label for="menuimage" class="font-bold mr-2 text-sm w-[100px] text-center">가게 이미지</label>
+        <button>
+          <i class="fa-solid fa-camera text-xl text-gray-600 bg-gray-100 py-1 px-2 rounded-full"></i> 
+        </button>
         <input 
           type="file" 
           id="menuimage" 
           @change="handleImageUpload" 
+          class="hidden"
           required
         >
         <div v-if="imagePreview">
-          <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+          <img :src="imagePreview" alt="이미지 미리보기" class="w-[300px] h-[200px] rounded-sm mx-auto mt-3">
         </div>
       </div>
-      <h3>상세 옵션 추가</h3>
+      <div class="flex justify-between items-center pt-5">
+        <p class="font-bold pl-4">상세 옵션 추가</p>
+        <button @click.prevent="addOptionsGroup" class="text-sm bg-gray-100 py-1 px-2 rounded-sm hover:bg-gray-200">옵션 그룹 추가</button>
+      </div>
       <div v-for="(optionGroup, groupIndex) in optionsGroups" :key="groupIndex">
-        <label>옵션 그룹 이름</label>
-        <input type="text" v-model="optionGroup.name" required>
-        <h4>옵션 항목</h4>
-        <div v-for="(option, optionIndex) in optionGroup.options" :key="optionIndex">
-          <input type="text" v-model="option.name" placeholder="옵션 이름" required>
-          <input type="number" v-model="option.price" placeholder="옵션 가격" required>
-          <button @click="removeOption(optionGroup, optionIndex)">삭제</button>
+        <label class="font-bold text-sm w-[110px] text-center">옵션 그룹</label>
+        <input 
+          type="text" 
+          v-model="optionGroup.name"
+          class="border rounded-sm outline-none w-[300px] my-3 text-sm pl-2" 
+          placeholder="ex) 음료"
+          required
+        >
+        <div class="flex items-center text-sm">
+          <p class="font-bold text-sm w-[110px] text-center">옵션 항목</p>
+          <button @click.prevent="addOption(optionGroup)" class="text-sm bg-gray-100 py-1 px-2 rounded-sm hover:bg-gray-200">옵션 추가</button>
         </div>
-        <button @click.prevent="addOption(optionGroup)">옵션 추가</button>
+        <div v-for="(option, optionIndex) in optionGroup.options" :key="optionIndex" class="pl-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <input 
+                type="text" 
+                v-model="option.name" 
+                placeholder="옵션 이름 ex) 제로 콜라"
+                class="border rounded-sm outline-none w-[300px] text-sm pl-2 mt-3 mb-2" 
+                required
+              ><br/>
+              <input 
+                type="text" 
+                v-model="option.price" 
+                placeholder="옵션 가격 ex) 1500원" 
+                class="border rounded-sm outline-none w-[300px] text-sm pl-2" 
+                required
+              >
+            </div>
+            <button @click="removeOption(optionGroup, optionIndex)" class="mr-3 bg-gray-100 py-1 px-2 text-sm hover:bg-gray-200">삭제</button>
+          </div>
+        </div>
       </div>
-      <button @click.prevent="addOptionsGroup">옵션 그룹 추가</button>
-
-      <button>완료</button>
-      <button @click="handleCancel">취소</button>
     </form> 
   </div>
 </template>
@@ -104,7 +153,7 @@ export default {
       // 선택된 옵션 그룹에 옵션 항목 추가
       optionGroup.options.push({
         name: '',
-        price: 0
+        price: ''
       });
       console.log('optionGroup.options', optionGroup.options); 
     },
