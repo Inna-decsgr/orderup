@@ -1,25 +1,39 @@
 <template>
   <div>
     <div v-if="reviews.length > 0">
-      <p><strong>모든 리뷰</strong></p>
+      <p class="my-3"><strong>리뷰목록 (총{{ reviews.length }}개)</strong></p>
       <button v-if="user && !user.is_owner" @click="handleCancel">X</button>
-      <div v-for="review in reviews" :key="review.review_id" class="review">
-        <button v-if="user && user.is_owner" @click="removeReview(review.review_id)">삭제하기</button>
-        <p><strong>{{ review.user.username }}</strong></p>
-        <div class="star-rating">
-          <div class="stars">
-            <i
-              v-for="star in 5"
-              :key="star" 
-              class="fa fa-star"
-              :class="{'active': star <= review.rating}"
-            ></i><span v-if="review.rating !== 0" class="ratingscore">{{ review.rating }}</span>
+      <div v-for="review in reviews" :key="review.review_id" class="relative review">
+        <div class="flex items-center">
+          <div class="star-rating mr-2">
+            <div class="stars">
+              <i
+                v-for="star in 5"
+                :key="star" 
+                class="fa fa-star"
+                :class="{'active': star <= review.rating}"
+              ></i>
+            </div>
+          </div>
+          <div class="flex items-center text-sm font-bold text-gray-400">
+            <span class="mr-1">{{ new Date(review.date).toLocaleDateString() }}</span>
+            <i class="fa-solid fa-circle text-[5px] mr-1"></i>
+            <p>{{ review.user.username }}</p>
           </div>
         </div>
-        <span>{{ new Date(review.date).toLocaleDateString() }}</span>
-        <br/>
-        <img v-if="review.image_url" :src="review.image_url" alt="Review Image" class="review-image">
-        <p>{{ review.content }}</p>
+        <div class="my-2">
+          <ul class="flex">
+            <li v-for="menu in review.menus" :key="menu.menu_id">
+              <span class="bg-gray-200 py-1 px-2 rounded-md mr-2 font-bold text-sm">{{ menu.name }}</span>
+            </li>
+          </ul>
+        </div>
+        <p class="text-gray-400 text-sm mt-5">작성된 리뷰</p>
+        <p class="font-bold text-sm mb-4">{{ review.content }}</p>
+        <img v-if="review.image_url" :src="review.image_url" alt="리뷰 이미지" class="w-[150px] h-[150px] object-cover rounded-md">
+        <div class="absolute bottom-[-50px] right-0">
+          <button v-if="user && user.is_owner" @click="removeReview(review.review_id)" class="font-bold text-red-500 text-center mt-4 border-1 border-red-500 rounded-[4px] py-2 px-3 hover:bg-red-100">삭제</button>
+        </div>
       </div>
     </div>
   </div>
@@ -87,20 +101,12 @@ export default {
 
 <style>
 .review {
-  border: 1px solid #ccc;
-  padding: 10px;
+
   margin-bottom: 10px;
 }
-.review-image {
-  max-width: 300px;
-  height: auto;
-}
-
 .star-rating {
-  width: 150px;
   text-align: center;
   border-radius: 5px;
-  padding: 5px;
 }
 
 .stars {
