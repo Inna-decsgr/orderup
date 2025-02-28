@@ -13,7 +13,7 @@
         <input 
           type="text" 
           v-model="menu.name" 
-          class="border rounded-sm outline-none w-[250px]"
+          class="border rounded-sm outline-none w-[250px] text-sm"
           required
         >
       </div>
@@ -22,7 +22,7 @@
         <textarea 
           v-model="menu.description" 
           id="menuDescription" 
-          class="border rounded-sm outline-none w-[300px] h-[80px]"
+          class="border rounded-sm outline-none w-[300px] h-[80px] text-sm"
           required
         ></textarea>
       </div>

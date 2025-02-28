@@ -1,5 +1,4 @@
 <template>
-  리뷰 관리하기
   <div v-if="reviews.length > 0">
     <AllReviews :reviews="reviews" :getallreviews="getAllReviews" />
   </div>

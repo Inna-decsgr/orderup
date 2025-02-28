@@ -1,8 +1,7 @@
 <template>
   <div class="p-3">
-    <p class="font-bold">마이오더업</p>
     <div>
-      <div class="flex items-center py-3">
+      <div class="flex items-center pb-3">
         <div>
           <img src="/media/Profile/userprofile.png" alt="사용자 프로필 이미지" />
         </div>
@@ -23,18 +22,18 @@
     </div>
     <div>
     </div>
-    <div class="border rounded-lg text-center py-4 px-10 flex justify-between ">
-      <div @click="gotoMyCoupons" class="cursor-pointer">
-        <img src="/media/Coupon/sale coupon.png" alt="세일 쿠폰 이미지" class="w-[70px] h-[40px] mx-auto"/>
+    <div class="border rounded-lg text-center py-4 mx-auto flex justify-between">
+      <div @click="gotoMyCoupons" class="cursor-pointer px-5 w-[33.33%]">
+        <img src="/media/Coupon/sale coupon.png" alt="세일 쿠폰 이미지" class="w-[80px] h-[40px] mx-auto"/>
         <p class="font-bold pt-2">{{ allcoupons.length }}장</p>
         <button class="text-sm">쿠폰함</button>
       </div>
-      <div class="border-x px-5">
+      <div class="border-x px-5 w-[33.33%]">
         <img src="/media/Coupon/point.png" alt="세일 쿠폰 이미지" class="w-[40px] h-[40px] mx-auto"/>
         <p class="font-bold pt-2">0원</p>
         <button class="text-sm">포인트</button>
       </div>
-      <div>
+      <div class="px-5 w-[33.33%]">
         <img src="/media/Coupon/present.png" alt="세일 쿠폰 이미지" class="w-[50px] h-[40px] mx-auto"/>
         <p class="font-bold pt-2">0원</p>
         <button class="text-sm">받은 선물</button>
@@ -112,3 +111,10 @@ export default {
   }
 }
 </script>
+
+
+<style>
+::-webkit-scrollbar {
+  display: none;
+}
+</style>
