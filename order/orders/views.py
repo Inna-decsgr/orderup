@@ -1090,6 +1090,16 @@ def get_all_reviews(request, store_id):
         # 리뷰 정보 담을 리스트 생성
         reviews_data = []
         for review in reviews:
+            menus = []
+            if review.order:
+                order_items = review.order.items.select_related('menu')
+                menus = [{
+                    'menu_id': item.menu.id, 
+                    'name': item.menu.name, 
+                    'quantity': item.quantity} 
+                    for item in order_items
+                ]
+
             review_data = {
                 'review_id': review.id,
                 'rating': review.rating,
@@ -1099,7 +1109,8 @@ def get_all_reviews(request, store_id):
                 'user' : {
                     'id' : review.user.id,
                     'username': review.user.username
-                }
+                },
+                'menus': menus
             }
             reviews_data.append(review_data)
 
