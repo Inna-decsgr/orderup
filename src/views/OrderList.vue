@@ -7,16 +7,16 @@
       </div>
       <p class="font-bold mt-3 pl-8">배달·포장</p>
     </div>
-    <div v-if="orderlist.length > 0" class="px-3">
-      <div v-for="order in orderlist" :key="order.order_id" class="mb-3">
+    <div v-if="orderlist.length > 0" class="p-3 bg-gray-100">
+      <div v-for="order in orderlist" :key="order.order_id" class="p-3 mb-3 bg-white">
         <div>
-          <div class="flex justify-between items-center pt-1 pb-2">
-            <p class="font-bold text-sm text-violet-700">{{ getStatusMessage(order.status) }}</p>
-            <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)" class="font-bold text-sm border-1 border-violet-700 py-1 px-2 rounded-md text-violet-700">주문 취소</button>
-          </div>
-          <div v-if="order.review === true">
-            <p>후기 작성완료</p>
-            <button @click="gotoMyReview(order.restaurant)">후기 보러가기</button>
+          <div class="pt-1 pb-2">
+            <div class="flex justify-between items-center">
+              <div class="font-bold text-gray-400 text-xs">
+                <p>{{ formatUtcToKoreanDate(order.ordered_at) }} · {{ getStatusMessage(order.status) }}</p>
+              </div>
+              <button @click="gotodetailorder(order.order_id)" class="text-xs border py-1 px-2 rounded-xl font-bold">주문상세</button>
+            </div>
           </div>
           <p v-if="order.status === 'accepted'">
             <i class="fa-solid fa-fire-burner"></i>
@@ -26,41 +26,41 @@
           <div v-if="showDelivering[order.order_id]" class="popup">
             <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
-          <h5><strong>{{ order.restaurant.name }}</strong></h5>
-          <div v-for="item in order.items" :key="item.order_item_id">
-            <p>{{ item.menu.name }} {{ item.quantity }}개</p>
-          </div>
-          <br/>
-          <p>주문 일시: {{ formattedDate(order.ordered_at) }}</p>
-          <p>주문 번호: {{ generateOrderId(order.order_id) }}</p>
-
-          <div>
-            상세 내역
-            <div v-for="item in order.items" :key="item.order_item_id">
-              <strong>{{ item.menu.name }} {{ item.quantity }}개</strong>
-              <li>기본: {{ item.menu.price.toLocaleString() }}원</li>
-              <li v-for="option in item.options" :key="option.name">
-                {{ option.name}} ({{ option.price.toLocaleString() }}원)
-              </li>
+          <div class="flex items-center pb-3">
+            <img :src="order.restaurant.image_url" alt="가게 이미지" class="w-[100px] h-[100px] rounded-[38px] border">
+            <div class="pl-3">
+              <div class="flex items-center">
+                <p class="font-bold text-lg pr-2">{{ order.restaurant.name }}</p>
+                <button @click="detailstore({id:order.restaurant.id, name: order.restaurant.name})">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+              <div class="font-bold flex">
+                <p v-if="order.items.length > 0" class="pr-2 text-sm">
+                  {{ order.items[0].menu.name }} {{ order.items[0].quantity }}개 
+                </p>
+                <p>
+                  {{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)
+                  - Number(order.discount_amount)).toLocaleString() }}원
+                </p>
+              </div>
+              <p v-if="order.discount_amount > 0" class="border-1 border-violet-500 w-[90px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl"><span class="text-violet-700">{{ Number(order.discount_amount).toLocaleString()}}원</span> 할인</p>
+              <p v-if="order.review === true" class="border-1 border-violet-500 w-[110px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl">후기 작성완료</p>
             </div>
-            <p>{{ order.total_price.toLocaleString() }}원</p>
           </div>
-
-          <div>
-            <p><strong>결제 금액</strong></p>
-            <p>주문 금액 : {{ order.total_price.toLocaleString() }}원</p>
-            <p>배달비 {{ order.restaurant.deliveryfee }}원</p>
-            <p v-if="order.discount_amount">쿠폰 적용 : - {{ order.discount_amount }}원</p>
-            <p>
-              총 결제금액 
-              <span v-if="order.discount_amount" class="originalprice">{{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)).toLocaleString() }}원</span> {{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)
-              - Number(order.discount_amount)).toLocaleString() }}원
-            </p>
-            <p>결제방법 {{ order.payment_method }}</p>
-          </div>
-          <button v-if="order.review === false && order.status === 'delivered'" @click="gotoReview(order)">후기 작성하기</button>
+          <button v-if="order.status === 'delivered' && order.review === false" @click="gotoReview(order)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
+            리뷰쓰기
+          </button>
+          <button v-if="order.status === 'delivered' && order.review === true" @click="gotoMyReview(order.restaurant)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
+            리뷰 보러가기
+          </button>
+          <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
+            주문 취소
+          </button>
+          <button v-if="order.status === 'delivering'" @click="cancelorder(order.order_id)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
+            배달 현황 보기
+          </button>
         </div>
-        <hr />
       </div>
     </div>
     <div v-else class="text-center pt-[100px] px-[60px]">
@@ -68,17 +68,12 @@
       <p class="text-gray-500 text-sm pt-2">비회원 주문내역은 30일동안 확인 가능합니다. 오더업 회원 탈퇴하시면 비회원 주문내역을 확인할 수 있습니다.</p>
       <button @click="gotofilteredStore" class="bg-violet-400 w-[200px] p-2 text-white text-sm font-bold my-5 rounded-md">주문하러 가기</button>
     </div>
-    <div class="py-3 px-12">
-      <p class="font-bold">재주문 많은 가게를 추천해요</p>
-    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import {reactive} from 'vue'
-
-import { formatDate } from '../utils/dateutils';
 import RiderLocation from '../components/RiderLocation.vue'
 
 export default {
@@ -113,17 +108,17 @@ export default {
     getStatusMessage(status) {
       switch (status) {
         case 'pending':
-          return '주문이 완료되었어요';
+          return '주문완료';
         case 'accepted':
-          return '주문이 수락되었어요';
+          return '주문수락';
         case 'delivering':
-          return '배달원이 음식을 픽업하고 배달중이에요💨';
+          return '배달중';
         case 'delivered':
-          return '배달이 완료되었어요';
+          return '배달완료';
         case 'canceled':
-          return '주문이 취소되었어요';
+          return '주문취소';
         case 'rejected':
-          return '주문이 거절되었어요';
+          return '주문거절';
         default:
           return '상태 정보 없음';
       }
@@ -132,9 +127,6 @@ export default {
       // 주문 아이디를 12자리로 포맷, 앞에 0을 채우고 접두사 'T1VI' 추가
       const paddedId = orderid.toString().padStart(8, '0'); // 숫자를 문자열로 바꾸고 12자리로 패딩
       return `T1VI${paddedId}`;
-    },
-    formattedDate(date) {
-      return formatDate(date);
     },
     async cancelorder(orderid) {
       const isConfirmed = window.confirm('주문을 취소하시겠습니까?');
@@ -188,6 +180,35 @@ export default {
     },
     gotohome() {
       this.$router.push('/')
+    },
+    formatUtcToKoreanDate(time) {
+      // UTC 시간을 Date 객체로 변환
+      const utcDate = new Date(time);
+
+      // 한국 시간(KST, UTC+9)으로 변환
+      const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+
+      // 날짜 포맷 (월.일)
+      let monthDay = kstDate.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+
+       // 혹시라도 점(.)이 포함되었으면 제거
+      monthDay = monthDay.replace(/\.$/, '');
+
+      // 요일 가져오기 (토, 일, 월...)
+      const weekday = kstDate.toLocaleDateString('ko-KR', { weekday: 'short' });
+
+      return `${monthDay} (${weekday})`;
+    },
+    detailstore(store) {
+      console.log('33333', store);
+      this.$router.push('/detailstore'),
+      this.$store.commit('setStore', store);
+    },
+    gotodetailorder(orderid) {
+      this.$router.push({
+        name: 'detailorder',
+        params: { orderid: orderid }
+      });
     }
   }
 }
