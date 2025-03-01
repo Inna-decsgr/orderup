@@ -60,18 +60,18 @@
             </div>
             <div class="flex justify-between font-bold">
               <p class="text-sm mt-2">총 금액</p>
-              <p> {{ (Number(this.deliveryfee || store.delivery_fee) + Number(this.totalCartPrice)).toLocaleString()}}원</p>
+              <p> {{ Number(this.totalCartPrice).toLocaleString()}}원</p>
             </div>
             <div class="flex justify-between text-xs text-gray-400 font-bold mt-2">
-              <p>메뉴 금액</p>
+              <p>주문금액</p>
               <p>{{ Number(this.totalCartPrice).toLocaleString()}}원</p>
             </div>
             <div class="flex justify-between border-b text-xs text-gray-400 font-bold mt-2 pb-2">
-              <p>배달비</p>
+              <p>배달팁</p>
               <p>{{ this.deliveryfee.toLocaleString() }}원</p>
             </div>
             <div v-if="this.showDiscount" class="flex justify-between text-xs text-gray-400 font-bold mt-2">
-              <p>쿠폰 적용</p>
+              <p>할인쿠폰</p>
               <p>- {{ Number(this.discount).toLocaleString() }}원</p>
             </div>
             <div class="flex justify-between text-sm pt-2 font-bold">
