@@ -37,7 +37,7 @@
           >
       </div>
       <div>
-        <label for="menuimage" class="font-bold mr-2 text-sm w-[100px] text-center">가게 이미지</label>
+        <label for="menuimage" class="font-bold mr-2 text-sm w-[100px] text-center">메뉴 사진</label>
         <input 
           type="file" 
           id="menuimage" 

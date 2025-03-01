@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex justify-between items-center pb-4">
+    <div class="flex justify-between items-center py-3">
       <p class="font-bold">기본 정보 수정</p>
       <div>
         <button @click="updateStore" class="bg-violet-500 text-white py-1 px-2 text-xs rounded-sm">완료</button>

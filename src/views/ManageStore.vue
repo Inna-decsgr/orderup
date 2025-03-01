@@ -11,13 +11,12 @@
       <button @click="cancelstore" class="bg-violet-500 text-white text-sm py-1 px-2 rounded-sm">취소</button>
     </div>
     <div v-if="!deletestore">
-      <div v-if="!deletestore" class="text-sm my-4">
+      <div v-if="!deletestore" class="text-sm mb-3">
         <button @click="editMode" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : editmode}">가게 정보 수정</button>
         <button @click="gotoMenu({id: store.id, name: store.name})" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showmenu}">메뉴 관리</button>
         <button @click="gotoReview" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showreview}">리뷰 관리</button>
         <div class="inline-block">
-          <button @click="showNewOrder" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showorder}">주문 관리</button>
-          <span v-if="ordercount[store.id] !== undefined && ordercount[store.id]" class="pl-2">{{ ordercount[store.id] }}</span>
+          <button @click="showNewOrder" class="p-2 border-b-[2px] mr-3" :class="{'font-bold border-black' : showorder}">주문 관리 <span v-if="ordercount[store.id] !== undefined && ordercount[store.id]" class="bg-violet-500 font-bold text-white text-center rounded-full py-[3px] px-[8px] text-xs">{{ ordercount[store.id] }}</span></button>
         </div>
       </div>
       <div v-if="editmode">

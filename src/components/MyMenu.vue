@@ -18,10 +18,10 @@
               <p class="text-xs py-1">{{ menu.description }}</p>
               <p class="text-xs font-bold">{{menu.price.toLocaleString() }}원</p>
               <div v-for="optionGroup in menu.option_groups" :key="optionGroup.group_name">
-                <p>{{ optionGroup.group_name }}</p>
-                <ul>
+                <p class="mt-3 mb-1 text-xs text-gray-500">{{ optionGroup.group_name }}</p>
+                <ul class="text-xs">
                   <li v-for="item in optionGroup.items" :key="item.name">
-                    {{ item.name }} - {{ Math.floor(item.price) }}
+                    {{ item.name }} - {{ item.price.toLocaleString() }}원
                   </li>
                 </ul>
               </div>
