@@ -19,6 +19,8 @@ import FilteredStore from '../views/FilteredStore.vue'
 import AllMyReviews from '../views/AllMyReviews.vue'
 import AllMyCoupons from '../views/AllMyCoupons.vue'
 import AllMyStores from '../views/AllMyStores.vue'
+import DetailOrder from '../views/DetailOrder.vue'
+
 
 
 const routes = [
@@ -123,6 +125,11 @@ const routes = [
     path: '/allmycoupons',
     name: 'AllMyCoupons',
     component: AllMyCoupons
+  },
+  {
+    path: '/detailorder/:orderid',
+    name: 'DetailOrder',
+    component: DetailOrder
   },
 ]
 
