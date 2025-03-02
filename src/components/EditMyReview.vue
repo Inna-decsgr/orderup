@@ -1,43 +1,50 @@
 <template>
-  <div>
+  <div class="px-4 py-3">
+    <div class="flex items-center">
+      <button @click="cancel"><i class="fa-solid fa-x pr-3 text-xs pb-1"></i></button>
+      <p class="font-bold pl-[170px]">평가 및 리뷰 작성</p>
+    </div>
     <form>
+      <div class="my-2">
+        <p class="font-bold">{{ store.name }}</p>
+        <div class="stars">
+          <i
+            v-for="star in 5"
+            :key="star" 
+            class="fa fa-star"
+            :class="{'active': star <= localReviews[0].rating}"
+            @click="updateRating(star)"
+          ></i>
+          <span v-if="currentRating !== 0" class="ratingscore font-bold text-xs">{{ currentRating }}</span>
+        </div>
+      </div>
       <div>
-        <label for="reviewcontent">리뷰 내용</label><br/>
         <textarea
           id="reviewcontent"
           v-model="localReviews[0].content"
           required
-          rows="5"
+          rows="4"
           cols="40"
+          class="border-2 border-gray-300 p-3 text-sm font-bold"
         ></textarea>
       </div>
-      <div>
-        <label for="reviewimage">리뷰 사진</label>
-        <div v-if="imagePreview">
-          <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
-        </div>
+      <div class="flex">
         <input 
           type="file"
           id="reviewimage"
           @change="handleImageEdit"
+          class="hidden"
         />
-      </div>
-      <div>
-        <label for="reviewrating">리뷰 평점</label>
-        <div class="stars">
-            <i
-              v-for="star in 5"
-              :key="star" 
-              class="fa fa-star"
-              :class="{'active': star <= localReviews[0].rating}"
-              @click="updateRating(star)"
-            ></i>
-            <span v-if="currentRating !== 0" class="ratingscore">{{ currentRating }}</span>
-          </div>
+        <label for="reviewimage" class="cursor-pointer text-center flex flex-col justify-center border p-2 text-xs font-bold mr-2">
+          <i class="fas fa-camera text-xl text-gray-600"></i>
+          <p>사진 추가</p>
+        </label>
+        <div v-if="imagePreview">
+          <img :src="imagePreview" alt="이미지 미리보기" class="w-[100px]">
+        </div>
       </div>
     </form>
-    <button type="submit" @click="editReview(localReviews[0].id)">완료</button>
-    <button @click="cancel">취소</button>
+    <button type="submit" @click="editReview(localReviews[0].id)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">수정하기</button>
   </div>
 </template>
 
@@ -63,6 +70,11 @@ export default {
       currentRating: this.reviews[0]?.rating || null
     };
   },
+  computed: {
+    store() {
+      return this.$store.getters.getStore;
+    }
+  }, 
   methods: {
     handleImageEdit(event) {
       const file = event.target.files[0];
