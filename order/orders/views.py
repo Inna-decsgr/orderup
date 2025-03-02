@@ -1140,20 +1140,37 @@ def get_my_review(request):
     # Review 테이블에서 조건에 맞는 리뷰 가져오기
     reviews = Review.objects.filter(user_id=userid, store_id=storeid).select_related('user')
 
-    # 필요한 데이터 추출
-    review_list = [
-        {
-            'id': review.id,
-            'content': review.content,
-            'rating': review.rating,
-            'username': review.user.username,
-            'date': review.date,
-            'image_url': review.image_url
-        }
-        for review in reviews
-    ]
+    review_list = []
+    for review in reviews:
+        # 주문 정보 가져오기 (리뷰와 연결된 주문)
+        order = review.order
 
-    return JsonResponse({'reviews': review_list})
+        # 주문한 메뉴 가져오기 (OrderItem에서 조회)
+        order_items = OrderItem.objects.filter(order=order).select_related('menu')
+
+        # 메뉴 리스트 만들기
+        items_data = [
+            {
+                "menu_id": item.menu.id,
+                "menu_name": item.menu.name,
+                "quantity": item.quantity,
+                "price": float(item.menu.price),
+            }
+            for item in order_items
+        ]
+
+        review_list.append({
+            "id": review.id,
+            "content": review.content,
+            "rating": review.rating,
+            "username": review.user.username,
+            "date": review.date.strftime("%Y-%m-%d %H:%M:%S"),  # 날짜 포맷
+            "image_url": review.image_url,
+            "order_id": order.id if order else None,  # 주문 ID 추가
+            "items": items_data,  # 주문한 메뉴 추가
+        })
+
+    return JsonResponse({"reviews": review_list})
 
 
 # 리뷰 수정하는 뷰 함수
