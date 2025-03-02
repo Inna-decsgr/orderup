@@ -22,7 +22,6 @@
             <i class="fa-solid fa-fire-burner"></i>
             음식을 맛있게 조리하고 있습니다
           </p>
-          <button v-if="order.status === 'delivering'" @click="showLocation(order.order_id)">배달 현황보기</button>
           <div v-if="showDelivering[order.order_id]" class="popup">
             <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
@@ -37,9 +36,9 @@
               </div>
               <div class="font-bold flex">
                 <p v-if="order.items.length > 0" class="pr-2 text-sm">
-                  {{ order.items[0].menu.name }} {{ order.items[0].quantity }}개 
+                  {{ order.items[0].menu.name }} {{ order.items.length > 1 ? `외 ${order.items.length - 1}개` : `${order.items[0].quantity}개` }}
                 </p>
-                <p>
+                <p class="text-sm">
                   {{ (Number(order.total_price) + Number(order.restaurant.deliveryfee)
                   - Number(order.discount_amount)).toLocaleString() }}원
                 </p>
@@ -57,7 +56,7 @@
           <button v-if="order.status === 'pending'" @click="cancelorder(order.order_id)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
             주문 취소
           </button>
-          <button v-if="order.status === 'delivering'" @click="cancelorder(order.order_id)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
+          <button v-if="order.status === 'delivering'" @click="showLocation(order.order_id)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
             배달 현황 보기
           </button>
         </div>
@@ -200,14 +199,15 @@ export default {
       return `${monthDay} (${weekday})`;
     },
     detailstore(store) {
-      console.log('33333', store);
       this.$router.push('/detailstore'),
       this.$store.commit('setStore', store);
     },
     gotodetailorder(orderid) {
       this.$router.push({
-        name: 'detailorder',
-        params: { orderid: orderid }
+        name: 'DetailOrder',
+        params: {
+          orderid: orderid,
+        }
       });
     }
   }
