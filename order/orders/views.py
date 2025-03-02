@@ -1455,3 +1455,66 @@ def get_all_menus(request, keyword):
     ]
 
     return Response(menu_data, status=status.HTTP_200_OK)
+
+
+
+
+# 주문 상세 데이터 불러오기
+@api_view(['GET'])
+def get_order_detail(request, orderid):
+    try:
+        # orderid에 해당하는 주문 가져오기
+        order = Order.objects.get(id=orderid)
+        
+        # 가게 정보 가져오기
+        restaurant = order.restaurant
+        delivery_fee = float(restaurant.delivery_fee)
+
+        # 주문한 메뉴 정보 가져오기
+        order_items = OrderItem.objects.filter(order=order)
+
+        # 주문한 메뉴 리스트 만들기
+        items_data = []
+        for item in order_items:
+            # 해당 주문 아이템의 옵션 가져오기
+            options = OrderItemOption.objects.filter(order_item=item)
+            options_data = [
+                {"name": option.name, "price": float(option.price)}
+                for option in options
+            ]
+
+            items_data.append({
+                "menu_id": item.menu.id,
+                "menu_name": item.menu.name,
+                "quantity": item.quantity,
+                'price': item.menu.price,
+                "options": options_data,  # 옵션 추가
+            })
+
+        # 주문 데이터를 딕셔너리 형태로 변환해서 반환
+        order_data = {
+            "id": order.id,
+            "user": order.user.id,  # User 모델의 ID
+            "restaurant": {
+                "id": restaurant.id,
+                "name": restaurant.name,
+                "delivery_fee": delivery_fee  # 배달료 추가
+            },
+            "ordered_at": order.ordered_at.strftime("%Y-%m-%d %H:%M:%S"),  # 날짜 포맷팅
+            "status": order.status,
+            "total_price": float(order.total_price),  # Decimal을 float으로 변환
+            "payment_method": order.payment_method,
+            "payment_details": order.payment_details,  # JSONField는 그대로 반환 가능
+            "review": order.review,
+            "user_coupon": order.user_coupon.id if order.user_coupon else None,  # ForeignKey 값 확인
+            "discount_amount": float(order.discount_amount) if order.discount_amount else 0.0,
+            "final_price": float(order.final_price) if order.final_price else 0.0,
+            "items": items_data,  # 주문한 메뉴 정보 추가
+        }
+
+        return Response(order_data, status=status.HTTP_200_OK)
+    
+    except Order.DoesNotExist:
+        return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
