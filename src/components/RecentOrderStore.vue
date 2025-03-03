@@ -9,12 +9,12 @@
               <img :src="store.restaurant.image_url" alt="가게 이미지" class="w-full h-[160px] border rounded-md">
             </div>
             <div class="p-2 text-xs">
-              <p class="font-bold pb-1">
+              <p class="font-bold pb-[1px]">
                 <span class="font-bold">{{ store.restaurant.name }}</span>
                 <span> ⭐{{ store.restaurant.rating }}</span>
               </p>
-              <p v-if="store.count > 1" class="font-bold my-[2px]">{{ store.count }}번 이상 주문했어요😊</p>
-              <p>배달팁 {{ store.restaurant.deliveryfee.toLocaleString() }}원</p>
+              <p class="pb-[5px]">배달팁 {{ store.restaurant.deliveryfee.toLocaleString() }}원</p>
+              <p v-if="store.count > 1" class="font-bold">{{ store.count }}번 이상 주문했어요😊</p>
             </div>
           </div>
         </div>
