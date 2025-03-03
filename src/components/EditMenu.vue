@@ -1,45 +1,49 @@
 <template>
   <div>
-    <h2>메뉴 수정</h2>
-    <div v-if="menu">
+    <div v-if="menu" class="relative p-3 text-sm border mt-3 rounded-sm">
       <form @submit.prevent="updateMenu" class="form-label">
-        <label for="menuname">메뉴명</label>
+        <label for="menuname" class="font-bold pb-1">메뉴명</label>
         <input 
           type="text" 
           id="menuname" 
           v-model="form.name"
-          class="form-control"
+          class="border block py-1 px-2 w-[400px] rounded-sm mb-3"
           required 
         />
-        <label for="description" class="form-label">메뉴 설명</label>
-        <input 
-          type="text" 
+        <label for="description" class="font-bold pb-1">메뉴 설명</label>
+        <textarea
           id="description" 
           v-model="form.description" 
-          class="form-control"
+          class="border block py-1 px-2 w-[400px] rounded-sm mb-3"
           required 
-        />
-        <label for="price" class="form-label">가격</label>
+        ></textarea>
+        <label for="price" class="font-bold pb-1">가격</label>
         <input 
           type="number" 
           id="price" 
           v-model="form.price" 
-          class="form-control"
+          class="border block py-1 px-2 w-[400px] rounded-sm mb-3"
           required 
         />
-        <div>
-          <label for="menuimage">메뉴 이미지</label>
+        <div class="mb-2">
+          <label for="menuimage" class="font-bold pb-1">대표 이미지</label><br/>
           <input
             type="file"
             id="menuimage"
             @change="handleImageUpload"
+            class="hidden"
           />
+          <label for="menuimage" class="cursor-pointer inline-block py-1 px-2 bg-gray-200 rounded-full">
+            <i class="fa-solid fa-camera"></i>
+          </label>
           <div v-if="imagePreview">
-            <img :src="imagePreview" alt="이미지 미리보기" style="width:300px; height:200px;">
+            <img :src="imagePreview" alt="이미지 미리보기" class="w-[300px] h-[200px] mt-2">
           </div>
         </div>
-        <button @click="editMenu">저장</button>
-        <button @click="canceledit">취소</button>
+        <div class="absolute bottom-3 right-3">
+          <button @click="editMenu" class="bg-violet-500 text-white py-1 px-2 rounded-md text-sm font-bold mr-2 hover:bg-violet-600">저장</button>
+          <button @click="canceledit" class="bg-violet-500 text-white py-1 px-2 rounded-md text-sm font-bold hover:bg-violet-600">취소</button>
+        </div>
       </form>
     </div>
   </div>
