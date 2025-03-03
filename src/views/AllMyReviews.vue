@@ -1,26 +1,33 @@
 <template>
   <div>
-    리뷰 관리
-    내가 쓴 총 리뷰 -개
     <div>
+      <div class="flex items-center">
+        <i class="fa-solid fa-arrow-left pr-4 cursor-pointer" @click="this.$router.push('/myorderup')"></i>
+        <p class="font-bold text-lg">리뷰관리</p>
+      </div>
+    </div>
+    <div class="p-3">
+      <p class="font-bold pb-2 border-b mb-2">내가 쓴 총 리뷰 {{userreviews.length}}개</p>
       <div v-for="review in userreviews" :key="review.id">
         <p><strong>{{ review.store.store_name }}</strong></p>
-        <button @click="gotoMyReview(review.store)">후기 보러가기</button>
-        <div class="star-rating">
-          <div class="stars">
-            <i
-              v-for="star in 5"
-              :key="star" 
-              class="fa fa-star"
-              :class="{'active': star <= review.rating}"
-            ></i><span v-if="review.rating !== 0" class="ratingscore">{{ review.rating }}</span>
+        <div class="flex text-sm items-center py-2">
+          <div class="star-rating">
+            <div class="stars">
+              <i
+                v-for="star in 5"
+                :key="star" 
+                class="fa fa-star"
+                :class="{'active': star <= review.rating}"
+              ></i>
+            </div>
           </div>
+          <span class="text-gray-400 pl-2">{{ formatRelativeDate(review.date) }}</span>
         </div>
-        <p>{{review.date}}</p>
-        <p>{{ review.content }}</p>
-        <div v-if="review.image_url">
-          <img :src="review.image_url" alt="가게 이미지" style="width: 200px; height: 200px;">
+        <p class="text-sm font-bold">{{ review.content }}</p>
+        <div v-if="review.image_url" class="py-2">
+          <img :src="review.image_url" alt="가게 이미지" class="w-[200px] h-[200px] rounded-lg">
         </div>
+        <button @click="gotoMyReview(review.store)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">후기 보러가기</button>
       </div>
     </div>
   </div>
@@ -56,6 +63,35 @@ export default {
     gotoMyReview(store) {
       this.$router.push('/myreview');
       this.$store.commit('setStore', store)
+    },
+    formatRelativeDate(dateString) {
+      if (!dateString) return "날짜 없음"; // 예외 처리
+
+      const date = new Date(dateString); // 주어진 날짜
+      const today = new Date(); // 현재 날짜
+
+      // 날짜 부분만 비교하기 위해 연, 월, 일을 추출
+      const dateYear = date.getFullYear();
+      const dateMonth = date.getMonth();
+      const dateDay = date.getDate();
+
+      const todayYear = today.getFullYear();
+      const todayMonth = today.getMonth();
+      const todayDay = today.getDate();
+
+      // 오늘이면 "오늘"
+      if (dateYear === todayYear && dateMonth === todayMonth && dateDay === todayDay) {
+        return "오늘";
+      }
+
+      // 어제이면 "어제"
+      today.setDate(todayDay - 1); // 어제 날짜 계산
+      if (dateYear === today.getFullYear() && dateMonth === today.getMonth() && dateDay === today.getDate()) {
+        return "어제";
+      }
+
+      // 그 외에는 YYYY-MM-DD 형식으로 표시
+      return `${dateYear}/${String(dateMonth + 1).padStart(2, "0")}/${String(dateDay).padStart(2, "0")}`;
     }
   }
 }
