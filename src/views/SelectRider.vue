@@ -1,13 +1,17 @@
 <template>
-  <div>
-    <h5><strong>배달 지정된 라이더</strong></h5>
-    <div v-for="rider in riders" :key="rider.id">
-      <p>{{ rider.name }}</p>
-      <p>{{ rider.phone_number }}</p>
+  <div class="bg-black opacity-85 p-3 text-white">
+    <p class="font-bold text-xl">라이더가 지정되었어요</p>
+    <div v-for="rider in riders" :key="rider.id" class="">
+      <p class="bg-violet-500 w-[80px] text-center py-1 px-2 text-sm rounded-sm mt-2 font-bold">한집배달</p>
+      <p class="font-bold pt-3">배정된 라이더 정보</p>
+      <div class="flex items-center my-3">
+        <p class="font-bold bg-white w-[70px] h-[70px] rounded-full flex flex-col justify-center text-center mr-3 text-black">{{ rider.name }}</p>
+        <p class="font-bold">{{ rider.phone_number }}</p>
+      </div>
       <div v-if="order.status === 'delivering'">
         <p>음식 배달중입니다<i class="fa-solid fa-bicycle"></i>💨</p>
       </div>
-      <button @click="foodPickUp">
+      <button @click="foodPickUp" class="bg-violet-500 w-full p-2 font-bold rounded-sm">
         {{ order.status === 'delivering' ? '배달완료' : '배달 픽업 완료' }}
       </button>
     </div>
