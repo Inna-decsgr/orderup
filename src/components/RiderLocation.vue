@@ -1,7 +1,11 @@
 <template>
   <div class="popup-content">
-    <span>{{ isDelivering ? '배달 중' : '배달 완료' }}</span>
-    <button @click="handleCancel">x</button>
+    <div class="flex items-center mb-3">
+      <button @click="handleCancel" class="w-[40px] h-[40px] bg-white shadow-xl   rounded-full mr-3">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+      <span class="font-bold">{{ isDelivering ? '주문하신 곳으로 가고 있어요' : '배달 완료' }}</span>
+    </div>
     <div>
       <div id="map" style="width:100%; height:500px"></div>
     </div>
