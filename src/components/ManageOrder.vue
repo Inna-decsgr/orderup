@@ -12,8 +12,11 @@
           </div>
           <div v-if="orderitem.status === 'accepted'" class="flex justify-between items-center bg-black text-white p-3">
             <p class="font-bold text-lg">음식 조리 중</p>
-            <button @click="gotoSelectRider({ order_id: orderitem.order_id, status: orderitem.status })" class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
+            <button v-if="iscooking === false" @click="setcooked" class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
             조리 완료
+            </button>
+            <button v-if="iscooking === true" @click="gotoSelectRider({ order_id: orderitem.order_id, status: orderitem.status })" class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
+            라이더 배정
             </button>
           </div>
           <div v-if="orderitem.status === 'canceled'" class="flex justify-between items-center bg-black text-white p-3">
@@ -103,7 +106,8 @@ export default {
   },
   data() {
     return {
-      orders: []
+      orders: [],
+      iscooking: false,
     }
   },
   mounted() {
@@ -183,6 +187,9 @@ export default {
       const unique_code = prefix + formattedNumber
 
       return unique_code
+    },
+    setcooked() {
+      this.iscooking = true
     }
   }
 
