@@ -18,10 +18,6 @@
               <button @click="gotodetailorder(order.order_id)" class="text-xs border py-1 px-2 rounded-xl font-bold">주문상세</button>
             </div>
           </div>
-          <p v-if="order.status === 'accepted'">
-            <i class="fa-solid fa-fire-burner"></i>
-            음식을 맛있게 조리하고 있습니다
-          </p>
           <div v-if="showDelivering[order.order_id]" class="popup">
             <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
@@ -43,7 +39,7 @@
                   - Number(order.discount_amount)).toLocaleString() }}원
                 </p>
               </div>
-              <p v-if="order.discount_amount > 0" class="border-1 border-violet-500 w-[90px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl"><span class="text-violet-700">{{ Number(order.discount_amount).toLocaleString()}}원</span> 할인</p>
+              <p v-if="order.discount_amount > 0" class="border-1 border-violet-500 w-[90px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl mt-1"><span class="text-violet-700">{{ Number(order.discount_amount).toLocaleString()}}원</span> 할인</p>
               <p v-if="order.review === true" class="border-1 border-violet-500 w-[110px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl">후기 작성완료</p>
             </div>
           </div>
