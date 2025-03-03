@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="flex items-center px-4 pt-4 bg-white">
-      <button @click="this.$router.push('/orderlist')"><i class="fa-solid fa-arrow-left mr-3"></i></button>
       <p class="text-lg font-bold">내가 남긴 리뷰</p>
     </div>
     <div v-if="!isEditReview" class="p-4">

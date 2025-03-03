@@ -1,7 +1,7 @@
 <template>
   <div class="p-4">
     <div class="mb-2">
-      <div>
+      <div v-if="user.owner_id">
         <div class="flex justify-between items-center">
           <p class="text-xl font-bold cursor-pointer pb-2" @click="gomystores">오더업<i class="fa-solid fa-store"></i>사장님광장</p>
         </div>
