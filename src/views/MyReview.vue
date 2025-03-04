@@ -35,7 +35,7 @@
         </div>
         <div class="flex flex-wrap gap-2 pt-3">
           <p v-for="menu in review.items" :key="menu.id" class="text-sm border inline-block py-1 px-2 rounded-2xl font-bold">
-            {{ menu.menu_name }}
+            {{ menu.menu_name }} 👍🏻
           </p>
         </div>
       </div>

@@ -153,10 +153,10 @@ export default {
     async handleConfirm(orderid) {
       console.log('확인 버튼 클릭됨! orderlist에서 처리')
       const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
-        const csrfToken = csrfResponse.data.csrfToken;
+      const csrfToken = csrfResponse.data.csrfToken;
         
-        console.log(orderid);
-        const response = await axios.put(`http://localhost:8000/order/completedelivery/${orderid}/`, null, {
+      console.log(orderid);
+      const response = await axios.put(`http://localhost:8000/order/completedelivery/${orderid}/`, null, {
           headers: {
             'X-CSRFToken': csrfToken,
           }
