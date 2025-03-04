@@ -24,11 +24,14 @@
           </div>
           <div v-if="orderitem.status === 'delivering'" class="flex justify-between items-center bg-black text-white p-3">
             <p class="font-bold text-lg">라이더가 배달중입니다💨</p>
+            <button @click="setdelivered(orderitem.order_id)" class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
+            배달 완료 처리
+            </button>
           </div>
           <div v-if="orderitem.status === 'delivered'" class="flex justify-between items-center bg-black text-white p-3">
             <p class="font-bold text-lg">라이더가 배달을 완료했습니다🛵</p>
-            <button @click="gotoSelectRider({ order_id: orderitem.order_id, status: orderitem.status })" class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
-            배달 완료 처리
+            <button class="bg-blue-500 font-bold text-white py-2 px-4 rounded-[18px] mr-3 hover:bg-blue-600">
+            배달 완료
             </button>
           </div>
           <div v-if="orderitem.status === 'rejected'" class="flex justify-between items-center bg-black text-white p-3">
@@ -108,6 +111,7 @@ export default {
     return {
       orders: [],
       iscooking: false,
+      message: null
     }
   },
   mounted() {
@@ -144,7 +148,7 @@ export default {
       if (isConfirmed) {
         const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
         const csrfToken = csrfResponse.data.csrfToken;
-        
+
         console.log(orderid);
         const response = await axios.put(`http://localhost:8000/order/${orderType}order/${orderid}/`, null, {
           headers: {
@@ -174,14 +178,14 @@ export default {
       const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul' };
       const kstTime = utcDate.toLocaleTimeString('ko-KR', options);
 
-      return kstTime; 
+      return kstTime;
     },
     generatecode(number) {
       // 공통된 문자열을 기반으로 랜덤한 코드 리스트 생성
       const prefix = 'WEKRIUV'
 
       // 한 자리 숫자일 경우 앞에 0을 붙이기
-      const formattedNumber = String(number).padStart(2, '0'); 
+      const formattedNumber = String(number).padStart(2, '0');
 
       // 최종 코드 생성
       const unique_code = prefix + formattedNumber
@@ -190,8 +194,28 @@ export default {
     },
     setcooked() {
       this.iscooking = true
+    },
+    async setdelivered(orderid) {
+      const confirmed = confirm('배달 완료 처리하시겠습니까?');
+
+      if (confirmed) {
+        try {
+          const csrfResponse = await axios.get("http://localhost:8000/order/csrftoken/");
+          const csrfToken = csrfResponse.data.csrfToken;
+
+          const response = await axios.put(`http://localhost:8000/order/completedelivery/${orderid}/`, null, {
+            headers: {
+              'X-CSRFToken': csrfToken,
+            }
+          });
+          console.log('배달 완료 처리', response.data);
+          this.message = response.data.message
+        } catch (error) {
+          console.error('배달 완료 처리 중 오류 발생:', error);
+          alert('배달 완료 처리에 실패했습니다.');
+        }
+      }
     }
   }
-
 }
 </script>
