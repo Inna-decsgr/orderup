@@ -6,7 +6,7 @@
         <p class="font-bold text-lg">리뷰관리</p>
       </div>
     </div>
-    <div class="p-3">
+    <div v-if="userreviews.length > 0" class="p-3">
       <p class="font-bold pb-2 border-b mb-2">내가 쓴 총 리뷰 {{userreviews.length}}개</p>
       <div v-for="review in userreviews" :key="review.id">
         <p><strong>{{ review.store.store_name }}</strong></p>
@@ -30,6 +30,12 @@
         <button @click="gotoMyReview(review.store)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">후기 보러가기</button>
       </div>
     </div>
+    <div v-if="count > 0" class="bg-gray-100 p-3 text-sm font-bold text-center mt-5 rounded-md">
+      <p>아직 작성하지 않은 리뷰가 {{ count }}개 있습니다.</p>
+      <button @click="this.$router.push('/orderlist')" class="bg-violet-500 text-white w-full p-2 mt-3">리뷰 쓰러가기</button>
+    </div>
+    <div>
+    </div>
   </div>
 </template>
 
@@ -39,7 +45,10 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      userreviews: []
+      userreviews: [],
+      orderlist: [],
+      filteredorders: [],
+      count: 0
     }
   },
   computed: {
@@ -49,6 +58,7 @@ export default {
   },
   mounted() {
     this.getAllReviews();
+    this.getOrderList();
   },
   methods: {
     async getAllReviews() {
@@ -92,7 +102,15 @@ export default {
 
       // 그 외에는 YYYY-MM-DD 형식으로 표시
       return `${dateYear}/${String(dateMonth + 1).padStart(2, "0")}/${String(dateDay).padStart(2, "0")}`;
-    }
+    },
+    async getOrderList() {
+      const orders = await axios.get(`http://localhost:8000/order/getorderlist/${this.user.id}`);
+      this.orderlist = orders.data.sort((a, b) => new Date(b.ordered_at) - new Date(a.ordered_at));
+      this.filteredorders = this.orderlist.filter(order => order.status === 'delivered' && !order.review)
+      this.count = this.filteredorders.length;
+      console.log('리뷰 남겨야하는 주문들', this.filteredorders);
+      console.log('주문 내역들', this.orderlist);
+    },
   }
 }
 </script>
