@@ -1,32 +1,35 @@
 <template>
-  <div>
-    <h4>리뷰쓰기</h4>
+  <div class="p-4">
+    <p class="font-bold text-lg">평가 및 리뷰 작성</p>
     <div>
-      <p><strong>{{ order.restaurant.name }}</strong></p>
+      <p class="font-bold mt-3">{{ order.restaurant.name }}</p>
       <div class="star-rating">
         <div class="stars">
           <i
             v-for="star in 5" 
             :key="star" 
-            class="fa fa-star"
+            class="fa fa-star mt-2 mb-4"
             :class="{'active': isFullStar(star) || (hoveredStar >= star)}"
             @mouseover="hoverRating(star)"
             @mouseleave="clearHover"
             @click="setRating(star)"
-          ></i><span v-if="rating !== 0">{{ rating }}</span>
+          ></i>
         </div>
         
       </div>
-      <div>
-        <button @click="showFileInput = !showFileInput">사진 첨부하기</button>
+      <div class="flex mb-4">
         <input 
-          v-if="showFileInput"
           type="file"
-          accept="image/*"
+          id="reviewimage"
           @change="handleFileUpload"
-        >
-        <div v-if="this.imagePreview">
-          <img :src="this.imagePreview" alt="이미지 미리보기" style="width:300px; height:200px">
+          class="hidden"
+        />
+        <label for="reviewimage" class="cursor-pointer text-center flex flex-col justify-center border p-2 text-xs font-bold mr-2" @click="showFileInput = !showFileInput">
+          <i class="fas fa-camera text-xl text-gray-600"></i>
+          <p>사진 추가</p>
+        </label>
+        <div v-if="imagePreview">
+          <img :src="imagePreview" alt="이미지 미리보기" class="w-[100px]">
         </div>
       </div>
       <div>
@@ -35,10 +38,10 @@
           placeholder="음식의 맛, 양, 포장 상태 등 음식에 대한 솔직한 리뷰를 남겨주세요.(선택사항)"
           rows="4"
           cols="50"
-          style="resize: vertical;"
+          class="border text-sm p-2 rounded-md outline-none"
         ></textarea>
       </div>
-      <button @click="submitReview">완료</button>
+      <button @click="submitReview" class="font-bold bg-violet-500 text-white w-full py-1 px-2 rounded-sm mt-5 text-sm">완료</button>
     </div>
   </div>
 </template>
@@ -154,16 +157,14 @@ body {
   width: 250px;
   text-align: center;
   border-radius: 5px;
-  padding: 5px;
 }
 
 .stars {
   display: flex;
-  justify-content: center;
 }
 
 .stars .fa {
-  font-size: 30px;
+  font-size: 20px;
   color: #ccc; /* 기본 별 색상 */
   cursor: pointer;
 }
