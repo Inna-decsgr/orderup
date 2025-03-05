@@ -10,7 +10,7 @@
           <i class="fa-solid fa-cart-shopping"></i>
         </button>
       </div>
-      <p class="font-bold text-sm">{{ user.address }}</p>
+      <p v-if="user" class="font-bold text-sm">{{ user.address }}</p>
       <div class="my-3">
         <swiper slides-per-view="5" class="my-swiper">
           <swiper-slide 

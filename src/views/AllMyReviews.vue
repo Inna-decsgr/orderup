@@ -2,8 +2,7 @@
   <div>
     <div>
       <div class="flex items-center">
-        <i class="fa-solid fa-arrow-left pr-4 cursor-pointer" @click="this.$router.push('/myorderup')"></i>
-        <p class="font-bold text-lg">리뷰관리</p>
+        <p class="font-bold text-lg mt-2">리뷰관리</p>
       </div>
     </div>
     <div v-if="userreviews.length > 0" class="p-3">
@@ -29,6 +28,9 @@
         </div>
         <button @click="gotoMyReview(review.store)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">후기 보러가기</button>
       </div>
+    </div>
+    <div v-else>
+      <p class="font-bold text-sm pt-4">아직 작성된 리뷰가 없습니다.</p>
     </div>
     <div v-if="count > 0" class="bg-gray-100 p-3 text-sm font-bold text-center mt-5 rounded-md">
       <p>아직 작성하지 않은 리뷰가 {{ count }}개 있습니다.</p>

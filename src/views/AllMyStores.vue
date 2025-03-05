@@ -2,11 +2,11 @@
   <div>
     <div class="w-[430px] mx-auto">
       <ul v-if="storedata" class="space-y-12">
-        <li v-for="(store, index) in storedata" :key="index" class="relactive border rounded-md pb-[100px]">
+        <li v-for="(store, index) in storedata" :key="index" class="relactive border rounded-md pb-[110px]">
           <div class="text-sm">
             <div class="relative items-center mb-10">
               <img :src="imageSrc(store.image_url)" alt="가게 이미지" class="w-full h-auto aspect-[4/3] object-cover rounded-md">
-              <div class="absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] rounded-md bg-white text-center shadow-lg p-4">
+              <div class="absolute top-[90%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[320px] rounded-md bg-white text-center shadow-lg p-4">
                 <p class="font-bold text-[20px]">{{ store.name }}</p>
                 <p class="font-bold text-xs pt-1">{{ generatecode(index)}} - {{ store.categories[0] }}</p>
                 <div class="flex justify-center space-x-3 mt-2">
