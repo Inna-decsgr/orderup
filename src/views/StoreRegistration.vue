@@ -104,13 +104,12 @@
       </div>
       <div>
         <label for="restaurantDescription" class="font-bold text-center mb-2 mr-2">상단에 표시할 가게 설명을 작성해주세요</label>
-        <input 
-          type="text" 
+        <textarea
           v-model="restaurant.description" 
           id="restaurantDescription" 
           required
           class="border w-[430px] py-1 px-2 rounded-md outline-none mb-3"
-        >
+        ></textarea>
       </div>
       <div>
         <label for="restaurantDeliveryFee" class="font-bold pr-3 w-[80px] text-center mb-3">배달료</label>
