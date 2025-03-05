@@ -49,7 +49,7 @@
             <i class="fa-solid fa-camera"></i>
           </label>
           <div v-if="imagePreview">
-            <img :src="imagePreview" alt="이미지 미리보기" class="w-[300px] h-[200px] mt-2">
+            <img :src="imageSrc(imagePreview)" alt="이미지 미리보기" class="w-[300px] h-[200px] mt-2">
           </div>
         </div>
         <div class="mb-2">
@@ -168,7 +168,30 @@ export default {
       } catch (error) {
         console.error('가게 정보 수정 실패', error);
       }
-    }
+    },
+    imageSrc(imageurl) {
+      try {
+        // URL 디코딩 (한글 파일명 깨짐 방지)
+        imageurl = decodeURIComponent(imageurl);
+      } catch (e) {
+        console.error("URL 디코딩 실패:", e);
+      }
+      // 공백을 `_`로 변환 (Django에서 저장된 파일명과 맞추기)
+      imageurl = imageurl.replace(/ /g, "_");
+      // `http://` 또는 `https://`로 시작하면 그대로 사용
+      if (imageurl.startsWith("http://") || imageurl.startsWith("https://")) {
+        // 만약 "http://localhost:8000/media/"로 시작하면 "/images/" 추가
+        if (imageurl.startsWith("http://localhost:8000/media/images")) {
+          return imageurl; // 기존 URL 유지
+        }
+        if (imageurl.startsWith("http://localhost:8000/media/")) {
+          return imageurl.replace("/media/", "/media/images/");
+        }
+        return imageurl
+      }
+      // 상대 경로라면 `http://localhost:8000`을 붙여서 반환
+      return `http://localhost:8000${imageurl}`;
+    },
   }
 
 }
