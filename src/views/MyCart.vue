@@ -267,6 +267,7 @@ export default {
       });
       console.log(response.data);
       this.closePopup();
+      this.$store.commit('clearMenucart')
       this.$router.push('/orderlist');
     },
     openPopup() {
