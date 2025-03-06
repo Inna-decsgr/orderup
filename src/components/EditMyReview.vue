@@ -44,7 +44,7 @@
         </div>
       </div>
     </form>
-    <button type="submit" @click="editReview(localReviews[0].id)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">수정하기</button>
+    <button type="submit" @click="editReview(localReviews[0].id)" class="bg-violet-500 text-white font-bold w-full text-sm p-2 mt-3 rounded-md">완료</button>
   </div>
 </template>
 
@@ -118,7 +118,7 @@ export default {
           }
         });
         console.log('서버 응답', response.data);
-        this.cancel();
+        this.$router.push('/orderlist')
       } catch (error) {
         console.error('리뷰 수정 중 오류', error);
         alert('리뷰 수정 중 오류가 발생했습니다.')

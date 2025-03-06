@@ -39,8 +39,8 @@
                   - Number(order.discount_amount)).toLocaleString() }}원
                 </p>
               </div>
-              <p v-if="order.discount_amount > 0" class="border-1 border-violet-500 w-[90px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl mt-1"><span class="text-violet-700">{{ Number(order.discount_amount).toLocaleString()}}원</span> 할인</p>
-              <p v-if="order.review === true" class="border-1 border-violet-500 w-[110px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl">후기 작성완료</p>
+              <p v-if="order.discount_amount > 0" class="border-1 border-violet-500 w-[90px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl mt-2"><span class="text-violet-700">{{ Number(order.discount_amount).toLocaleString()}}원</span> 할인</p>
+              <p v-if="order.review === true" class="border-1 border-violet-500 w-[110px] text-center text-xs py-[5px] px-[8px] font-bold rounded-2xl mt-1">후기 작성완료</p>
             </div>
           </div>
           <button v-if="order.status === 'delivered' && order.review === false" @click="gotoReview(order)" class="font-bold border-1 border-violet-700 rounded-sm text-violet-700 w-full py-2">
