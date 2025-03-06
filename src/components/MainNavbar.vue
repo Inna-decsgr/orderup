@@ -8,6 +8,7 @@
       <router-link to="/mycart">
         <i class="fa-solid fa-cart-shopping"></i><br/>
         장바구니
+        <span v-if="cart.length > 0" class="bg-violet-500 text-xs text-white py-[2px] px-[6px] rounded-full">{{ cart.length }}</span>
       </router-link>
       <router-link to="/userlike">
         <i class="fa-solid fa-heart"></i><br/>
@@ -34,6 +35,9 @@ export default {
     isOwner() {
       // getUser를 사용해서 사용자 정보에서 is_owner 확인
       return this.getUser && this.getUser.is_owner;
+    },
+    cart() {
+      return this.$store.getters.getMenuCart;
     }
   },
 }
