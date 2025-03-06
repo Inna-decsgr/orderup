@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 px-3">
-    <img :src="this.selectedstore[0]?.imageurl || store.image_url" alt="가게 이미지" class="w-full h-[300px] object-cover ">
+    <img :src="imageSrc(this.selectedstore[0]?.imageurl) || imageSrc(store.image_url)" alt="가게 이미지" class="w-full h-[300px] object-cover ">
     <div class="border-b-[2px]">
       <div class="flex justify-between items-center">
         <p class="text-3xl mt-2"><strong>{{ this.store.name || this.store.store_name || this.store.restaurant.name }}</strong></p>
@@ -12,7 +12,7 @@
         <p>⭐{{ this.selectedstore[0]?.rating || store.rating}}</p>
         <button @click="showreview" v-if="this.allreviews.length > 0" class="">
           <span class="text-gray-400 mx-2">·</span>
-          <span>
+          <span v-if="this.allreviews.length > 0">
             리뷰 {{ this.allreviews.length }}</span>개
             <i class="fa-solid fa-chevron-right"></i>
         </button>
@@ -334,7 +334,30 @@ export default {
       setTimeout(() => {
         this.addtocart = false; 
       }, 3000); 
-    }
+    },
+    imageSrc(imageurl) {
+      try {
+        // URL 디코딩 (한글 파일명 깨짐 방지)
+        imageurl = decodeURIComponent(imageurl);
+      } catch (e) {
+        console.error("URL 디코딩 실패:", e);
+      }
+      // 공백을 `_`로 변환 (Django에서 저장된 파일명과 맞추기)
+      imageurl = imageurl.replace(/ /g, "_");
+      // `http://` 또는 `https://`로 시작하면 그대로 사용
+      if (imageurl.startsWith("http://") || imageurl.startsWith("https://")) {
+        // 만약 "http://localhost:8000/media/"로 시작하면 "/images/" 추가
+        if (imageurl.startsWith("http://localhost:8000/media/images")) {
+          return imageurl; // 기존 URL 유지
+        }
+        if (imageurl.startsWith("http://localhost:8000/media/")) {
+          return imageurl.replace("/media/", "/media/images/");
+        }
+        return imageurl
+      }
+      // 상대 경로라면 `http://localhost:8000`을 붙여서 반환
+      return `http://localhost:8000${imageurl}`;
+    },
   }
 }
 </script>
