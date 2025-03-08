@@ -22,7 +22,7 @@
             <RiderLocation :cancel="closepopup" :orderid="order.order_id" @confirm="handleConfirm(order.order_id)"/>
           </div>
           <div class="flex items-center pb-3">
-            <img :src="order.restaurant.image_url" alt="가게 이미지" class="w-[100px] h-[100px] rounded-[38px] border">
+            <img :src="imageSrc(order.restaurant.image_url)" alt="가게 이미지" class="w-[100px] h-[100px] rounded-[38px] border">
             <div class="pl-3">
               <div class="flex items-center">
                 <p class="font-bold text-lg pr-2">{{ order.restaurant.name }}</p>
@@ -205,7 +205,30 @@ export default {
           orderid: orderid,
         }
       });
-    }
+    },
+    imageSrc(imageurl) {
+      try {
+        // URL 디코딩 (한글 파일명 깨짐 방지)
+        imageurl = decodeURIComponent(imageurl);
+      } catch (e) {
+        console.error("URL 디코딩 실패:", e);
+      }
+      // 공백을 `_`로 변환 (Django에서 저장된 파일명과 맞추기)
+      imageurl = imageurl.replace(/ /g, "_");
+      // `http://` 또는 `https://`로 시작하면 그대로 사용
+      if (imageurl.startsWith("http://") || imageurl.startsWith("https://")) {
+        // 만약 "http://localhost:8000/media/"로 시작하면 "/images/" 추가
+        if (imageurl.startsWith("http://localhost:8000/media/images")) {
+          return imageurl; // 기존 URL 유지
+        }
+        if (imageurl.startsWith("http://localhost:8000/media/")) {
+          return imageurl.replace("/media/", "/media/images/");
+        }
+        return imageurl
+      }
+      // 상대 경로라면 `http://localhost:8000`을 붙여서 반환
+      return `http://localhost:8000${imageurl}`;
+    },
   }
 }
 </script>
